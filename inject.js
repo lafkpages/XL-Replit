@@ -1,11 +1,18 @@
 console.debug('[XL] Inject script loaded');
+const rawSid = document.currentScript.dataset.sid;
+delete document.currentScript.dataset.sid;
+
+const hasSid = rawSid[0] == '1';
+const sid = hasSid? rawSid.substring(1) : null;
+
+console.debug('[XL] Got SID:', hasSid);
 
 // Different RegExes for paths
 const profilesPathRegex = /^\/@([^/]+)\/?$/;
 const replsPathRegex = /^\/@([^\/]+)\/([\w\-]+)(#.*)?(?!\?v=1)$/;
 
 // URL consts
-const GRAPHQL = 'https://replit.com/graphql';
+const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 // Fire URL change events
 (() => {
@@ -30,45 +37,42 @@ const GRAPHQL = 'https://replit.com/graphql';
   });
 })();
 
-async function graphQl(query, variables) {
-  return await (await fetch(GRAPHQL, {
+async function graphQl(path, variables) {
+  const urlParams = new URLSearchParams();
+  for (const kv of Object.entries(variables)) {
+    urlParams.set(...kv);
+  }
+
+  return await (await fetch(`${BACKEND}/${path}?${urlParams}`, {
     method: 'POST',
-    body: JSON.stringify({
-      query,
-      variables
-    }),
+    body: sid,
     headers: {
-      "Content-Type": "application/json",
-      "X-Requested-With": "Replit"
+      'Content-Type': 'text/plain'
     }
   })).json();
 }
 
 async function getProfileUser(lookup, byUsername = false) {
-  return (await graphQl(`query {\n  user${byUsername? 'ByUsername' : ''}(${byUsername? 'username' : 'id'}: ${byUsername? (`"${lookup}"`) : lookup}) {
-    id, username, url, bio, isVerified, firstName, lastName, displayName,
-    fullName, isLoggedIn, isSubscribed, timeCreated, isBannedFromBoards,
-    image\n  }\n}`, {})).data[byUsername? 'userByUsername' : 'user'];
+  return (await graphQl('getProfileUser', {
+    lookup,
+    byUsername
+  })).data[byUsername? 'userByUsername' : 'user'];
 }
 
 async function getXLUserData(id) {
-  return await (await fetch(`https://xl-replit-backend.luisafk.repl.co/user/${id}`)).json();
+  return await (await fetch(`${BACKEND}/user/${encodeURI(id)}`)).json();
 }
 
-async function inviteUserToRepl(replId, username, type) {
-  return await graphQl(
-    'mutation invite($replId:String!$username:String!$type:String!){addMultiplayerUser(replId:$replId,username:$username,type:$type){id}}',
-    {
-      replId,
-      username,
-      type
-    }
-  );
+async function inviteReadOnlyUserToRepl(replId, username) {
+  return await graphQl('inviteReadOnly', {
+    replId,
+    username
+  });
 }
 
 async function getReplByURL(url) {
   return await graphQl(
-    "query ReplEnvironment2($url: String!) {\n  repl(url: $url) {\n    ... on Repl {\n      id\n      ...CrosisContextRepl\n      ...ReplEnvironment2Repl\n      ...ReplEnvironmentTourRepl\n      __typename\n    }\n    ... on ReplRedirect {\n      replUrl\n      __typename\n    }\n    ... on SubscriptionExpiredError {\n      replId\n      isOwner\n      __typename\n    }\n    __typename\n  }\n  currentUser {\n    id\n    ...ReplEnvironment2CurrentUser\n    __typename\n  }\n}\n\nfragment CrosisContextRepl on Repl {\n  id\n  language\n  slug\n  user {\n    id\n    username\n    __typename\n  }\n  currentUserPermissions {\n    containerWrite\n    __typename\n  }\n  __typename\n}\n\nfragment ReplEnvironment2Repl on Repl {\n  id\n  title\n  layoutState\n  description\n  multiplayers {\n    id\n    __typename\n  }\n  currentUserPermissions {\n    containerWrite\n    __typename\n  }\n  origin {\n    id\n    __typename\n  }\n  language\n  config {\n    isVnc\n    isServer\n    __typename\n  }\n  lesson {\n    id\n    __typename\n  }\n  ...CrosisContextRepl\n  ...ReplEnvironmentHeaderLeftRepl\n  __typename\n}\n\nfragment ReplEnvironmentHeaderLeftRepl on Repl {\n  id\n  isAlwaysOn\n  slug\n  url\n  ...WorkspaceHeaderReplMetadataRepl\n  __typename\n}\n\nfragment WorkspaceHeaderReplMetadataRepl on Repl {\n  id\n  title\n  iconUrl\n  user {\n    id\n    ...UserLinkUser\n    __typename\n  }\n  __typename\n}\n\nfragment UserLinkUser on User {\n  id\n  url\n  username\n  __typename\n}\n\nfragment ReplEnvironmentTourRepl on Repl {\n  id\n  lesson {\n    id\n    __typename\n  }\n  __typename\n}\n\nfragment ReplEnvironment2CurrentUser on CurrentUser {\n  id\n  image\n  isFirewallMode\n  ...CrosisContextCurrentUser\n  ...ReplEnvironment2CurrentUserLayoutFlags\n  editorPreferences {\n    ...CurrentUserPreferences\n    __typename\n  }\n  ...ReplEnvironmentHeaderLeftCurrentUser\n  ...ReplEnvironmentTourCurrentUser\n  __typename\n}\n\nfragment CrosisContextCurrentUser on CurrentUser {\n  id\n  username\n  isSubscribed\n  roles {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n\nfragment ReplEnvironment2CurrentUserLayoutFlags on CurrentUser {\n  id\n  flagGhostrunner: gate(feature: \"flag-ghostrunner\")\n  __typename\n}\n\nfragment CurrentUserPreferences on EditorPreferences {\n  isLayoutStacked\n  theme\n  fontSize\n  indentIsSpaces\n  indentSize\n  keyboardHandler\n  wrapping\n  codeIntelligence\n  codeSuggestion\n  completeCodeEngine\n  accessibleTerminal\n  multiselectModifierKey\n  extraDelight\n  __typename\n}\n\nfragment ReplEnvironmentHeaderLeftCurrentUser on CurrentUser {\n  id\n  isFirewallMode\n  __typename\n}\n\nfragment ReplEnvironmentTourCurrentUser on CurrentUser {\n  id\n  hasSeenOldWorkspaceTour: tourSeen(name: \"workspace-desktop-tour\")\n  __typename\n}\n",
+    'getReplData',
     {
       url
     }
@@ -297,7 +301,7 @@ async function replsPathFunction(m) {
         if (mode == 'r' && inviteFormInp.value) {
           e.preventDefault();
 
-          inviteUserToRepl(replId, inviteFormInp.value, 'r').then(data => {
+          inviteReadOnlyUserToRepl(replId, inviteFormInp.value).then(data => {
             console.debug('[XL] Invited user as read-only to Repl:', data);
           });
         }
