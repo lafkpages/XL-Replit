@@ -29,6 +29,15 @@
         "ideas",
         "userTesting"
       ]
+    },
+    {
+      "login": "DaInfLoop",
+      "name": "DaInfLoop",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92693892?v=4",
+      "profile": "https://github.com/DaInfLoop",
+      "contributions": [
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
