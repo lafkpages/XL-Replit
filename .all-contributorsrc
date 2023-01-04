@@ -18,6 +18,17 @@
         "ideas",
         "maintenance"
       ]
+    },
+    {
+      "login": "DillonB07",
+      "name": "Dillon Barnes",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83948303?v=4",
+      "profile": "https://dillonb07.is-a.dev",
+      "contributions": [
+        "data",
+        "ideas",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
