@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suggest Data
+    url: https://xl-replit-backend.luisafk.repl.co/suggestData
+    about: Suggest user data to be added to the extension here
+  - name: Discussions
+    url: https://github.com/lafkpages/XL-Replit/discussions
+    about: Ask questions about the extension and get help from the community
