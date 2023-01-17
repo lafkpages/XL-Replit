@@ -334,8 +334,13 @@ async function replSpotlightPathFunction(m) {
 
   // Add custom tip button
   const customTipBtn = document.createElement('button');
+  const customTipBtnEmoji = document.createElement('span');
+  const customTipBtnText = document.createElement('span');
+  customTipBtnEmoji.textContent = '\u{1F300}';
+  customTipBtnText.textContent = 'Custom Tip';
   customTipBtn.id = 'xl-replit-custom-tip-btn';
-  customTipBtn.textContent = '\u{1F300}\r\nCustom Tip';
+  customTipBtn.appendChild(customTipBtnEmoji);
+  customTipBtn.appendChild(customTipBtnText);
   tipButtonsCont.appendChild(customTipBtn);
 }
 

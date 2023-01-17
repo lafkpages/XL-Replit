@@ -80,4 +80,21 @@ button#xl-replit-custom-tip-btn {
   border: 1px solid transparent;
   white-space: pre-line;
   font-size: var(--font-size-default);
+  transition-property: background-color, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+button#xl-replit-custom-tip-btn:hover {
+  background: var(--interactive-background--active);
+  transition-property: background-color, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+button#xl-replit-custom-tip-btn span:first-child {
+  display: block;
+  margin-bottom: var(--space-8);
+  line-height: 1.2;
+  font-size: var(--font-size-subhead-big);
 }
