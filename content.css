@@ -71,3 +71,13 @@ select#xl-replit-invite-mode-select {
 select#xl-replit-invite-mode-select:active, select#xl-replit-invite-mode-select:focus {
   border-color: var(--accent-primary-default);
 }
+
+button#xl-replit-custom-tip-btn {
+  cursor: pointer;
+  background-color: var(--interactive-background);
+  border-radius: var(--border-radius-8);
+  padding: var(--space-8);
+  border: 1px solid transparent;
+  white-space: pre-line;
+  font-size: var(--font-size-default);
+}

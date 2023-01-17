@@ -10,6 +10,7 @@ console.debug('[XL] Got SID:', hasSid);
 // Different RegExes for paths
 const profilesPathRegex = /^\/@([^/]+)\/?$/;
 const replsPathRegex = /^\/@([^\/]+)\/([\w\-]+)(#.*)?(?!\?v=1)$/;
+const replSpotlightPathRegex = /^\/@([^\/]+)\/([\w\-]+)\?v=1(#.*)?$/;
 
 // URL consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
@@ -95,10 +96,11 @@ async function profilesPathFunction(m) {
   const profileUsername = m[1];
 
   // Prevent this from running twice
-  if (document.body.dataset.xlReplitProfiles == profileUsername) {
+  const xlReplitPage = `profiles/${profileUsername}`;
+  if (document.body.dataset.xlReplitPage == xlReplitPage) {
     return console.log('[XL] XL Replit Profiles are already setup for this profile, ignoring call');
   }
-  document.body.dataset.xlReplitProfiles = profileUsername;
+  document.body.dataset.xlReplitPage = xlReplitPage;
   
   console.log('[XL] Loading XL Replit profile for user', profileUsername);
 
@@ -251,10 +253,11 @@ async function replsPathFunction(m) {
   let replSlug = m[2];
 
   // Prevent this from running twice
-  if (document.body.dataset.xlReplitRepl == replSlug) {
+  const xlReplitPage = `repls/${replSlug}`;
+  if (document.body.dataset.xlReplitPage == xlReplitPage) {
     return console.log('[XL] XL Replit Repl already ran on this Repl, ignoring call');
   }
-  document.body.dataset.xlReplitRepl = replSlug;
+  document.body.dataset.xlReplitPage = xlReplitPage;
   console.log('[XL] Loading XL Replit data for Repl', replSlug);
 
   // Load Repl data
@@ -316,9 +319,32 @@ async function replsPathFunction(m) {
   });
 }
 
+async function replSpotlightPathFunction(m) {
+  const replSlug = m[2];
+
+  // Prevent this from running twice
+  const xlReplitPage = `replSpotlight/${replSlug}`;
+  if (document.body.dataset.xlReplitPage == xlReplitPage) {
+    return console.log('[XL] XL Replit Repl Spotlight already ran on this Repl, ignoring call');
+  }
+  document.body.dataset.xlReplitPage = xlReplitPage;
+
+  const tipsCont = document.querySelector('div#tips');
+  const tipButtonsCont = tipsCont.querySelector('div:has(> div:nth-child(3))');
+
+  // Add custom tip button
+  const customTipBtn = document.createElement('button');
+  customTipBtn.id = 'xl-replit-custom-tip-btn';
+  customTipBtn.textContent = '\u{1F300}\r\nCustom Tip';
+  tipButtonsCont.appendChild(customTipBtn);
+}
+
 function main() {
-  const profilesPathMatch = window.location.pathname.match(profilesPathRegex);
-  const replsPathMatch = window.location.pathname.match(replsPathRegex);
+  const path = window.location.pathname + window.location.search + window.location.hash;
+
+  const profilesPathMatch = path.match(profilesPathRegex);
+  const replsPathMatch = path.match(replsPathRegex);
+  const replSpotlightPathMatch = path.match(replSpotlightPathRegex);
 
   console.debug('[XL] Running main');
 
@@ -326,6 +352,8 @@ function main() {
     return profilesPathFunction(profilesPathMatch);
   } else if (replsPathMatch) {
     return replsPathFunction(replsPathMatch);
+  } else if (replSpotlightPathMatch) {
+    return replSpotlightPathFunction(replSpotlightPathMatch);
   }
 }
 
