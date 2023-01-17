@@ -293,6 +293,12 @@ async function replsPathFunction(m) {
       readOnlySelect.appendChild(readOnlySelectReadOnlyOpt);
       inviteForm.insertBefore(readOnlySelect, inviteFormBtn);
 
+      // Disable read-only if no SID provided
+      if (!hasSid) {
+        readOnlySelectReadOnlyOpt.disabled = true;
+        readOnlySelect.title = 'Read only is disabled as you have not provided your Replit SID to the extension. To use this feature, open the extension popup and paste your Replit SID in there.';
+      }
+
       // Prevent default invite action if read-only
       inviteFormBtn.addEventListener('click', e => {
         const mode = readOnlySelect.value;
