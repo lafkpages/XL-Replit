@@ -332,6 +332,10 @@ async function replSpotlightPathFunction(m) {
   const tipsCont = document.querySelector('div#tips');
   const tipButtonsCont = tipsCont.querySelector('div:has(> div:nth-child(3))');
 
+  // Add classes for CSS
+  tipButtonsCont.classList.add('xl-replit-tip-buttons-cont');
+  tipButtonsCont.parentElement.children[1].classList.add('xl-replit-tip-data-cont');
+
   // Add custom tip button
   const customTipBtn = document.createElement('button');
   const customTipBtnEmoji = document.createElement('span');
