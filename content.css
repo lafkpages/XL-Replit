@@ -29,7 +29,7 @@ main div#xl-replit-profile .xl-replit-profile-item {
 }
 
 main div#xl-replit-profile .xl-replit-profile-item:hover {
-  background-color: var(--interactive-background--active);
+  background: var(--interactive-background--active);
 }
 
 main div#xl-replit-profile .xl-replit-profile-item-icon {
@@ -83,20 +83,20 @@ div#tips .xl-replit-tip-data-cont {
 
 button#xl-replit-custom-tip-btn {
   cursor: pointer;
-  background-color: var(--interactive-background);
+  background: var(--interactive-background);
   border-radius: var(--border-radius-8);
   padding: var(--space-8) var(--space-12);
   border: 1px solid transparent;
   white-space: pre-line;
   font-size: var(--font-size-default);
-  transition-property: background-color, box-shadow;
+  transition-property: background, box-shadow;
   transition-duration: 120ms;
   transition-timing-function: ease-out;
 }
 
 button#xl-replit-custom-tip-btn:hover {
   background: var(--interactive-background--active);
-  transition-property: background-color, box-shadow;
+  transition-property: background, box-shadow;
   transition-duration: 120ms;
   transition-timing-function: ease-out;
 }
