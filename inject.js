@@ -80,6 +80,9 @@ async function getReplByURL(url) {
   );
 }
 
+// TODO: add to backend when I get back Hacker plan
+//async function tipCycles()
+
 function capitalize(str) {
   str = str.split('');
 
@@ -346,6 +349,51 @@ async function replSpotlightPathFunction(m) {
   customTipBtn.appendChild(customTipBtnEmoji);
   customTipBtn.appendChild(customTipBtnText);
   tipButtonsCont.appendChild(customTipBtn);
+
+  // Add custom tip popup
+  const customTipPopupCont = document.createElement('div');
+  const customTipPopup = document.createElement('form');
+  const customTipPopupTitle = document.createElement('h2');
+  const customTipPopupInp = document.createElement('input');
+  const customTipPopupBtnsCont = document.createElement('div');
+  const customTipPopupCancel = document.createElement('button');
+  const customTipPopupSubmit = document.createElement('button');
+  customTipPopupCont.id = 'xl-replit-custom-tip-popup-cont';
+  customTipPopup.id = 'xl-replit-custom-tip-popup';
+  customTipPopupTitle.textContent = 'Custom Tip';
+  customTipPopupInp.placeholder = 'Amount of cycles...';
+  customTipPopupInp.type = 'number';
+  customTipPopupInp.min = 10;
+  customTipPopupInp.value = 10;
+  customTipPopupInp.required = true;
+  customTipPopupCancel.textContent = 'Cancel';
+  customTipPopupSubmit.textContent = 'Tip!';
+  customTipPopupSubmit.className = 'primary';
+  customTipPopupBtnsCont.appendChild(customTipPopupCancel);
+  customTipPopupBtnsCont.appendChild(customTipPopupSubmit);
+  customTipPopup.appendChild(customTipPopupTitle);
+  customTipPopup.appendChild(customTipPopupInp);
+  customTipPopup.appendChild(customTipPopupBtnsCont);
+  customTipPopupCont.appendChild(customTipPopup);
+  document.body.appendChild(customTipPopupCont);
+
+  // When custom tip is clicked
+  customTipBtn.addEventListener('click', e => {
+    // Show custom tip popup
+    customTipPopupCont.classList.add('show');
+  });
+
+  // When cancel button is clicked
+  customTipPopupCancel.addEventListener('click', e => {
+    // Close the popup
+    customTipPopupCont.classList.remove('show');
+  });
+
+  // When the tip button is clicked
+  customTipPopup.addEventListener('submit', e => {
+    // Send tip
+
+  });
 }
 
 function main() {
