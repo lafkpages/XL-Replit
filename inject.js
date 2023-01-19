@@ -80,8 +80,17 @@ async function getReplByURL(url) {
   );
 }
 
-// TODO: add to backend when I get back Hacker plan
-//async function tipCycles()
+async function getReadOnlyReplByURL(url) {
+  return await graphQl('getReplDataReadOnly', {
+    url
+  });
+}
+
+async function tipCycles(amount, replId) {
+  return await graphQl('tipCycles', {
+    amount, replId
+  });
+}
 
 function capitalize(str) {
   str = str.split('');
@@ -323,7 +332,7 @@ async function replsPathFunction(m) {
 }
 
 async function replSpotlightPathFunction(m) {
-  const replSlug = m[2];
+  let replSlug = m[2];
 
   // Prevent this from running twice
   const xlReplitPage = `replSpotlight/${replSlug}`;
@@ -331,6 +340,10 @@ async function replSpotlightPathFunction(m) {
     return console.log('[XL] XL Replit Repl Spotlight already ran on this Repl, ignoring call');
   }
   document.body.dataset.xlReplitPage = xlReplitPage;
+
+  // Load read-only Repl data
+  const repl = (await getReadOnlyReplByURL(m[0])).data.repl;
+  replSlug = repl.slug;
 
   const tipsCont = document.querySelector('div#tips');
   const tipButtonsCont = tipsCont.querySelector('div:has(> div:nth-child(3))');
@@ -391,8 +404,23 @@ async function replSpotlightPathFunction(m) {
 
   // When the tip button is clicked
   customTipPopup.addEventListener('submit', e => {
-    // Send tip
+    // Disable buttons
+    customTipPopupCancel.disabled = true;
+    customTipPopupSubmit.disabled = true;
 
+    // Send tip
+    tipCycles(customTipPopupInp.valueAsNumber, repl.id).then(result => {
+      // Enable buttons
+      customTipPopupCancel.disabled = false;
+      customTipPopupSubmit.disabled = false;
+
+      // Hide popup
+      customTipPopupCont.classList.remove('show');
+
+      // Reload to update tip data
+      window.location.search = '?v=1';
+      window.location.reload();
+    });
   });
 }
 
