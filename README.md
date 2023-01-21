@@ -12,7 +12,7 @@ An enhanced version of Replit.
 * Read-only invites for private Repls
 
 ## Suggest data
-If you have some relevant data for someone's profile, please fill out [this form](https://xl-replit-backend.luisafk.repl.co/suggestData) with the data and it will be reviewed by a moderator.
+If you have some relevant data for someone's profile, please fill out [this form](https://xl-replit.lafkpages.tech/suggestData) with the data and it will be reviewed by a moderator.
 
 ## Contributors
 
