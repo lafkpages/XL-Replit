@@ -13,7 +13,7 @@ const replsPathRegex = /^\/@([^\/]+)\/([\w\-]+)(#.*)?(?!\?v=1)$/;
 const replSpotlightPathRegex = /^\/@([^\/]+)\/([\w\-]+)\?v=1(#.*)?$/;
 
 // URL consts
-const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
+const BACKEND = 'https://xl-replit.lafkpages.tech';
 
 // Fire URL change events
 (() => {
