@@ -8,7 +8,7 @@ const sid = hasSid? rawSid.substring(1) : null;
 console.debug('[XL] Got SID:', hasSid);
 
 // Different RegExes for paths
-const profilesPathRegex = /^\/@([^/]+)\/?$/;
+const profilesPathRegex = /^\/@([^\/]+)(\?[^\/]+)?\/?$/;
 const replsPathRegex = /^\/@([^\/]+)\/([\w\-]+)(#.*)?(?!\?v=1)$/;
 const replSpotlightPathRegex = /^\/@([^\/]+)\/([\w\-]+)\?v=1(#.*)?$/;
 
