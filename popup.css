@@ -13,7 +13,12 @@ body {
   min-height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-block-end: 0px;
 }
 
@@ -22,10 +27,10 @@ input {
   border-radius: 3px;
 }
 
-input[data-valid=true] {
+input[data-valid='true'] {
   border-color: green;
 }
 
-input[data-valid=false] {
+input[data-valid='false'] {
   border-color: red;
 }

@@ -1,17 +1,21 @@
 # XL Replit
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 An enhanced version of Replit.
 
 ## Features
-* Custom Tips
-* User's email addresses
-* Shows a user's known alt accounts
-* Easily download a user's profile picture
-* Read-only invites for private Repls
+
+- Custom Tips
+- User's email addresses
+- Shows a user's known alt accounts
+- Easily download a user's profile picture
+- Read-only invites for private Repls
 
 ## Suggest data
+
 If you have some relevant data for someone's profile, please fill out [this form](https://xl-replit.lafkpages.tech/suggestData) with the data and it will be reviewed by a moderator.
 
 ## Contributors

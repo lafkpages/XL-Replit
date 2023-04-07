@@ -1,15 +1,15 @@
-document.addEventListener('DOMContentLoaded', e => {
+document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');
-  chrome.storage.local.get([ 'sid' ]).then(({ sid }) => {
+  chrome.storage.local.get(['sid']).then(({ sid }) => {
     const s = document.createElement('script');
     s.src = chrome.runtime.getURL('inject.js');
-    s.dataset.sid = sid? `1${sid}` : '0,null';
+    s.dataset.sid = sid ? `1${sid}` : '0,null';
     document.head.appendChild(s);
     console.debug('[XL] Injected script');
   });
 });
 
-window.addEventListener('load', e => {
+window.addEventListener('load', (e) => {
   let userId = null;
 
   console.debug('[XL] Trying to get user ID from cookies');
@@ -22,10 +22,12 @@ window.addEventListener('load', e => {
   }
 
   if (userId) {
-    chrome.storage.local.set({
-      userId
-    }).then(() => {
-      console.debug('[XL] Saved user ID to local CRX storage');
-    });
+    chrome.storage.local
+      .set({
+        userId,
+      })
+      .then(() => {
+        console.debug('[XL] Saved user ID to local CRX storage');
+      });
   }
 });

@@ -68,7 +68,8 @@ select#xl-replit-invite-mode-select {
   cursor: pointer;
 }
 
-select#xl-replit-invite-mode-select:active, select#xl-replit-invite-mode-select:focus {
+select#xl-replit-invite-mode-select:active,
+select#xl-replit-invite-mode-select:focus {
   border-color: var(--accent-primary-default);
 }
 
