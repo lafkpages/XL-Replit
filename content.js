@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');
-  chrome.storage.local.get(['sid']).then(({ sid }) => {
+  chrome.storage.local.get(['sid', 'settings']).then(({ sid, settings }) => {
     const s = document.createElement('script');
     s.src = chrome.runtime.getURL('inject.js');
     s.dataset.sid = sid ? `1${sid}` : '0,null';
+    s.dataset.settings = settings ? JSON.stringify(settings) : null;
     document.head.appendChild(s);
     console.debug('[XL] Injected script');
   });

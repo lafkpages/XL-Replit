@@ -4,7 +4,9 @@ const delButton = document.getElementById('delete-sid');
 const settingsCont = document.getElementById('settings');
 
 let userId = null;
-let settings = {};
+let settings = {
+  'old-cover-page': false,
+};
 
 // URL consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
@@ -77,15 +79,24 @@ chrome.storage.local
     if (storedSettings) {
       settings = storedSettings;
       console.debug('[XL] Got settings from storage:', settings);
+    } else {
+      console.log('[XL] Found no stored settings, storing defaults');
+      chrome.storage.local
+        .set({
+          settings,
+        })
+        .then(() => {
+          console.log('[XL] Saved settings');
+        });
+    }
 
-      for (const [key, val] of Object.entries(settings)) {
-        const elm = document.querySelector(`#settings input[name="${key}"]`);
+    for (const [key, val] of Object.entries(settings)) {
+      const elm = document.querySelector(`#settings input[name="${key}"]`);
 
-        if (elm.type == 'checkbox') {
-          elm.checked = val;
-        } else {
-          elm.value = val;
-        }
+      if (elm.type == 'checkbox') {
+        elm.checked = val;
+      } else {
+        elm.value = val;
       }
     }
   });

@@ -2,6 +2,9 @@ console.debug('[XL] Inject script loaded');
 const rawSid = document.currentScript.dataset.sid;
 delete document.currentScript.dataset.sid;
 
+const rawSettings = document.currentScript.dataset.settings;
+const settings = rawSettings ? JSON.parse(rawSettings) : {};
+
 const hasSid = rawSid[0] == '1';
 const sid = hasSid ? rawSid.substring(1) : null;
 
