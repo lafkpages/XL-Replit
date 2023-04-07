@@ -125,7 +125,9 @@ async function profilesPathFunction() {
 
   // Get main account data
   const mainUserProfile = xlUser.main
-    ? await getProfileUser(xlUser.main)
+    ? xlUser.main == profileUser.id
+      ? profileUser
+      : await getProfileUser(xlUser.main)
     : null;
 
   // Get alt accounts data
