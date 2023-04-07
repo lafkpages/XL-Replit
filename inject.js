@@ -10,7 +10,7 @@ console.debug('[XL] Got SID:', hasSid);
 const replUrlRegex = /^\/@(.+?)\/(.+)$/;
 
 // URL consts
-const BACKEND = 'https://xl-replit.lafkpages.tech';
+const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 // Fire URL change events
 (() => {

@@ -5,7 +5,7 @@ const delButton = document.getElementById('delete-sid');
 let userId = null;
 
 // URL consts
-const BACKEND = 'https://xl-replit.lafkpages.tech';
+const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 function parseSid(sid) {
   if (sid[1] != ':') {
