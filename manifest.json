@@ -13,7 +13,7 @@
   "permissions": ["storage"],
   "content_scripts": [
     {
-      "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"],
+      "matches": ["https://replit.com/*", "https://firewalledreplit.com/*", "https://staging.replit.com/*"],
       "css": ["content.css"],
       "js": ["content.js"],
       "run_at": "document_start"
