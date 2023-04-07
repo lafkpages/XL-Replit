@@ -4,6 +4,9 @@ const delButton = document.getElementById('delete-sid');
 
 let userId = null;
 
+// URL consts
+const BACKEND = 'https://xl-replit.lafkpages.tech';
+
 function parseSid(sid) {
   if (sid[1] != ':') {
     return decodeURIComponent(sid);
@@ -15,7 +18,7 @@ sidButton.addEventListener('click', (e) => {
   const sid = parseSid(sidInput.value);
 
   // check if the SID is correct
-  fetch('https://xl-replit-backend.luisafk.repl.co/checkSid', {
+  fetch(`${BACKEND}/checkSid`, {
     method: 'POST',
     body: sid,
     headers: {
