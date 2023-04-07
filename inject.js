@@ -15,6 +15,8 @@ const replUrlRegex = /^\/@(.+?)\/(.+)$/;
 // URL consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
+const setFlagsHash = 'xl-set-flags';
+
 // Fire URL change events
 (() => {
   const oldPushState = history.pushState;
@@ -104,6 +106,18 @@ function capitalize(str) {
   }
 
   return str.join('');
+}
+
+function getFlags() {
+  return __REPLIT_REDUX_STORE__.getState().user.userInfo.gating;
+}
+
+function getFlag(flag) {
+  return getFlags().find((f) => f.controlName == flag);
+}
+
+function setFlag(flag, value) {
+  getFlag(flag).value = value;
 }
 
 async function profilesPathFunction() {
@@ -492,4 +506,19 @@ document.addEventListener('click', (e) => {
   if (e.target.matches('.xl-replit-profile-item-copy')) {
     navigator.clipboard.writeText(e.target.dataset.value);
   }
+});
+
+// Modify flags
+(async () => {
+  // Wait for Next to load
+  while (typeof next == 'undefined') {}
+
+  // Set flags
+  next.router.push(`#${setFlagsHash}`);
+  if (settings['old-cover-page']) {
+    setFlag('flag-new-cover-page', false);
+  }
+  next.router.back();
+})().then(() => {
+  console.debug('[XL] Set flags');
 });
