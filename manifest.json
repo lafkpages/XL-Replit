@@ -10,15 +10,10 @@
     "192": "favicon.png",
     "128": "favicon128.png"
   },
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "content_scripts": [
     {
-      "matches": [
-        "https://*.replit.com/*",
-        "https://*.firewalledreplit.com/*"
-      ],
+      "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"],
       "css": ["content.css"],
       "js": ["content.js"],
       "run_at": "document_start"
@@ -26,8 +21,11 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "inject.js", "2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js" ],
-      "matches": [ "https://*.replit.com/*", "https://*.firewalledreplit.com/*" ]
+      "resources": [
+        "inject.js",
+        "2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js"
+      ],
+      "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"]
     }
   ],
   "action": {
