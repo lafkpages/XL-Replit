@@ -7,10 +7,7 @@ const sid = hasSid? rawSid.substring(1) : null;
 
 console.debug('[XL] Got SID:', hasSid);
 
-// Different RegExes for paths
-const profilesPathRegex = /^\/@([^/]+)\/?$/;
-const replsPathRegex = /^\/@([^\/]+)\/([\w\-]+)(#.*)?(?!\?v=1)$/;
-const replSpotlightPathRegex = /^\/@([^\/]+)\/([\w\-]+)\?v=1(#.*)?$/;
+const replUrlRegex = /^\/@(.+?)\/(.+)$/;
 
 // URL consts
 const BACKEND = 'https://xl-replit.lafkpages.tech';
@@ -104,8 +101,8 @@ function capitalize(str) {
   return str.join('');
 }
 
-async function profilesPathFunction(m) {
-  const profileUsername = m[1];
+async function profilesPathFunction() {
+  const profileUsername = next.router.state.query.username;
 
   // Prevent this from running twice
   const xlReplitPage = `profiles/${profileUsername}`;
@@ -261,7 +258,8 @@ async function profilesPathFunction(m) {
   cont.appendChild(div);
 }
 
-async function replsPathFunction(m) {
+async function replsPathFunction() {
+  const m = next.router.state.query.replUrl.match(replUrlRegex);
   let replSlug = m[2];
 
   // Prevent this from running twice
@@ -331,7 +329,8 @@ async function replsPathFunction(m) {
   });
 }
 
-async function replSpotlightPathFunction(m) {
+async function replSpotlightPathFunction() {
+  const m = next.router.state.query.replUrl.match(replUrlRegex);
   let replSlug = m[2];
 
   // Prevent this from running twice
@@ -433,18 +432,17 @@ async function replSpotlightPathFunction(m) {
 function main() {
   const path = window.location.pathname + window.location.search + window.location.hash;
 
-  const profilesPathMatch = path.match(profilesPathRegex);
-  const replsPathMatch = path.match(replsPathRegex);
-  const replSpotlightPathMatch = path.match(replSpotlightPathRegex);
-
   console.debug('[XL] Running main');
 
-  if (profilesPathMatch) {
-    return profilesPathFunction(profilesPathMatch);
-  } else if (replsPathMatch) {
-    return replsPathFunction(replsPathMatch);
-  } else if (replSpotlightPathMatch) {
-    return replSpotlightPathFunction(replSpotlightPathMatch);
+  switch (next.router.state.route) {
+    case '/profile':
+      return profilesPathFunction();
+
+    case '/replEnvironmentDesktop':
+      return replsPathFunction();
+
+    case '/replView':
+      return replSpotlightPathFunction();
   }
 }
 
