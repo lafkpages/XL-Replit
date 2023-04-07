@@ -1,8 +1,10 @@
 const sidInput = document.getElementById('sid-inp');
 const sidButton = document.getElementById('save-sid');
 const delButton = document.getElementById('delete-sid');
+const settingsCont = document.getElementById('settings');
 
 let userId = null;
+let settings = {};
 
 // URL consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
@@ -56,10 +58,10 @@ delButton.addEventListener('click', (e) => {
     });
 });
 
-// get stored user ID and SID
+// get stored user ID, SID and settings
 chrome.storage.local
-  .get(['userId', 'sid'])
-  .then(({ userId: storedUserId, sid }) => {
+  .get(['userId', 'sid', 'settings'])
+  .then(({ userId: storedUserId, sid, settings: storedSettings }) => {
     if (storedUserId) {
       sidInput.disabled = false;
       sidButton.disabled = false;
@@ -71,4 +73,36 @@ chrome.storage.local
       console.debug('[XL] Got SID from storage');
       sidInput.value = sid;
     }
+
+    if (storedSettings) {
+      settings = storedSettings;
+      console.debug('[XL] Got settings from storage:', settings);
+
+      for (const [key, val] of Object.entries(settings)) {
+        const elm = document.querySelector(`#settings input[name="${key}"]`);
+
+        if (elm.type == 'checkbox') {
+          elm.checked = val;
+        } else {
+          elm.value = val;
+        }
+      }
+    }
   });
+
+settingsCont.addEventListener('input', (e) => {
+  console.debug('[XL] Settings changed');
+
+  const key = e.target.name;
+  const val = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
+
+  settings[key] = val;
+
+  chrome.storage.local
+    .set({
+      settings,
+    })
+    .then(() => {
+      console.log('[XL] Saved settings');
+    });
+});

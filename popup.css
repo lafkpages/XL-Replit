@@ -34,3 +34,7 @@ input[data-valid='true'] {
 input[data-valid='false'] {
   border-color: red;
 }
+
+div#settings > div > * {
+  vertical-align: middle;
+}
