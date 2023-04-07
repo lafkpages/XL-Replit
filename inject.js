@@ -346,6 +346,12 @@ async function replSpotlightPathFunction(m) {
   replSlug = repl.slug;
 
   const tipsCont = document.querySelector('div#tips');
+
+  // If Repl can't be tipped
+  if (!tipsCont) {
+    return;
+  }
+
   const tipButtonsCont = tipsCont.querySelector('div:has(> div:nth-child(3))');
 
   // Add classes for CSS
