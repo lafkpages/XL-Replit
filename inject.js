@@ -211,7 +211,7 @@ async function profilesPathFunction(m) {
       value: altUsersProfiles?.map(p => p.username).join(', ') || null
     }
   };
-console.log(mainUserProfile, profileUser)
+
   for (const item of Object.entries(items)) {
     // Ignore empty values
     if (!item[1].value) {
