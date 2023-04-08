@@ -521,6 +521,13 @@ document.addEventListener('click', (e) => {
   if (settings['nix-modules-tool']) {
     setFlag('flag-nix-modules-tool', true);
   }
+  if (settings['extensions-beta']) {
+    setFlag('flag-extensions', true);
+    setFlag('flag-extension-creator', true);
+    setFlag('flag-extension-devtools', true);
+    setFlag('flag-iframe-extensions', true);
+    setFlag('flag-user-extensions', true);
+  }
   next.router.back();
 })().then(() => {
   console.debug('[XL] Set flags');
