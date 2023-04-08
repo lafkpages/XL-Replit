@@ -3,7 +3,6 @@
   "name": "XL Replit",
   "description": "Extra features for the Replit website.",
   "version": "1.1",
-  "version_name": "1.1",
   "minimum_chrome_version": "105",
   "author": "LuisAFK",
   "icons": {
