@@ -441,8 +441,10 @@ async function replSpotlightPathFunction() {
   customTipPopupInp.value = 10;
   customTipPopupInp.required = true;
   customTipPopupCancel.textContent = 'Cancel';
+  customTipPopupCancel.type = 'button';
   customTipPopupSubmit.textContent = 'Tip!';
   customTipPopupSubmit.className = 'primary';
+  customTipPopupSubmit.type = 'submit';
   customTipPopupBtnsCont.appendChild(customTipPopupCancel);
   customTipPopupBtnsCont.appendChild(customTipPopupSubmit);
   customTipPopup.appendChild(customTipPopupTitle);
