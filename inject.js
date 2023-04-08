@@ -307,6 +307,11 @@ async function replsPathFunction() {
   document.body.dataset.xlReplitPage = xlReplitPage;
   console.log('[XL] Loading XL Replit data for Repl', replSlug);
 
+  // Enable debug
+  if (settings['auto-debug']) {
+    next.router.state.query.debug = true;
+  }
+
   // Load Repl data
   const repl = await getReplByURL(window.location.pathname);
   const replId = repl.data.repl.id;
