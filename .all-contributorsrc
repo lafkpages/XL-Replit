@@ -39,6 +39,16 @@
         "data",
         "ideas"
       ]
+    },
+    {
+      "login": "ErikoXDev",
+      "name": "Erik Ga.",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54033728?v=4",
+      "profile": "https://eriko.dev",
+      "contributions": [
+        "ideas",
+        "data"
+      ]
     }
   ],
   "contributorsPerLine": 7,
