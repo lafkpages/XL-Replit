@@ -528,6 +528,9 @@ document.addEventListener('click', (e) => {
     setFlag('flag-iframe-extensions', true);
     setFlag('flag-user-extensions', true);
   }
+  if (settings['ssh-tool']) {
+    setFlag('flag-series-of-tubes', true);
+  }
   next.router.back();
 })().then(() => {
   console.debug('[XL] Set flags');
