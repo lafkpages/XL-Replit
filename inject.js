@@ -518,6 +518,9 @@ document.addEventListener('click', (e) => {
   if (settings['old-cover-page']) {
     setFlag('flag-new-cover-page', false);
   }
+  if (settings['nix-modules-tool']) {
+    setFlag('flag-nix-modules-tool', true);
+  }
   next.router.back();
 })().then(() => {
   console.debug('[XL] Set flags');
