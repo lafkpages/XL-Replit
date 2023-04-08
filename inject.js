@@ -336,7 +336,9 @@ async function replsPathFunction() {
       console.log('[XL] Injecting read-only invite option');
       inviteForm = document.querySelector('form');
       inviteFormInp = inviteForm.querySelector('input');
-      inviteFormBtn = inviteForm.querySelector('div:has(button[type=submit])');
+      inviteFormBtn = inviteForm.querySelector(
+        'div > button[type=submit]'
+      ).parentElement;
       inviteFormCloseBtn = document.querySelector(
         'div[class*=Modal] div[class*=Modal] div.close-control button'
       );
