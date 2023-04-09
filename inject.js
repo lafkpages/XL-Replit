@@ -217,6 +217,8 @@ function injectCustomTips(replId, isTheme = false) {
       }
     );
   });
+
+  return true;
 }
 
 async function profilesPathFunction() {
