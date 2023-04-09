@@ -537,9 +537,11 @@ function main() {
 }
 
 window.addEventListener('load', (e) => {
+  console.debug('[XL] Load fired');
   main();
 });
 window.addEventListener('locationchange', (e) => {
+  console.debug('[XL] LocationChange fired');
   main();
 });
 
