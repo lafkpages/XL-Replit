@@ -89,10 +89,14 @@ async function getReadOnlyReplByURL(url) {
   });
 }
 
-async function tipCycles(amount, replId) {
+async function tipCycles(amount, id, isTheme = false) {
   return await graphQl('tipCycles', {
     amount,
-    replId,
+    ...(isTheme
+      ? {
+          themeId: id,
+        }
+      : { replId: id }),
   });
 }
 
@@ -118,6 +122,101 @@ function getFlag(flag) {
 
 function setFlag(flag, value) {
   getFlag(flag).value = value;
+}
+
+function injectCustomTips(replId, isTheme = false) {
+  const tipsCont = document.querySelector('div#tips');
+
+  // If Repl can't be tipped
+  if (!tipsCont) {
+    return false;
+  }
+
+  const tipButtonsCont = tipsCont.querySelector(
+    'div > div:nth-child(3)'
+  ).parentElement;
+
+  // Add classes for CSS
+  tipButtonsCont.classList.add('xl-replit-tip-buttons-cont');
+  tipButtonsCont.parentElement.children[1].classList.add(
+    'xl-replit-tip-data-cont'
+  );
+
+  // Add custom tip button
+  const customTipBtn = document.createElement('button');
+  const customTipBtnEmoji = document.createElement('span');
+  const customTipBtnText = document.createElement('span');
+  customTipBtnEmoji.textContent = '\u{1F300}';
+  customTipBtnText.textContent = 'Custom';
+  customTipBtn.id = 'xl-replit-custom-tip-btn';
+  customTipBtn.appendChild(customTipBtnEmoji);
+  customTipBtn.appendChild(customTipBtnText);
+  tipButtonsCont.appendChild(customTipBtn);
+
+  // Add custom tip popup
+  const customTipPopupCont = document.createElement('div');
+  const customTipPopup = document.createElement('form');
+  const customTipPopupTitle = document.createElement('h2');
+  const customTipPopupInp = document.createElement('input');
+  const customTipPopupBtnsCont = document.createElement('div');
+  const customTipPopupCancel = document.createElement('button');
+  const customTipPopupSubmit = document.createElement('button');
+  customTipPopupCont.id = 'xl-replit-custom-tip-popup-cont';
+  customTipPopup.id = 'xl-replit-custom-tip-popup';
+  customTipPopupTitle.textContent = 'Custom Tip';
+  customTipPopupInp.placeholder = 'Amount of cycles...';
+  customTipPopupInp.type = 'number';
+  customTipPopupInp.min = 10;
+  customTipPopupInp.value = 10;
+  customTipPopupInp.required = true;
+  customTipPopupCancel.textContent = 'Cancel';
+  customTipPopupCancel.type = 'button';
+  customTipPopupSubmit.textContent = 'Tip!';
+  customTipPopupSubmit.className = 'primary';
+  customTipPopupSubmit.type = 'submit';
+  customTipPopupBtnsCont.appendChild(customTipPopupCancel);
+  customTipPopupBtnsCont.appendChild(customTipPopupSubmit);
+  customTipPopup.appendChild(customTipPopupTitle);
+  customTipPopup.appendChild(customTipPopupInp);
+  customTipPopup.appendChild(customTipPopupBtnsCont);
+  customTipPopupCont.appendChild(customTipPopup);
+  document.body.appendChild(customTipPopupCont);
+
+  // When custom tip is clicked
+  customTipBtn.addEventListener('click', (e) => {
+    // Show custom tip popup
+    customTipPopupCont.classList.add('show');
+  });
+
+  // When cancel button is clicked
+  customTipPopupCancel.addEventListener('click', (e) => {
+    // Close the popup
+    customTipPopupCont.classList.remove('show');
+  });
+
+  // When the tip button is clicked
+  customTipPopup.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Disable buttons
+    customTipPopupCancel.disabled = true;
+    customTipPopupSubmit.disabled = true;
+
+    // Send tip
+    tipCycles(customTipPopupInp.valueAsNumber, replId, isTheme).then(
+      (result) => {
+        // Enable buttons
+        customTipPopupCancel.disabled = false;
+        customTipPopupSubmit.disabled = false;
+
+        // Hide popup
+        customTipPopupCont.classList.remove('show');
+
+        // Reload to update tip data
+        next.router.reload();
+      }
+    );
+  });
 }
 
 async function profilesPathFunction() {
@@ -396,95 +495,22 @@ async function replSpotlightPathFunction() {
   const repl = (await getReadOnlyReplByURL(m[0])).data.repl;
   replSlug = repl.slug;
 
-  const tipsCont = document.querySelector('div#tips');
+  injectCustomTips(repl.id);
+}
 
-  // If Repl can't be tipped
-  if (!tipsCont) {
-    return;
+async function themePathFunction() {
+  const themeId = next.router.state.query.themeId;
+
+  // Prevent this from running twice
+  const xlReplitPage = `theme/${themeId}`;
+  if (document.body.dataset.xlReplitPage == xlReplitPage) {
+    return console.log(
+      '[XL] XL Replit theme already ran on this Repl, ignoring call'
+    );
   }
+  document.body.dataset.xlReplitPage = xlReplitPage;
 
-  const tipButtonsCont = tipsCont.querySelector(
-    'div > div:nth-child(3)'
-  ).parentElement;
-
-  // Add classes for CSS
-  tipButtonsCont.classList.add('xl-replit-tip-buttons-cont');
-  tipButtonsCont.parentElement.children[1].classList.add(
-    'xl-replit-tip-data-cont'
-  );
-
-  // Add custom tip button
-  const customTipBtn = document.createElement('button');
-  const customTipBtnEmoji = document.createElement('span');
-  const customTipBtnText = document.createElement('span');
-  customTipBtnEmoji.textContent = '\u{1F300}';
-  customTipBtnText.textContent = 'Custom';
-  customTipBtn.id = 'xl-replit-custom-tip-btn';
-  customTipBtn.appendChild(customTipBtnEmoji);
-  customTipBtn.appendChild(customTipBtnText);
-  tipButtonsCont.appendChild(customTipBtn);
-
-  // Add custom tip popup
-  const customTipPopupCont = document.createElement('div');
-  const customTipPopup = document.createElement('form');
-  const customTipPopupTitle = document.createElement('h2');
-  const customTipPopupInp = document.createElement('input');
-  const customTipPopupBtnsCont = document.createElement('div');
-  const customTipPopupCancel = document.createElement('button');
-  const customTipPopupSubmit = document.createElement('button');
-  customTipPopupCont.id = 'xl-replit-custom-tip-popup-cont';
-  customTipPopup.id = 'xl-replit-custom-tip-popup';
-  customTipPopupTitle.textContent = 'Custom Tip';
-  customTipPopupInp.placeholder = 'Amount of cycles...';
-  customTipPopupInp.type = 'number';
-  customTipPopupInp.min = 10;
-  customTipPopupInp.value = 10;
-  customTipPopupInp.required = true;
-  customTipPopupCancel.textContent = 'Cancel';
-  customTipPopupCancel.type = 'button';
-  customTipPopupSubmit.textContent = 'Tip!';
-  customTipPopupSubmit.className = 'primary';
-  customTipPopupSubmit.type = 'submit';
-  customTipPopupBtnsCont.appendChild(customTipPopupCancel);
-  customTipPopupBtnsCont.appendChild(customTipPopupSubmit);
-  customTipPopup.appendChild(customTipPopupTitle);
-  customTipPopup.appendChild(customTipPopupInp);
-  customTipPopup.appendChild(customTipPopupBtnsCont);
-  customTipPopupCont.appendChild(customTipPopup);
-  document.body.appendChild(customTipPopupCont);
-
-  // When custom tip is clicked
-  customTipBtn.addEventListener('click', (e) => {
-    // Show custom tip popup
-    customTipPopupCont.classList.add('show');
-  });
-
-  // When cancel button is clicked
-  customTipPopupCancel.addEventListener('click', (e) => {
-    // Close the popup
-    customTipPopupCont.classList.remove('show');
-  });
-
-  // When the tip button is clicked
-  customTipPopup.addEventListener('submit', (e) => {
-    // Disable buttons
-    customTipPopupCancel.disabled = true;
-    customTipPopupSubmit.disabled = true;
-
-    // Send tip
-    tipCycles(customTipPopupInp.valueAsNumber, repl.id).then((result) => {
-      // Enable buttons
-      customTipPopupCancel.disabled = false;
-      customTipPopupSubmit.disabled = false;
-
-      // Hide popup
-      customTipPopupCont.classList.remove('show');
-
-      // Reload to update tip data
-      window.location.search = '?v=1';
-      window.location.reload();
-    });
-  });
+  injectCustomTips(themeId, true);
 }
 
 function main() {
@@ -502,6 +528,9 @@ function main() {
 
     case '/replView':
       return replSpotlightPathFunction();
+
+    case '/themes/theme':
+      return themePathFunction();
   }
 }
 
