@@ -524,7 +524,7 @@ function main() {
 
   console.debug('[XL] Running main');
 
-  switch (next.router.state.route) {
+  switch (typeof next == 'undefined' ? null : next.router.state.route) {
     case '/profile':
       return profilesPathFunction();
 
