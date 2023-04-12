@@ -15,6 +15,9 @@ const replUrlRegex = /^\/@(.+?)\/(.+)$/;
 // URL consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
+// URLs that don't use Next.js
+const noNextUrls = /^\/(graphql|is_authenticated)$/;
+
 const setFlagsHash = 'xl-set-flags';
 
 // Fire URL change events
@@ -554,6 +557,11 @@ document.addEventListener('click', (e) => {
 
 // Modify flags
 (async () => {
+  // If no Next, ignore
+  if (noNextUrls.test(window.location.pathname)) {
+    return;
+  }
+
   // Wait for Next to load
   while (typeof next == 'undefined') {}
 
