@@ -35,6 +35,14 @@ input[data-valid='false'] {
   border-color: red;
 }
 
+div#settings {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
 div#settings > div > * {
   vertical-align: middle;
 }
