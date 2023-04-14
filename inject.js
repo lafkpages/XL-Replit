@@ -130,14 +130,13 @@ function setFlag(flag, value) {
 function injectCustomTips(replId, isTheme = false) {
   const tipsCont = document.querySelector('div#tips');
 
+  const tipButtonsCont =
+    tipsCont?.querySelector('div > div:nth-child(3)')?.parentElement || null;
+
   // If Repl can't be tipped
-  if (!tipsCont) {
+  if (!tipsCont || !tipButtonsCont) {
     return false;
   }
-
-  const tipButtonsCont = tipsCont.querySelector(
-    'div > div:nth-child(3)'
-  ).parentElement;
 
   // Add classes for CSS
   tipButtonsCont.classList.add('xl-replit-tip-buttons-cont');
