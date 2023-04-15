@@ -499,7 +499,7 @@ async function replSpotlightPathFunction() {
   const repl = (await getReadOnlyReplByURL(m[0])).data.repl;
   replSlug = repl.slug;
 
-  injectCustomTips(repl.id);
+  const didInjectCustomTips = injectCustomTips(repl.id);
 }
 
 async function themePathFunction() {
