@@ -575,9 +575,12 @@ document.addEventListener('click', (e) => {
   if (settings['extensions-beta']) {
     setFlag('flag-extensions', true);
     setFlag('flag-extension-creator', true);
-    setFlag('flag-extension-devtools', true);
     setFlag('flag-iframe-extensions', true);
     setFlag('flag-user-extensions', true);
+
+    // Note that this no longer works. To use
+    // extension DevTools, use the .replit file
+    setFlag('flag-extension-devtools', true);
   }
   if (settings['ssh-tool']) {
     setFlag('flag-series-of-tubes', true);
