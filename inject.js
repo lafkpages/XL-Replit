@@ -549,7 +549,7 @@ window.addEventListener('locationchange', (e) => {
 
 // When item is clicked
 document.addEventListener('click', (e) => {
-  if (e.target.matches('.xl-replit-profile-item-copy')) {
+  if (e.target.classList.contains('xl-replit-profile-item-copy')) {
     navigator.clipboard.writeText(e.target.dataset.value);
   }
 });
