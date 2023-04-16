@@ -189,3 +189,11 @@ div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button {
 div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button.primary {
   background: var(--accent-primary-dimmer);
 }
+
+#xl-replit-account-switcher {
+  display: flex;
+  align-items: center;
+  padding: var(--space-6) var(--space-8);
+  color: var(--foreground-default);
+  border: 1px solid transparent;
+}

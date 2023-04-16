@@ -564,7 +564,19 @@ document.addEventListener('click', (e) => {
       return;
     }
 
-    console.debug('Clicked on user dropdown', dropdown);
+    const firstDropdownItem = dropdown.children[0];
+    const firstDropdownItemStyles = getComputedStyle(firstDropdownItem);
+
+    // Inject account switcher
+    const accountSwitcherCont = document.createElement('a');
+    accountSwitcherCont.id = 'xl-replit-account-switcher';
+    accountSwitcherCont.className = firstDropdownItem.className;
+    accountSwitcherCont.style.fontSize = firstDropdownItemStyles.fontSize;
+    const accountSwitcherLabel = document.createElement('div');
+    accountSwitcherLabel.className = 'label';
+    accountSwitcherLabel.textContent = 'Switch account';
+    accountSwitcherCont.appendChild(accountSwitcherLabel);
+    dropdown.appendChild(accountSwitcherCont);
   }
 });
 
