@@ -278,8 +278,13 @@ function injectAccountSwitcher() {
       accountOpt.value = account;
       accountSwitcherBtn.appendChild(accountOpt);
     }
+    const accountSwitcherArrow = themeSwitcherBtnCont
+      .querySelector('svg:nth-of-type(2)')
+      .cloneNode(true);
+    accountSwitcherArrow.id = 'xl-replit-account-switcher-arrow';
     accountSwitcherBtnCont.appendChild(accountSwitcherIcon);
     accountSwitcherBtnCont.appendChild(accountSwitcherBtn);
+    accountSwitcherBtnCont.appendChild(accountSwitcherArrow);
     accountSwitcherCont.appendChild(accountSwitcherBtnCont);
     themeSwitcherCont.insertBefore(
       accountSwitcherCont,

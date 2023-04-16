@@ -201,10 +201,18 @@ div#xl-replit-account-switcher-cont {
   pointer-events: none;
 }
 
+#xl-replit-account-switcher-arrow {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  pointer-events: none;
+}
+
 select#xl-replit-account-switcher {
+  appearance: none;
   line-height: var(--lineHeight);
   font-size: var(--fontSize);
   font-family: var(--font-family-default);
-  padding-left: 30px;
+  padding-left: 32px;
   padding-right: 8px;
 }
