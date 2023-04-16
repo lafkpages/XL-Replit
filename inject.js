@@ -316,6 +316,11 @@ async function profilesPathFunction() {
       })()
     : null;
 
+  // Make sure user didn't navigate elsewhere while loading data
+  if (next.router.state.route != '/profile') {
+    return;
+  }
+
   // Delete old injections
   document
     .querySelectorAll('#xl-replit-profile')
