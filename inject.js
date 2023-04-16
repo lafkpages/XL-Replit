@@ -253,6 +253,10 @@ function injectAccountSwitcher() {
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
   )?.parentElement;
   if (themeSwitcherCont) {
+    // Accounts that can be switched to
+    const accounts = ['amasad', 'ae0'];
+
+    // Build account switcher
     const themeSwitcher = themeSwitcherCont.children[0];
     const themeSwitcherBtnCont = themeSwitcher.children[0];
     const themeSwitcherBtn = themeSwitcherBtnCont.querySelector('button');
@@ -261,10 +265,20 @@ function injectAccountSwitcher() {
     accountSwitcherCont.id = 'xl-replit-account-switcher-cont';
     const accountSwitcherBtnCont = document.createElement('div');
     accountSwitcherBtnCont.className = themeSwitcherBtnCont.className;
-    const accountSwitcherBtn = document.createElement('button');
+    const accountSwitcherIcon = document
+      .querySelector('ul li a[href^="/teams"] svg')
+      .cloneNode(true);
+    accountSwitcherIcon.id = 'xl-replit-account-switcher-icon';
+    const accountSwitcherBtn = document.createElement('select');
     accountSwitcherBtn.className = themeSwitcherBtn.className;
     accountSwitcherBtn.id = 'xl-replit-account-switcher';
-    accountSwitcherBtn.textContent = 'Acc switcher';
+    for (const account of accounts) {
+      const accountOpt = document.createElement('option');
+      accountOpt.textContent = account;
+      accountOpt.value = account;
+      accountSwitcherBtn.appendChild(accountOpt);
+    }
+    accountSwitcherBtnCont.appendChild(accountSwitcherIcon);
     accountSwitcherBtnCont.appendChild(accountSwitcherBtn);
     accountSwitcherCont.appendChild(accountSwitcherBtnCont);
     themeSwitcherCont.insertBefore(

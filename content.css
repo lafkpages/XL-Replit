@@ -189,3 +189,22 @@ div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button {
 div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button.primary {
   background: var(--accent-primary-dimmer);
 }
+
+div#xl-replit-account-switcher-cont {
+  position: relative;
+}
+
+#xl-replit-account-switcher-icon {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  pointer-events: none;
+}
+
+select#xl-replit-account-switcher {
+  line-height: var(--lineHeight);
+  font-size: var(--fontSize);
+  font-family: var(--font-family-default);
+  padding-left: 30px;
+  padding-right: 8px;
+}
