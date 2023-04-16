@@ -131,16 +131,20 @@ function getXlFlagsElm() {
   return document.querySelector('div#__next > div') || document.body;
 }
 
+function xlFlagToDataset(flag) {
+  return `xlReplit${flag[0].toUpperCase()}${flag.substring(1)}`;
+}
+
 function getXlFlag(flag) {
-  return getXlFlagsElm().dataset[flag];
+  return getXlFlagsElm().dataset[xlFlagToDataset(flag)];
 }
 
 function setXlFlag(flag, value) {
-  getXlFlagsElm().dataset[flag] = value;
+  getXlFlagsElm().dataset[xlFlagToDataset(flag)] = value;
 }
 
 function deleteXlFlag(flag) {
-  delete getXlFlagsElm().dataset[flag];
+  delete getXlFlagsElm().dataset[xlFlagToDataset(flag)];
 }
 
 function injectCustomTips(replId, isTheme = false) {
@@ -240,11 +244,11 @@ function injectCustomTips(replId, isTheme = false) {
 }
 
 function injectAccountSwitcher() {
-  if (getXlFlag('xlReplitAccountSwitcher')) {
+  if (getXlFlag('accountSwitcher')) {
     return true;
   }
 
-  setXlFlag('xlReplitAccountSwitcher', '1');
+  setXlFlag('accountSwitcher', '1');
   const themeSwitcherCont = document.querySelector(
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
   )?.parentElement;
@@ -269,7 +273,7 @@ function injectAccountSwitcher() {
     );
     return true;
   } else {
-    deleteXlFlag('xlReplitAccountSwitcher');
+    deleteXlFlag('accountSwitcher');
     return false;
   }
 }
@@ -279,12 +283,12 @@ async function profilesPathFunction() {
 
   // Prevent this from running twice
   const xlReplitPage = `profiles/${profileUsername}`;
-  if (getXlFlag('xlReplitPage') == xlReplitPage) {
+  if (getXlFlag('page') == xlReplitPage) {
     return console.log(
       '[XL] XL Replit Profiles are already setup for this profile, ignoring call'
     );
   }
-  setXlFlag('xlReplitPage', xlReplitPage);
+  setXlFlag('page', xlReplitPage);
 
   console.log('[XL] Loading XL Replit profile for user', profileUsername);
 
@@ -453,12 +457,12 @@ async function replsPathFunction() {
 
   // Prevent this from running twice
   const xlReplitPage = `repls/${replSlug}`;
-  if (getXlFlag('xlReplitPage') == xlReplitPage) {
+  if (getXlFlag('page') == xlReplitPage) {
     return console.log(
       '[XL] XL Replit Repl already ran on this Repl, ignoring call'
     );
   }
-  setXlFlag('xlReplitPage', xlReplitPage);
+  setXlFlag('page', xlReplitPage);
   console.log('[XL] Loading XL Replit data for Repl', replSlug);
 
   // Enable debug
@@ -539,12 +543,12 @@ async function replSpotlightPathFunction() {
 
   // Prevent this from running twice
   const xlReplitPage = `replSpotlight/${replSlug}`;
-  if (getXlFlag('xlReplitPage') == xlReplitPage) {
+  if (getXlFlag('page') == xlReplitPage) {
     return console.log(
       '[XL] XL Replit Repl Spotlight already ran on this Repl, ignoring call'
     );
   }
-  setXlFlag('xlReplitPage', xlReplitPage);
+  setXlFlag('page', xlReplitPage);
 
   // Load read-only Repl data
   const repl = (await getReadOnlyReplByURL(m[0])).data.repl;
@@ -558,12 +562,12 @@ async function themePathFunction() {
 
   // Prevent this from running twice
   const xlReplitPage = `theme/${themeId}`;
-  if (getXlFlag('xlReplitPage') == xlReplitPage) {
+  if (getXlFlag('page') == xlReplitPage) {
     return console.log(
       '[XL] XL Replit theme already ran on this Repl, ignoring call'
     );
   }
-  setXlFlag('xlReplitPage', xlReplitPage);
+  setXlFlag('page', xlReplitPage);
 
   injectCustomTips(themeId, true);
 }
