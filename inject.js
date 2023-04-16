@@ -644,6 +644,25 @@ document.addEventListener('click', (e) => {
     setFlag('flag-series-of-tubes', true);
   }
   next.router.back();
+
+  // Listen for location changes
+  // TODO: handle client-side router onLoad
+  // const nextRouterPush = next.router.push;
+  next.router.push = function () {
+    console.debug(
+      '[XL] Intercepted Next Router push:',
+      this.state,
+      ...arguments
+    );
+
+    // const val = nextRouterPush.bind(this)(...arguments);
+
+    // main();
+
+    // return val;
+
+    window.location.assign(arguments[1]);
+  };
 })().then(() => {
   console.debug('[XL] Set flags');
 });
