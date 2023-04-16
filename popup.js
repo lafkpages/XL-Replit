@@ -6,6 +6,11 @@ const settingsCont = document.getElementById('settings');
 let userId = null;
 let settings = {
   'old-cover-page': false,
+  'nix-modules-tool': false,
+  'extensions-beta': false,
+  'ssh-tool': false,
+  'auto-debug': false,
+  'force-ssr': false,
 };
 
 // URL consts
