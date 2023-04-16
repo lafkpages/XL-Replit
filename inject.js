@@ -551,6 +551,20 @@ window.addEventListener('locationchange', (e) => {
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('xl-replit-profile-item-copy')) {
     navigator.clipboard.writeText(e.target.dataset.value);
+  } else if (
+    e.target.matches(
+      '[data-cy="avatar-dropdown-button"], [data-cy="avatar-dropdown-button"] *'
+    )
+  ) {
+    const dropdown = document.querySelector(
+      'div > a[href^="/logout"]'
+    )?.parentElement;
+
+    if (!dropdown) {
+      return;
+    }
+
+    console.debug('Clicked on user dropdown', dropdown);
   }
 });
 
