@@ -551,32 +551,6 @@ window.addEventListener('locationchange', (e) => {
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('xl-replit-profile-item-copy')) {
     navigator.clipboard.writeText(e.target.dataset.value);
-  } else if (
-    e.target.matches(
-      '[data-cy="avatar-dropdown-button"], [data-cy="avatar-dropdown-button"] *'
-    )
-  ) {
-    const dropdown = document.querySelector(
-      'div > a[data-cy="avatar-dropdown-account-link"]'
-    )?.parentElement;
-
-    if (!dropdown) {
-      return;
-    }
-
-    const firstDropdownItem = dropdown.children[0];
-    const firstDropdownItemStyles = getComputedStyle(firstDropdownItem);
-
-    // Inject account switcher
-    const accountSwitcherCont = document.createElement('a');
-    accountSwitcherCont.id = 'xl-replit-account-switcher';
-    accountSwitcherCont.className = firstDropdownItem.className;
-    accountSwitcherCont.style.fontSize = firstDropdownItemStyles.fontSize;
-    const accountSwitcherLabel = document.createElement('div');
-    accountSwitcherLabel.className = 'label';
-    accountSwitcherLabel.textContent = 'Switch account';
-    accountSwitcherCont.appendChild(accountSwitcherLabel);
-    dropdown.appendChild(accountSwitcherCont);
   }
 });
 
