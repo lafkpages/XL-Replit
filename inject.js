@@ -523,6 +523,34 @@ function main() {
 
   console.debug('[XL] Running main');
 
+  // Inject account switcher
+  if (!document.body.dataset.xlReplitAccountSwitcher) {
+    document.body.dataset.xlReplitAccountSwitcher = '1';
+    const themeSwitcherCont = document.querySelector(
+      'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
+    )?.parentElement;
+    if (themeSwitcherCont) {
+      const themeSwitcher = themeSwitcherCont.children[0];
+      const themeSwitcherBtnCont = themeSwitcher.children[0];
+      const themeSwitcherBtn = themeSwitcherBtnCont.querySelector('button');
+      const accountSwitcherCont = document.createElement('div');
+      accountSwitcherCont.className = themeSwitcher.className;
+      accountSwitcherCont.id = 'xl-replit-account-switcher-cont';
+      const accountSwitcherBtnCont = document.createElement('div');
+      accountSwitcherBtnCont.className = themeSwitcherBtnCont.className;
+      const accountSwitcherBtn = document.createElement('button');
+      accountSwitcherBtn.className = themeSwitcherBtn.className;
+      accountSwitcherBtn.id = 'xl-replit-account-switcher';
+      accountSwitcherBtn.textContent = 'Acc switcher';
+      accountSwitcherBtnCont.appendChild(accountSwitcherBtn);
+      accountSwitcherCont.appendChild(accountSwitcherBtnCont);
+      themeSwitcherCont.insertBefore(
+        accountSwitcherCont,
+        themeSwitcher.nextSibling
+      );
+    }
+  }
+
   switch (typeof next == 'undefined' ? null : next.router.state.route) {
     case '/profile':
       return profilesPathFunction();
