@@ -1,6 +1,7 @@
-const sidInput = document.getElementById('sid-inp');
-const sidButton = document.getElementById('save-sid');
+const sidsCont = document.getElementById('sids');
+const saveSidButton = document.getElementById('save-sid');
 const delButton = document.getElementById('delete-sid');
+const newSidButton = document.getElementById('new-sid');
 const settingsCont = document.getElementById('settings');
 
 let userId = null;
@@ -23,62 +24,87 @@ function parseSid(sid) {
   return sid;
 }
 
-sidButton.addEventListener('click', (e) => {
-  const sid = parseSid(sidInput.value);
+saveSidButton.addEventListener('click', (e) => {
+  const sids = [...sidsCont.children].map((i) => parseSid(i.value));
 
-  // check if the SID is correct
+  // check if the SIDs are correct
   fetch(`${BACKEND}/checkSid`, {
     method: 'POST',
-    body: sid,
+    body: sids.join('\n'),
     headers: {
       'Content-Type': 'text/plain',
     },
-  })
-    .then((r) => r.text())
-    .then((resp) => {
-      const isValid = resp[0] == '1';
+  }).then((resp) => {
+    resp.text().then((results) => {
+      const usernames = resp.headers.get('x-usernames').split(',');
+      console.log('[XL] Got usernames:', usernames);
+      console.log('[XL] SIDs valid:', results);
 
-      console.log('[XL] SID valid:', isValid);
-
-      sidInput.dataset.valid = isValid;
-
-      if (isValid) {
-        chrome.storage.local
-          .set({
-            sid,
-          })
-          .then(() => {
-            console.log('[XL] Saved SID to local CRX storage');
-          });
+      for (let i = 0; i < results.length; i++) {
+        sidsCont.children[i].dataset.valid = results[i];
+        sidsCont.children[i].title = usernames[i];
       }
+
+      chrome.storage.local
+        .set({
+          sid: sids,
+          usernames,
+        })
+        .then(() => {
+          console.log('[XL] Saved SIDs and usernames to local CRX storage');
+        });
     });
+  });
 });
 
-delButton.addEventListener('click', (e) => {
-  chrome.storage.local
-    .set({
-      sid: '',
-    })
-    .then(() => {
-      console.log('[XL] Deleted SID from CRX storage');
-      window.location.reload();
-    });
+// delButton.addEventListener('click', (e) => {
+//   chrome.storage.local
+//     .set({
+//       sid: '',
+//     })
+//     .then(() => {
+//       console.log('[XL] Deleted SID from CRX storage');
+//       window.location.reload();
+//     });
+// });
+
+newSidButton.addEventListener('click', (e) => {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = 'Enter your SID here...';
+  sidsCont.appendChild(inp);
 });
 
 // get stored user ID, SID and settings
 chrome.storage.local
   .get(['userId', 'sid', 'settings'])
-  .then(({ userId: storedUserId, sid, settings: storedSettings }) => {
+  .then(({ userId: storedUserId, sid: sids, settings: storedSettings }) => {
     if (storedUserId) {
-      sidInput.disabled = false;
-      sidButton.disabled = false;
+      // sidInput.disabled = false;
+      saveSidButton.disabled = false;
       userId = storedUserId;
       console.debug('[XL] Got user ID from storage:', userId);
     }
 
-    if (sid) {
-      console.debug('[XL] Got SID from storage');
-      sidInput.value = sid;
+    if (sids) {
+      if (typeof sids == 'string') {
+        sids = [sids];
+      }
+
+      console.debug('[XL] Got SIDs from storage');
+
+      for (let i = 0; i < sids.length; i++) {
+        let inp = sidsCont.children[i];
+
+        if (!inp) {
+          inp = document.createElement('input');
+          inp.type = 'text';
+          inp.placeholder = 'Enter your SID here...';
+          sidsCont.appendChild(inp);
+        }
+
+        inp.value = sids[i];
+      }
     }
 
     if (storedSettings) {

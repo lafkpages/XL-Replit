@@ -31,11 +31,11 @@ input[data-valid] {
   border-width: 2px;
 }
 
-input[data-valid='true'] {
+input[data-valid='1'] {
   border-color: green;
 }
 
-input[data-valid='false'] {
+input[data-valid='0'] {
   border-color: red;
 }
 

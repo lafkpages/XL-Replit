@@ -2,13 +2,22 @@ console.debug('[XL] Inject script loaded');
 const rawSid = document.currentScript.dataset.sid;
 delete document.currentScript.dataset.sid;
 
+const activeSid = parseInt(document.currentScript.dataset.activeSid);
+delete document.currentScript.dataset.activeSid;
+
 const rawSettings = document.currentScript.dataset.settings;
 const settings = rawSettings ? JSON.parse(rawSettings) : {};
+delete document.currentScript.dataset.settings;
 
 const hasSid = rawSid[0] == '1';
 const sid = hasSid ? rawSid.substring(1) : null;
 
-console.debug('[XL] Got SID:', hasSid);
+const usernames = document.currentScript.dataset.usernames
+  .split(',')
+  .filter((u) => !!u);
+delete document.currentScript.dataset.usernames;
+
+console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
 const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 
@@ -16,7 +25,7 @@ const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 // URLs that don't use Next.js
-const noNextUrls = /^\/(graphql|is_authenticated)$/;
+const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
 
 const setFlagsHash = 'xl-set-flags';
 
@@ -253,9 +262,6 @@ function injectAccountSwitcher() {
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
   )?.parentElement;
   if (themeSwitcherCont) {
-    // Accounts that can be switched to
-    const accounts = ['amasad', 'ae0'];
-
     // Build account switcher
     const themeSwitcher = themeSwitcherCont.children[0];
     const themeSwitcherBtnCont = themeSwitcher.children[0];
@@ -272,10 +278,11 @@ function injectAccountSwitcher() {
     const accountSwitcherBtn = document.createElement('select');
     accountSwitcherBtn.className = themeSwitcherBtn.className;
     accountSwitcherBtn.id = 'xl-replit-account-switcher';
-    for (const account of accounts) {
+    for (let i = 0; i < usernames.length; i++) {
       const accountOpt = document.createElement('option');
-      accountOpt.textContent = account;
-      accountOpt.value = account;
+      accountOpt.textContent = usernames[i];
+      accountOpt.value = i;
+      accountOpt.selected = i == activeSid;
       accountSwitcherBtn.appendChild(accountOpt);
     }
     const accountSwitcherArrow = themeSwitcherBtnCont
@@ -290,6 +297,13 @@ function injectAccountSwitcher() {
       accountSwitcherCont,
       themeSwitcher.nextSibling
     );
+    accountSwitcherBtn.addEventListener('input', () => {
+      window.dispatchEvent(
+        new CustomEvent('xl-replit-change-active-sid', {
+          detail: parseInt(accountSwitcherBtn.value),
+        })
+      );
+    });
     return true;
   } else {
     deleteXlFlag('accountSwitcher');
@@ -639,7 +653,8 @@ document.addEventListener('click', (e) => {
 // Modify flags
 (async () => {
   // If no Next, ignore
-  if (noNextUrls.test(window.location.pathname)) {
+  if (noNextUrls.test(window.location.pathname + window.location.search)) {
+    console.debug("[XL] This page doesn't use Next");
     return;
   }
 

@@ -9,15 +9,27 @@
     "192": "favicon.png",
     "128": "favicon128.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "cookies"],
+  "host_permissions": [
+    "https://replit.com/*",
+    "https://firewalledreplit.com/*",
+    "https://staging.replit.com/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["https://replit.com/*", "https://firewalledreplit.com/*", "https://staging.replit.com/*"],
+      "matches": [
+        "https://replit.com/*",
+        "https://firewalledreplit.com/*",
+        "https://staging.replit.com/*"
+      ],
       "css": ["content.css"],
       "js": ["content.js"],
       "run_at": "document_start"
     }
   ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
   "web_accessible_resources": [
     {
       "resources": [

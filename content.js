@@ -1,13 +1,21 @@
 document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');
-  chrome.storage.local.get(['sid', 'settings']).then(({ sid, settings }) => {
-    const s = document.createElement('script');
-    s.src = chrome.runtime.getURL('inject.js');
-    s.dataset.sid = sid ? `1${sid}` : '0,null';
-    s.dataset.settings = settings ? JSON.stringify(settings) : null;
-    document.head.appendChild(s);
-    console.debug('[XL] Injected script');
-  });
+  chrome.storage.local
+    .get(['sid', 'activeSid', 'usernames', 'settings'])
+    .then(({ sid: sids, usernames, activeSid, settings }) => {
+      if (!activeSid) {
+        activeSid = 0;
+      }
+
+      const s = document.createElement('script');
+      s.src = chrome.runtime.getURL('inject.js');
+      s.dataset.sid = sids.length ? `1${sids[activeSid]}` : '0,null';
+      s.dataset.activeSid = activeSid.toString();
+      s.dataset.usernames = usernames?.join(',') || '';
+      s.dataset.settings = settings ? JSON.stringify(settings) : null;
+      document.head.appendChild(s);
+      console.debug('[XL] Injected script');
+    });
 });
 
 window.addEventListener('load', (e) => {
@@ -31,4 +39,26 @@ window.addEventListener('load', (e) => {
         console.debug('[XL] Saved user ID to local CRX storage');
       });
   }
+});
+
+window.addEventListener('xl-replit-change-active-sid', (e) => {
+  console.debug('[XL] Changing active SID to', e.detail);
+  chrome.storage.local.get(['sid']).then(({ sid: sids }) => {
+    chrome.storage.local
+      .set({
+        activeSid: e.detail,
+      })
+      .then(() => {
+        chrome.runtime.sendMessage(
+          {
+            type: 'change-active-sid',
+            value: sids[e.detail],
+          },
+          {},
+          () => {
+            window.location.reload();
+          }
+        );
+      });
+  });
 });

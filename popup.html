@@ -38,17 +38,20 @@
     <p>
       Some features of this extension require using your Replit session to
       perform authenticated actions via Replit's GraphQL. To enable these
-      features, please enter your Replit SID bellow:
+      features, please enter your Replit SID bellow. Note that you can have
+      multiple SIDs for different accounts to use with the account switcher.
     </p>
-    <input
-      type="text"
-      id="sid-inp"
-      placeholder="Enter your SID here..."
-    />
+    <div id="sids">
+      <input
+        type="text"
+        id="sid-inp"
+        placeholder="Enter your SID here..."
+      />
+    </div>
     <div>
       <!-- TODO: fix bug where this always stays disabled. Removed meanwhile -->
       <button id="save-sid">Save</button>
-      <button id="delete-sid">Delete</button>
+      <button id="new-sid">New</button>
     </div>
 
     <h2>Settings</h2>
