@@ -98,6 +98,10 @@ chrome.storage.local
     for (const [key, val] of Object.entries(settings)) {
       const elm = document.querySelector(`#settings input[name="${key}"]`);
 
+      if (!elm) {
+        continue;
+      }
+
       if (elm.type == 'checkbox') {
         elm.checked = val;
       } else {
