@@ -647,7 +647,7 @@ document.addEventListener('click', (e) => {
 
   // Listen for location changes
   // TODO: handle client-side router onLoad
-  // const nextRouterPush = next.router.push;
+  const nextRouterPush = next.router.push;
   next.router.push = function () {
     console.debug(
       '[XL] Intercepted Next Router push:',
@@ -655,13 +655,15 @@ document.addEventListener('click', (e) => {
       ...arguments
     );
 
-    // const val = nextRouterPush.bind(this)(...arguments);
+    if (settings['force-ssr']) {
+      window.location.assign(arguments[1]);
+    } else {
+      const val = nextRouterPush.bind(this)(...arguments);
 
-    // main();
+      main();
 
-    // return val;
-
-    window.location.assign(arguments[1]);
+      return val;
+    }
   };
 })().then(() => {
   console.debug('[XL] Set flags');
