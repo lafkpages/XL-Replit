@@ -107,6 +107,10 @@ chrome.storage.local
       } else {
         elm.value = val;
       }
+
+      if (key == 'show-advanced-settings') {
+        settingsCont.dataset.advanced = +val;
+      }
     }
   });
 
@@ -125,4 +129,8 @@ settingsCont.addEventListener('input', (e) => {
     .then(() => {
       console.log('[XL] Saved settings');
     });
+
+  if (key == 'show-advanced-settings') {
+    settingsCont.dataset.advanced = +val;
+  }
 });

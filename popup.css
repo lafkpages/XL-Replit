@@ -43,6 +43,20 @@ div#settings {
   gap: 5px;
 }
 
+div#settings > div:first-of-type {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+div#settings > div.advanced {
+  display: none;
+}
+
+div#settings[data-advanced="1"] > div.advanced {
+  display: block;
+}
+
 div#settings > div > * {
   vertical-align: middle;
 }
