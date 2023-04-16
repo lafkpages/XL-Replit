@@ -557,7 +557,7 @@ document.addEventListener('click', (e) => {
     )
   ) {
     const dropdown = document.querySelector(
-      'div > a[href^="/logout"]'
+      'div > a[data-cy="avatar-dropdown-account-link"]'
     )?.parentElement;
 
     if (!dropdown) {
