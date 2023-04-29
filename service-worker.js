@@ -11,6 +11,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       })
       .then(() => {
         sendResponse(true);
+      })
+      .catch(() => {
+        sendResponse(false);
       });
   }
 });
