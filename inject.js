@@ -17,6 +17,10 @@ const usernames = document.currentScript.dataset.usernames
   .filter((u) => !!u);
 delete document.currentScript.dataset.usernames;
 
+const username = document
+  .getElementsByClassName('username')[0]
+  .textContent.replace(/^@/, '');
+
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
 const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
@@ -278,9 +282,13 @@ function injectAccountSwitcher() {
     const accountSwitcherBtn = document.createElement('select');
     accountSwitcherBtn.className = themeSwitcherBtn.className;
     accountSwitcherBtn.id = 'xl-replit-account-switcher';
-    for (let i = 0; i < usernames.length; i++) {
+    if (!usernames.length) {
+      accountSwitcherBtn.disabled = true;
+    }
+    const accountSwitcherUsernames = usernames.length ? usernames : [username];
+    for (let i = 0; i < accountSwitcherUsernames.length; i++) {
       const accountOpt = document.createElement('option');
-      accountOpt.textContent = usernames[i];
+      accountOpt.textContent = accountSwitcherUsernames[i];
       accountOpt.value = i;
       accountOpt.selected = i == activeSid;
       accountSwitcherBtn.appendChild(accountOpt);
