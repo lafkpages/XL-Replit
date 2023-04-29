@@ -12,9 +12,21 @@ let settings = {
   'ssh-tool': false,
   'auto-debug': false,
   'force-ssr': false,
+  'account-switcher': false,
+};
+
+// Some settings require optional permissions
+const settingPermissions = {
+  'account-switcher': ['cookies'],
 };
 
 // URL consts
+const REPLIT_ORIGINS = [
+  'https://replit.com',
+  'https://firewalledreplit.com',
+  'https://staging.replit.com',
+];
+const REPLIT_URLS = REPLIT_ORIGINS.map((url) => url + '/*');
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 function parseSid(sid) {
@@ -22,6 +34,27 @@ function parseSid(sid) {
     return decodeURIComponent(sid);
   }
   return sid;
+}
+
+function setSetting(key, val) {
+  return new Promise((resolve, reject) => {
+    settings[key] = val;
+
+    chrome.storage.local
+      .set({
+        settings,
+      })
+      .then(() => {
+        console.log('[XL] Saved settings');
+
+        resolve();
+      })
+      .catch(reject);
+
+    if (key == 'show-advanced-settings') {
+      settingsCont.dataset.advanced = +val;
+    }
+  });
 }
 
 saveSidButton.addEventListener('click', (e) => {
@@ -146,17 +179,18 @@ settingsCont.addEventListener('input', (e) => {
   const key = e.target.name;
   const val = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
 
-  settings[key] = val;
-
-  chrome.storage.local
-    .set({
-      settings,
-    })
-    .then(() => {
-      console.log('[XL] Saved settings');
-    });
-
-  if (key == 'show-advanced-settings') {
-    settingsCont.dataset.advanced = +val;
+  if (key in settingPermissions) {
+    chrome.permissions
+      .request({
+        permissions: settingPermissions[key],
+        origins: REPLIT_URLS,
+      })
+      .then((granted) => {
+        if (granted) {
+          setSetting(key, val);
+        }
+      });
   }
+
+  setSetting(key, val);
 });

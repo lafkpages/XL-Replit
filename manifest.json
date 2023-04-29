@@ -9,7 +9,8 @@
     "192": "favicon.png",
     "128": "favicon128.png"
   },
-  "permissions": ["storage", "cookies"],
+  "permissions": ["storage"],
+  "optional_permissions": ["cookies"],
   "host_permissions": [
     "https://replit.com/*",
     "https://firewalledreplit.com/*",
