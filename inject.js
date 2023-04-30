@@ -17,9 +17,10 @@ const usernames = document.currentScript.dataset.usernames
   .filter((u) => !!u);
 delete document.currentScript.dataset.usernames;
 
-const username = document
-  .getElementsByClassName('username')[0]
-  .textContent.replace(/^@/, '');
+const username =
+  document
+    .getElementsByClassName('username')[0]
+    ?.textContent.replace(/^@/, '') || null;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
