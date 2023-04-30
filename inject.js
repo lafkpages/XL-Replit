@@ -695,6 +695,9 @@ document.addEventListener('click', (e) => {
   if (settings['ssh-tool']) {
     setFlag('flag-series-of-tubes', true);
   }
+  if (settings['disable-github-import']) {
+    setFlag('flag-disable-github-import', true);
+  }
   next.router.back();
 
   // Listen for location changes
