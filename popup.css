@@ -51,6 +51,7 @@ div#settings > div:first-of-type {
   flex-basis: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 div#settings > div.advanced {
