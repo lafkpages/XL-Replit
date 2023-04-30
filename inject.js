@@ -262,6 +262,10 @@ function injectAccountSwitcher() {
     return true;
   }
 
+  if (!settings['account-switcher']) {
+    return false;
+  }
+
   setXlFlag('accountSwitcher', '1');
   const themeSwitcherCont = document.querySelector(
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
