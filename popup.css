@@ -1,6 +1,8 @@
 html {
   width: 500px;
   height: 200px;
+
+  --yellowish: #3f2900;
 }
 
 body {
@@ -56,6 +58,7 @@ div.settings-cont > div:first-of-type {
 
 div.settings-cont > div.advanced {
   display: none;
+  color: var(--yellowish);
 }
 
 div.settings-cont[data-advanced="1"] > div.advanced {
@@ -64,4 +67,8 @@ div.settings-cont[data-advanced="1"] > div.advanced {
 
 div.settings-cont > div > * {
   vertical-align: middle;
+}
+
+div#experiments > div {
+  color: var(--yellowish);
 }
