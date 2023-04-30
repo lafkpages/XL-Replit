@@ -9,13 +9,22 @@
     "192": "favicon.png",
     "128": "favicon128.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "declarativeNetRequest"],
   "optional_permissions": ["cookies"],
   "host_permissions": [
     "https://replit.com/*",
     "https://firewalledreplit.com/*",
     "https://staging.replit.com/*"
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "block_gql",
+        "enabled": false,
+        "path": "net-rules/block_gql.json"
+      }
+    ]
+  },
   "content_scripts": [
     {
       "matches": [

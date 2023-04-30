@@ -51,8 +51,16 @@ function setSetting(key, val) {
       })
       .catch(reject);
 
-    if (key == 'show-advanced-settings') {
-      settingsCont.dataset.advanced = +val;
+    switch (key) {
+      case 'show-advanced-settings': {
+        settingsCont.dataset.advanced = +val;
+      }
+
+      case 'block-graphql': {
+        chrome.declarativeNetRequest.updateEnabledRulesets({
+          [val ? 'enableRulesetIds' : 'disableRulesetIds']: ['block_gql'],
+        });
+      }
     }
   });
 }
@@ -155,7 +163,9 @@ chrome.storage.local
     }
 
     for (const [key, val] of Object.entries(settings)) {
-      const elm = document.querySelector(`#settings input[name="${key}"]`);
+      const elm = document.querySelector(
+        `div.settings-cont input[name="${key}"]`
+      );
 
       if (!elm) {
         continue;
@@ -173,7 +183,11 @@ chrome.storage.local
     }
   });
 
-settingsCont.addEventListener('input', (e) => {
+document.addEventListener('input', (e) => {
+  if (!e.target.matches('div.settings-cont *')) {
+    return;
+  }
+
   console.debug('[XL] Settings changed');
 
   const key = e.target.name;

@@ -58,7 +58,7 @@
 
     <h2>Settings</h2>
     <p>Toggle different features on or off.</p>
-    <div id="settings">
+    <div id="settings" class="settings-cont">
       <div>
         <input type="checkbox" name="show-advanced-settings" id="show-advanced-settings">
         <label for="show-advanced-settings">Show advanced settings</label>
@@ -90,6 +90,15 @@
       <div class="advanced">
         <input type="checkbox" name="force-ssr" id="force-ssr">
         <label for="force-ssr">Force SSR</label>
+      </div>
+    </div>
+
+    <h2>Experiments</h2>
+    <p>Toggle experiments on or off.</p>
+    <div id="experiments" class="settings-cont">
+      <div>
+        <input type="checkbox" name="block-graphql" id="block-graphql">
+        <label for="block-graphql">Block GraphQL</label>
       </div>
     </div>
   </body>

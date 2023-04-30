@@ -39,7 +39,7 @@ input[data-valid='0'] {
   border-color: red;
 }
 
-div#settings {
+div.settings-cont {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -47,21 +47,21 @@ div#settings {
   gap: 5px;
 }
 
-div#settings > div:first-of-type {
+div.settings-cont > div:first-of-type {
   flex-basis: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-div#settings > div.advanced {
+div.settings-cont > div.advanced {
   display: none;
 }
 
-div#settings[data-advanced="1"] > div.advanced {
+div.settings-cont[data-advanced="1"] > div.advanced {
   display: block;
 }
 
-div#settings > div > * {
+div.settings-cont > div > * {
   vertical-align: middle;
 }
