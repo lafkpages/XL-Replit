@@ -18,6 +18,7 @@ let settings = {
   'force-ssr': false,
   'block-graphql': false,
   'disable-github-import': false,
+  'large-cursor': false,
 };
 
 // Some settings require optional permissions

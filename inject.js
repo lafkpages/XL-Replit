@@ -528,6 +528,11 @@ async function replsPathFunction() {
     next.router.state.query.debug = true;
   }
 
+  // Large cursor
+  if (settings['large-cursor']) {
+    setXlFlag('largeCursor', '1');
+  }
+
   // Load Repl data
   const repl = await getReplByURL(window.location.pathname);
   const replId = repl.data.repl.id;
