@@ -425,6 +425,7 @@ function registerMonacoReplitTheme() {
       colors: {
         'editor.foreground': themeValues.values.global.foregroundDefault,
         'editor.background': themeValues.values.global.backgroundDefault,
+        'editor.selectionBackground': `${themeValues.values.global.accentPrimaryDefault}55`,
       },
     });
 
