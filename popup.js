@@ -54,6 +54,7 @@ function setSetting(key, val) {
     switch (key) {
       case 'show-advanced-settings': {
         settingsCont.dataset.advanced = +val;
+        break;
       }
 
       case 'block-graphql': {
@@ -61,6 +62,7 @@ function setSetting(key, val) {
         chrome.declarativeNetRequest.updateEnabledRulesets({
           [val ? 'enableRulesetIds' : 'disableRulesetIds']: ['block_gql'],
         });
+        break;
       }
     }
   });
