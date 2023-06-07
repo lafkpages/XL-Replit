@@ -389,6 +389,10 @@ function getCurrentThemeType() {
     16
   );
 
+  if (typeof backgroundRoot != 'number' || isNaN(backgroundRoot)) {
+    return null;
+  }
+
   const threshold = 0xffffff / 2;
 
   if (backgroundRoot > threshold) {
