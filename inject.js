@@ -352,6 +352,25 @@ function injectAccountSwitcher() {
   }
 }
 
+function injectMonacoEditors() {
+  if (typeof monaco == 'undefined') {
+    throw new Error('Monaco is not defined');
+  }
+
+  const cmEditors = document.getElementsByClassName('cm-editor');
+
+  for (const cmEditor of cmEditors) {
+    // Remove CodeMirror editor
+    cmEditor.textContent = '';
+
+    // Inject Monaco editor
+    const monacoEditor = monaco.editor.create(cmEditor, {
+      value: 'Test monaco editor from XL Replit',
+      language: 'javascript',
+    });
+  }
+}
+
 async function profilesPathFunction() {
   const profileUsername = next.router.state.query.username;
 
