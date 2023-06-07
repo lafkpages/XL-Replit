@@ -7,13 +7,17 @@ const experimentsCont = document.getElementById('experiments-cont');
 
 let userId = null;
 let settings = {
+  'show-advanced-settings': false,
+  'account-switcher': false,
   'old-cover-page': false,
+  'show-experiments': false,
   'nix-modules-tool': false,
   'extensions-beta': false,
   'ssh-tool': false,
   'auto-debug': false,
   'force-ssr': false,
-  'account-switcher': false,
+  'block-graphql': false,
+  'disable-github-import': false,
 };
 
 // Some settings require optional permissions
