@@ -168,6 +168,16 @@ function deleteXlFlag(flag) {
   delete getXlFlagsElm().dataset[xlFlagToDataset(flag)];
 }
 
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
 function injectCustomTips(replId, isTheme = false) {
   const tipsCont = document.querySelector('div#tips');
 
