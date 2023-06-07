@@ -1,22 +1,29 @@
 console.debug('[XL] Inject script loaded');
+
+// Get the selected SID passed from content script
 const rawSid = document.currentScript.dataset.sid;
 delete document.currentScript.dataset.sid;
 
+// Get the index of the active SID
 const activeSid = parseInt(document.currentScript.dataset.activeSid);
 delete document.currentScript.dataset.activeSid;
 
+// Get XL settings
 const rawSettings = document.currentScript.dataset.settings;
 const settings = rawSettings ? JSON.parse(rawSettings) : {};
 delete document.currentScript.dataset.settings;
 
+// Check for SID?
 const hasSid = rawSid[0] == '1';
 const sid = hasSid ? rawSid.substring(1) : null;
 
+// Get usernames (same order as SIDs)
 const usernames = document.currentScript.dataset.usernames
   .split(',')
   .filter((u) => !!u);
 delete document.currentScript.dataset.usernames;
 
+// Current username
 const username =
   document
     .getElementsByClassName('username')[0]
