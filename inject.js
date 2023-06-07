@@ -32,6 +32,7 @@ const TOSDR_SERVICE_ID = 1676;
 const SET_FLAGS_HASH = 'xl-set-flags';
 const MONACO_VERSION = '0.39.0';
 const REPLIT_GOVAL_URL_REGEX = /^wss?:\/\/.+?\/wsv2\/v2\.public\..+?$/;
+const XL_REPLIT_EXTENSION_URL = new URL(document.currentScript.src).origin;
 
 // URLs that don't use Next.js
 const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
@@ -58,6 +59,9 @@ const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
     window.dispatchEvent(new Event('locationchange'));
   });
 })();
+
+// Has loaded RequireJS
+let hasLoadedRequireJS = false;
 
 // Overwrite global WebSocket class
 const _WebSocket = WebSocket;
@@ -866,11 +870,17 @@ async function termsPathFunction() {
   document.querySelector('main .content').prepend(tosdrBadgeLink);
 }
 
-function main() {
+async function main() {
   const path =
     window.location.pathname + window.location.search + window.location.hash;
 
   console.debug('[XL] Running main');
+
+  // Load RequireJS
+  if (!hasLoadedRequireJS) {
+    hasLoadedRequireJS = true;
+    await loadScript(`${XL_REPLIT_EXTENSION_URL}/require.js`);
+  }
 
   // Inject account switcher
   injectAccountSwitcher();
