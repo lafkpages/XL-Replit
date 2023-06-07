@@ -216,3 +216,13 @@ select#xl-replit-account-switcher {
   padding-left: 32px;
   padding-right: 8px;
 }
+
+#xl-tosdr-badge {
+  display: block;
+  margin-bottom: var(--space-24);
+  height: min-content;
+}
+
+#xl-tosdr-badge img {
+  display: block;
+}

@@ -623,6 +623,34 @@ async function themePathFunction() {
   injectCustomTips(themeId, true);
 }
 
+async function termsPathFunction() {
+  // Prevent this from running twice
+  const xlReplitPage = 'terms';
+  if (getXlFlag('page') == xlReplitPage) {
+    return console.log(
+      '[XL] XL Replit Terms of Service already ran, ignoring call'
+    );
+  }
+  setXlFlag('page', xlReplitPage);
+
+  // Inject ToS;DR badge
+  const tosdrServiceId = 1676;
+
+  const tosdrBadgeImg = new Image();
+  tosdrBadgeImg.src = `https://shields.tosdr.org/${tosdrServiceId}.svg`;
+  tosdrBadgeImg.alt = "Terms of Service; Didn't Read";
+  tosdrBadgeImg.title = "Terms of Service; Didn't Read";
+
+  const tosdrBadgeLink = document.createElement('a');
+  tosdrBadgeLink.href = `https://tosdr.org/en/service/${tosdrServiceId}`;
+  tosdrBadgeLink.target = '_blank';
+  tosdrBadgeLink.rel = 'noopener noreferrer';
+  tosdrBadgeLink.id = 'xl-tosdr-badge';
+  tosdrBadgeLink.appendChild(tosdrBadgeImg);
+
+  document.querySelector('main .content').prepend(tosdrBadgeLink);
+}
+
 function main() {
   const path =
     window.location.pathname + window.location.search + window.location.hash;
@@ -644,6 +672,10 @@ function main() {
 
     case '/themes/theme':
       return themePathFunction();
+
+    case '/terms':
+    case '/site/terms':
+      return termsPathFunction();
   }
 }
 
