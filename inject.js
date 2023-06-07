@@ -360,6 +360,11 @@ function injectMonacoEditors() {
   const cmEditors = document.getElementsByClassName('cm-editor');
 
   for (const cmEditor of cmEditors) {
+    // Ignore if already injected
+    if (cmEditor.dataset.xlMonacoInjected) {
+      continue;
+    }
+
     // Remove CodeMirror editor
     cmEditor.textContent = '';
 
@@ -368,6 +373,9 @@ function injectMonacoEditors() {
       value: 'Test monaco editor from XL Replit',
       language: 'javascript',
     });
+
+    // Add attribute to skip this in the future
+    cmEditor.dataset.xlMonacoInjected = '1';
   }
 }
 
