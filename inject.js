@@ -31,6 +31,7 @@ const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 const TOSDR_SERVICE_ID = 1676;
 const SET_FLAGS_HASH = 'xl-set-flags';
 const MONACO_VERSION = '0.39.0';
+const REPLIT_GOVAL_URL_REGEX = /^wss?:\/\/.+?\/wsv2\/v2\.public\..+?$/;
 
 // URLs that don't use Next.js
 const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
@@ -57,6 +58,20 @@ const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
     window.dispatchEvent(new Event('locationchange'));
   });
 })();
+
+// Overwrite global WebSocket class
+const _WebSocket = WebSocket;
+let govalWebSocket = null;
+WebSocket = class WebSocket extends _WebSocket {
+  constructor(url) {
+    if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url)) {
+      console.debug('[XL] Intercepted Replit Goval WebSocket');
+      govalWebSocket = super(...arguments);
+    } else {
+      super(...arguments);
+    }
+  }
+};
 
 async function graphQl(path, variables) {
   const urlParams = new URLSearchParams();
