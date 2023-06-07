@@ -379,6 +379,25 @@ function injectMonacoEditors() {
   }
 }
 
+function getCurrentThemeType() {
+  // TODO: use GraphQL to get theme type
+
+  const backgroundRoot = parseInt(
+    getComputedStyle(document.body)
+      .getPropertyValue('--background-root')
+      .substring(1),
+    16
+  );
+
+  const threshold = 0xffffff / 2;
+
+  if (backgroundRoot > threshold) {
+    return 'light';
+  }
+
+  return 'dark';
+}
+
 async function profilesPathFunction() {
   const profileUsername = next.router.state.query.username;
 
