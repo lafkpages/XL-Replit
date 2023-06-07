@@ -57,6 +57,7 @@ function setSetting(key, val) {
       }
 
       case 'block-graphql': {
+        console.warn('Enabling/disabling GraphQL blocklist:', val);
         chrome.declarativeNetRequest.updateEnabledRulesets({
           [val ? 'enableRulesetIds' : 'disableRulesetIds']: ['block_gql'],
         });
