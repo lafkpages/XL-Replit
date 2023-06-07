@@ -402,6 +402,23 @@ function getCurrentThemeType() {
   return 'dark';
 }
 
+function findApolloState(query) {
+  if (typeof query == 'string') {
+    const origQuery = query;
+    query = (key) => {
+      return key.startsWith(origQuery);
+    };
+  }
+
+  for (const [key, value] of Object.entries(__NEXT_DATA__.props.apolloState)) {
+    if (query(key)) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
 async function profilesPathFunction() {
   const profileUsername = next.router.state.query.username;
 
