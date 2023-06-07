@@ -26,8 +26,9 @@ console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
 const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 
-// URL consts
+// Consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
+const TOSDR_SERVICE_ID = 1676;
 
 // URLs that don't use Next.js
 const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
@@ -634,15 +635,13 @@ async function termsPathFunction() {
   setXlFlag('page', xlReplitPage);
 
   // Inject ToS;DR badge
-  const tosdrServiceId = 1676;
-
   const tosdrBadgeImg = new Image();
-  tosdrBadgeImg.src = `https://shields.tosdr.org/${tosdrServiceId}.svg`;
+  tosdrBadgeImg.src = `https://shields.tosdr.org/${TOSDR_SERVICE_ID}.svg`;
   tosdrBadgeImg.alt = "Terms of Service; Didn't Read";
   tosdrBadgeImg.title = "Terms of Service; Didn't Read";
 
   const tosdrBadgeLink = document.createElement('a');
-  tosdrBadgeLink.href = `https://tosdr.org/en/service/${tosdrServiceId}`;
+  tosdrBadgeLink.href = `https://tosdr.org/en/service/${TOSDR_SERVICE_ID}`;
   tosdrBadgeLink.target = '_blank';
   tosdrBadgeLink.rel = 'noopener noreferrer';
   tosdrBadgeLink.id = 'xl-tosdr-badge';
