@@ -3,6 +3,7 @@ const saveSidButton = document.getElementById('save-sid');
 const delButton = document.getElementById('delete-sid');
 const newSidButton = document.getElementById('new-sid');
 const settingsCont = document.getElementById('settings');
+const experimentsCont = document.getElementById('experiments-cont');
 
 let userId = null;
 let settings = {
@@ -54,6 +55,11 @@ function setSetting(key, val) {
     switch (key) {
       case 'show-advanced-settings': {
         settingsCont.dataset.advanced = +val;
+        break;
+      }
+
+      case 'show-experiments': {
+        experimentsCont.dataset.experiments = +val;
         break;
       }
 

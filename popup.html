@@ -72,6 +72,10 @@
         <label for="old-cover-page">Old cover pages</label>
       </div> -->
       <div class="advanced">
+        <input type="checkbox" name="show-experiments" id="show-experiments">
+        <label for="show-experiments">Show experiments</label>
+      </div>
+      <div class="advanced">
         <input type="checkbox" name="nix-modules-tool" id="nix-modules-tool">
         <label for="nix-modules-tool">Show Nix modules tool</label>
       </div>
@@ -93,16 +97,18 @@
       </div>
     </div>
 
-    <h2>Experiments</h2>
-    <p>Toggle experiments on or off.</p>
-    <div id="experiments" class="settings-cont">
-      <div>
-        <input type="checkbox" name="block-graphql" id="block-graphql">
-        <label for="block-graphql">Block GraphQL</label>
-      </div>
-      <div>
-        <input type="checkbox" name="disable-github-import" id="disable-github-import">
-        <label for="disable-github-import">Disable GitHub import</label>
+    <div id="experiments-cont">
+      <h2>Experiments</h2>
+      <p>Toggle experiments on or off.</p>
+      <div id="experiments" class="settings-cont">
+        <div>
+          <input type="checkbox" name="block-graphql" id="block-graphql">
+          <label for="block-graphql">Block GraphQL</label>
+        </div>
+        <div>
+          <input type="checkbox" name="disable-github-import" id="disable-github-import">
+          <label for="disable-github-import">Disable GitHub import</label>
+        </div>
       </div>
     </div>
   </body>

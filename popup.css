@@ -72,3 +72,11 @@ div.settings-cont > div > * {
 div#experiments > div {
   color: var(--yellowish);
 }
+
+div#experiments-cont {
+  display: none;
+}
+
+div#experiments-cont[data-experiments="1"] {
+  display: contents;
+}
