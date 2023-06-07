@@ -19,6 +19,7 @@ let settings = {
   'block-graphql': false,
   'disable-github-import': false,
   'large-cursor': false,
+  'monaco-editor': false,
 };
 
 // Some settings require optional permissions

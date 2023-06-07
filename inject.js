@@ -30,6 +30,7 @@ const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 const TOSDR_SERVICE_ID = 1676;
 const SET_FLAGS_HASH = 'xl-set-flags';
+const MONACO_VERSION = '0.39.0';
 
 // URLs that don't use Next.js
 const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
@@ -175,6 +176,16 @@ function loadScript(src) {
     s.onload = resolve;
     s.onerror = reject;
     document.head.appendChild(s);
+  });
+}
+
+function requirePromise() {
+  return new Promise((resolve, reject) => {
+    try {
+      require(...arguments, resolve);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
@@ -541,6 +552,19 @@ async function replsPathFunction() {
   // Large cursor
   if (settings['large-cursor']) {
     setXlFlag('largeCursor', '1');
+  }
+
+  // Monaco Editor
+  if (settings['monaco']) {
+    console.debug('[XL] Loading Monaco Editor');
+    await loadScript(
+      `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs/loader.js`
+    );
+    require.config({
+      paths: { vs: `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs` },
+    });
+    await requirePromise(['vs/editor/editor.main']);
+    console.debug('[XL] Monaco Editor loaded');
   }
 
   // Load Repl data
