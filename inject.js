@@ -423,8 +423,14 @@ function registerMonacoReplitTheme() {
       base,
       rules,
       colors: {
+        // text foreground
         'editor.foreground': themeValues.values.global.foregroundDefault,
+
+        // text background
         'editor.background': themeValues.values.global.backgroundDefault,
+
+        // text selection background
+        // add 55 at the end for transparency
         'editor.selectionBackground': `${themeValues.values.global.accentPrimaryDefault}55`,
       },
     });
