@@ -193,6 +193,8 @@ chrome.storage.local
 
       if (key == 'show-advanced-settings') {
         settingsCont.dataset.advanced = +val;
+      } else if (key == 'show-experiments') {
+        experimentsCont.dataset.experiments = +val;
       }
     }
   });
