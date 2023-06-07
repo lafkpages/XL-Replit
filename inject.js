@@ -357,6 +357,8 @@ function injectMonacoEditors() {
     throw new Error('Monaco is not defined');
   }
 
+  registerMonacoReplitTheme();
+
   const cmEditors = document.getElementsByClassName('cm-editor');
 
   for (const cmEditor of cmEditors) {
@@ -377,6 +379,75 @@ function injectMonacoEditors() {
     // Add attribute to skip this in the future
     cmEditor.dataset.xlMonacoInjected = '1';
   }
+}
+
+function registerMonacoReplitTheme() {
+  if (typeof monaco == 'undefined') {
+    throw new Error('Monaco is not defined');
+  }
+
+  if (getXlFlag('monacoThemeRegistered')) {
+    return;
+  }
+
+  const themeValues = findApolloState('ThemeVersion');
+
+  const base = getCurrentThemeType() == 'light' ? 'vs' : 'vs-dark';
+
+  if (themeValues) {
+    const rules = themeValues.values.editor.syntaxHighlighting.map((rule) => ({
+      token: rule.tags[0].name,
+      ...Object.fromEntries(
+        Object.entries(rule.values).map(([k, v]) => {
+          k =
+            {
+              color: 'foreground',
+            }[k] || k;
+
+          v = cssVarToValue(v) || v;
+
+          if (k.endsWith('ground') && k.length == 10) {
+            if (v[0] == '#') {
+              v = v.substring(1);
+            }
+          }
+
+          return [k, v];
+        })
+      ),
+    }));
+
+    console.debug('[XL] Monaco theme rules:', rules);
+
+    monaco.editor.defineTheme('replit', {
+      base,
+      rules,
+      colors: {
+        'editor.foreground': themeValues.values.global.foregroundDefault,
+        'editor.background': themeValues.values.global.backgroundDefault,
+      },
+    });
+
+    monaco.editor.setTheme('replit');
+  } else {
+    monaco.editor.setTheme(base);
+  }
+
+  setXlFlag('monacoThemeRegistered', '1');
+}
+
+function cssVarToValue(css, elm = null) {
+  const m = css.trim().match(/^var\((.+?)\)$/);
+
+  if (!m) {
+    return null;
+  }
+
+  if (!elm) {
+    elm = document.body || document.documentElement;
+  }
+
+  return getComputedStyle(elm).getPropertyValue(m[1]).trim();
 }
 
 function getCurrentThemeType() {
@@ -636,6 +707,8 @@ async function replsPathFunction() {
     });
     await requirePromise(['vs/editor/editor.main']);
     console.debug('[XL] Monaco Editor loaded');
+
+    injectMonacoEditors();
   }
 
   // Load Repl data
