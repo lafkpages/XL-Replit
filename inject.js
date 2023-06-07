@@ -29,11 +29,10 @@ const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 // Consts
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 const TOSDR_SERVICE_ID = 1676;
+const SET_FLAGS_HASH = 'xl-set-flags';
 
 // URLs that don't use Next.js
 const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
-
-const setFlagsHash = 'xl-set-flags';
 
 // Fire URL change events
 (() => {
@@ -706,7 +705,7 @@ document.addEventListener('click', (e) => {
   while (typeof next == 'undefined') {}
 
   // Set flags
-  next.router.push(`#${setFlagsHash}`);
+  next.router.push(`#${SET_FLAGS_HASH}`);
   if (settings['old-cover-page']) {
     setFlag('flag-new-cover-page', false);
   }
