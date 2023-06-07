@@ -130,7 +130,7 @@ function capitalize(str) {
 }
 
 function getFlags() {
-  return __REPLIT_REDUX_STORE__.getState().user.userInfo.gating;
+  return __REPLIT_REDUX_STORE__.getState().user.userInfo.gating || [];
 }
 
 function getFlag(flag) {
@@ -138,7 +138,14 @@ function getFlag(flag) {
 }
 
 function setFlag(flag, value) {
-  getFlag(flag).value = value;
+  const flagObj = getFlag(flag);
+
+  if (flagObj) {
+    flagObj.value = value;
+    return true;
+  }
+
+  return false;
 }
 
 function getXlFlagsElm() {
