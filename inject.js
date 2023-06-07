@@ -63,6 +63,9 @@ const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
 // Has loaded RequireJS
 let hasLoadedRequireJS = false;
 
+// Replit protocol API
+let replitProtocol = null;
+
 // Overwrite global WebSocket class
 const _WebSocket = WebSocket;
 let govalWebSocket = null;
@@ -722,15 +725,23 @@ async function replsPathFunction() {
     setXlFlag('largeCursor', '1');
   }
 
+  // Load libs
+  require.config({
+    baseUrl: 'https://unpkg.com',
+    paths: {
+      protobufjs:
+        'https://unpkg.com/protobufjs/dist/minimal/protobuf.min.js?a=', // PLEASE SOMEONE FIX THIS
+      long: 'https://unpkg.com/long@5.2.3/umd/index.js?a=',
+      vs: `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs`,
+    },
+  });
+  replitProtocol = await requirePromise([
+    'https://unpkg.com/@replit/protocol/main/index.js',
+  ]);
+
   // Monaco Editor
   if (settings['monaco']) {
     console.debug('[XL] Loading Monaco Editor');
-    await loadScript(
-      `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs/loader.js`
-    );
-    require.config({
-      paths: { vs: `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs` },
-    });
     await requirePromise(['vs/editor/editor.main']);
     console.debug('[XL] Monaco Editor loaded');
 
@@ -878,8 +889,8 @@ async function main() {
 
   // Load RequireJS
   if (!hasLoadedRequireJS) {
-    hasLoadedRequireJS = true;
     await loadScript(`${XL_REPLIT_EXTENSION_URL}/require.js`);
+    hasLoadedRequireJS = true;
   }
 
   // Inject account switcher
