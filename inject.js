@@ -80,6 +80,9 @@ WebSocket = class WebSocket extends _WebSocket {
   }
 };
 
+// XL Replit Goval channels
+let xlGovalChannels = {};
+
 async function graphQl(path, variables) {
   const urlParams = new URLSearchParams();
   for (const kv of Object.entries(variables)) {
@@ -209,6 +212,23 @@ function requirePromise() {
       reject(e);
     }
   });
+}
+
+function sendGovalMessage(channel, message) {
+  if (govalWebSocket) {
+    govalWebSocket.send(
+      replitProtocol.api.Command.encode(
+        new replitProtocol.api.Command({
+          channel,
+          ...message,
+        })
+      ).finish()
+    );
+  }
+}
+
+function decodeGovalMessage(message) {
+  return replitProtocol.api.Command.decode(message);
 }
 
 function injectCustomTips(replId, isTheme = false) {
