@@ -380,7 +380,11 @@ function injectMonacoEditors() {
 }
 
 function getCurrentThemeType() {
-  // TODO: use GraphQL to get theme type
+  const customTheme = findApolloState('CustomTheme');
+
+  if (customTheme) {
+    return customTheme.colorScheme;
+  }
 
   const backgroundRoot = parseInt(
     getComputedStyle(document.body)
