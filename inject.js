@@ -707,6 +707,8 @@ document.addEventListener('click', (e) => {
     const realUrlToNavigate =
       arguments[arguments.length - 1]?.pathname || arguments[1] || null;
 
+    // TODO: don't use last argument, find argument index
+
     console.debug(
       '[XL] Intercepted Next Router push:',
       this.state,
