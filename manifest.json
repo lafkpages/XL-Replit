@@ -44,6 +44,7 @@
     {
       "resources": [
         "inject.js",
+        "require.js",
         "2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js"
       ],
       "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"]
