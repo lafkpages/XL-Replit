@@ -782,7 +782,12 @@ async function replsPathFunction() {
         }
       });
     }, 1000);
+
+    // Reinject Monaco editors, Justin Case
+    injectMonacoEditors();
   });
+
+  injectMonacoEditors();
 }
 
 async function replSpotlightPathFunction() {
