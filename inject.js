@@ -704,14 +704,17 @@ document.addEventListener('click', (e) => {
   // TODO: handle client-side router onLoad
   const nextRouterPush = next.router.push;
   next.router.push = function () {
+    const realUrlToNavigate =
+      arguments[arguments.length - 1]?.pathname || arguments[1] || null;
+
     console.debug(
       '[XL] Intercepted Next Router push:',
       this.state,
-      ...arguments
+      realUrlToNavigate
     );
 
     if (settings['force-ssr']) {
-      window.location.assign(arguments[1]);
+      window.location.assign(realUrlToNavigate);
     } else {
       const val = nextRouterPush.bind(this)(...arguments);
 
