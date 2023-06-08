@@ -103,6 +103,10 @@ WebSocket = class WebSocket extends _WebSocket {
       if (v) {
         govalWebSocketOnMessage = v;
         super.onmessage = (e) => {
+          if (!replitProtocol) {
+            return;
+          }
+
           const data = decodeGovalMessage(e.data);
 
           if (govalWebSocketRefHandlers[data?.ref]) {
