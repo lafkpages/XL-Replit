@@ -81,6 +81,10 @@ WebSocket = class WebSocket extends _WebSocket {
     if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url)) {
       console.debug('[XL] Intercepted Replit Goval WebSocket');
       govalWebSocket = super(...arguments);
+
+      govalWebSocket.addEventListener('message', (e) => {
+        // const data = decodeGovalMessage(new Uint8Array(e.data));
+      });
     } else {
       super(...arguments);
     }
