@@ -611,6 +611,7 @@ function injectMonacoEditors() {
     // Monaco Editor ID
     const editorId = monacoEditor.getId();
 
+    // Save editor file path
     xlMonacoEditors[editorId] = filePath;
 
     // Add attribute to skip this in the future
