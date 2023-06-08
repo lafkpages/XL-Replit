@@ -136,6 +136,9 @@ WebSocket = class WebSocket extends _WebSocket {
 // XL Replit Goval channels
 let xlGovalChannels = {};
 
+// XL Monaco Editors by IDs
+const xlMonacoEditors = {};
+
 async function graphQl(path, variables) {
   const urlParams = new URLSearchParams();
   for (const kv of Object.entries(variables)) {
@@ -556,9 +559,14 @@ function injectMonacoEditors() {
     });
     monacoEditor.setModel(monacoModel);
 
+    // Monaco Editor ID
+    const editorId = monacoEditor._id; // UNDOCUMENTED!
+
+    xlMonacoEditors[editorId] = filePath;
+
     // Add attribute to skip this in the future
     cmEditor.dataset.xlMonacoInjected = '1';
-    cmEditor.dataset.xlMonacoId = monacoEditor._id; // UNDOCUMENTED!
+    cmEditor.dataset.xlMonacoId = editorId;
   }
 }
 
@@ -928,8 +936,12 @@ async function replsPathFunction() {
           );
 
           if (!editorElm) {
-            console.debug(`[XL] Disposing unused Monaco Editor`, editorId);
+            console.debug(
+              `[XL] Disposing unused Monaco Editor for file`,
+              xlMonacoEditors[editorId]
+            );
             editor.dispose();
+            delete xlMonacoEditors[editorId];
           }
         }
       }
