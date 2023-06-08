@@ -877,9 +877,6 @@ async function replsPathFunction() {
     'https://unpkg.com/@replit/protocol/main/index.js',
   ]);
 
-  // Open exec Goval channel
-  // openGovalChannel('exec', 'xlreplitexec', 2);
-
   // Monaco Editor
   if (settings['monaco']) {
     console.debug('[XL] Loading Monaco Editor');
