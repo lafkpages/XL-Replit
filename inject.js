@@ -899,8 +899,11 @@ async function replsPathFunction() {
   let inviteFormBtn = null;
   let inviteFormCloseBtn = null;
 
-  // Inject read-only invite option when invite form is opened
   document.addEventListener('click', (e) => {
+    // Reinject Monaco editors, Justin Case
+    injectMonacoEditors();
+
+    // Inject read-only invite option when invite form is opened
     if (!e.target.matches(`${inviteBtnSelector}, ${inviteBtnSelector} *`))
       return;
 
@@ -948,9 +951,6 @@ async function replsPathFunction() {
         }
       });
     }, 1000);
-
-    // Reinject Monaco editors, Justin Case
-    injectMonacoEditors();
   });
 
   injectMonacoEditors();
