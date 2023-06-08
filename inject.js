@@ -106,10 +106,6 @@ WebSocket = class WebSocket extends _WebSocket {
           const data = decodeGovalMessage(e.data);
 
           if (govalWebSocketRefHandlers[data?.ref]) {
-            console.debug(
-              '[XL] Found Goval message handler for ref:',
-              data.ref
-            );
             govalWebSocketRefHandlers[data.ref](data);
             delete govalWebSocketRefHandlers[data.ref];
             return;
@@ -117,19 +113,10 @@ WebSocket = class WebSocket extends _WebSocket {
 
           if (xlGovalChannels[data?.channel]) {
             if (xlGovalChannels[data.channel].handler) {
-              console.debug(
-                '[XL] Found Goval message handler for channel:',
-                data.channel
-              );
               xlGovalChannels[data.channel](data);
             }
             return;
           }
-
-          console.debug(
-            '[XL] Forwarding Goval message to Replit handler:',
-            data
-          );
 
           return govalWebSocketOnMessage.call(govalWebSocket, e);
         };
