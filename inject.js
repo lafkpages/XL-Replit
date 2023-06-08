@@ -83,7 +83,7 @@ WebSocket = class WebSocket extends _WebSocket {
       govalWebSocket = super(...arguments);
 
       govalWebSocket.addEventListener('message', (e) => {
-        // const data = decodeGovalMessage(new Uint8Array(e.data));
+        // const data = decodeGovalMessage(e.data);
       });
     } else {
       super(...arguments);
@@ -227,7 +227,7 @@ function requirePromise() {
 
 function sendGovalMessageHandler(ref, resolve) {
   return (e) => {
-    const data = decodeGovalMessage(new Uint8Array(e.data));
+    const data = decodeGovalMessage(e.data);
 
     if (data.ref == ref) {
       resolve(data);
@@ -272,6 +272,10 @@ function sendGovalMessage(channel, message, response = false) {
 }
 
 function decodeGovalMessage(message) {
+  if (message instanceof ArrayBuffer) {
+    message = new Uint8Array(message);
+  }
+
   return replitProtocol.api.Command.decode(message);
 }
 
