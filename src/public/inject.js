@@ -27,7 +27,9 @@ delete document.currentScript.dataset.usernames;
 const username =
   document
     .getElementsByClassName('username')[0]
-    ?.textContent.replace(/^@/, '') || null;
+    ?.textContent.replace(/^@/, '') ||
+  __NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
+  null;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
