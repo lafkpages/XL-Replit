@@ -546,7 +546,39 @@ function injectMonacoEditors() {
       )?.[1] || null;
 
     // If no file path, ignore
-    if (!filePath || filePath == 'loading') {
+    if (!filePath) {
+      continue;
+    }
+
+    // If file is loading, wait for it to load
+    if (filePath == 'loading') {
+      if (cmEditor.dataset.xlMonacoObserved) {
+        continue;
+      }
+
+      console.debug('[XL] Waiting for CodeMirror pane to load');
+
+      const mutationObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (
+            mutation.type == 'attributes' &&
+            mutation.attributeName == 'data-cy' &&
+            mutation.target.dataset.cy != 'workspace-cm-editor-loading'
+          ) {
+            injectMonacoEditors();
+            mutationObserver.disconnect();
+            return;
+          }
+        }
+      });
+      mutationObserver.observe(cmEditor.parentElement.parentElement, {
+        attributes: true,
+        attributeFilter: ['data-cy'],
+      });
+
+      // Prevent more observers from being created
+      cmEditor.dataset.xlMonacoObserved = '1';
+
       continue;
     }
 
