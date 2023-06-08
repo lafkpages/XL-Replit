@@ -1138,7 +1138,7 @@ async function main() {
 
   // Load RequireJS
   if (!hasLoadedRequireJS) {
-    await loadScript(`${XL_REPLIT_EXTENSION_URL}/require.js`);
+    await loadScript(`${XL_REPLIT_EXTENSION_URL}/src/public/require.js`);
     hasLoadedRequireJS = true;
   }
 

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
       }
 
       const s = document.createElement('script');
-      s.src = chrome.runtime.getURL('inject.js');
+      s.src = chrome.runtime.getURL('src/public/inject.js');
       s.dataset.sid = sids?.length ? `1${sids[activeSid]}` : '0,null';
       s.dataset.activeSid = activeSid.toString();
       s.dataset.usernames = usernames?.join(',') || '';
