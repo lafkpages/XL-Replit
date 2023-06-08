@@ -565,6 +565,7 @@ function injectMonacoEditors() {
           ) {
             injectMonacoEditors();
             mutationObserver.disconnect();
+            delete cmEditor.dataset.xlMonacoObserved;
             return;
           }
         }
