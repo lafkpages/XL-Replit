@@ -896,6 +896,9 @@ async function replsPathFunction() {
     'https://unpkg.com/@replit/protocol/main/index.js',
   ]);
 
+  // Layout container
+  const layoutContainer = document.querySelector('main header ~ div');
+
   // Monaco Editor
   if (settings['monaco']) {
     console.debug('[XL] Loading Monaco Editor');
@@ -903,6 +906,37 @@ async function replsPathFunction() {
     console.debug('[XL] Monaco Editor loaded');
 
     injectMonacoEditors();
+
+    // Dispose editors when a pane is closed
+    const mutationObserver = new MutationObserver((mutations) => {
+      let shouldCheckUnusedEditors = false;
+
+      for (const mutation of mutations) {
+        if (mutation.removedNodes.length) {
+          shouldCheckUnusedEditors = true;
+          break;
+        }
+      }
+
+      if (shouldCheckUnusedEditors) {
+        for (const editor of monaco.editor.getEditors()) {
+          const editorId = editor._id; // UNDOCUMENTED!
+
+          // Search for the editor ID in the DOM
+          const editorElm = layoutContainer.querySelector(
+            `[data-xl-monaco-id="${editorId}"] .monaco-editor`
+          );
+
+          if (!editorElm) {
+            console.debug(`[XL] Disposing unused Monaco Editor`, editorId);
+            editor.dispose();
+          }
+        }
+      }
+    });
+    mutationObserver.observe(layoutContainer, {
+      childList: true,
+    });
   }
 
   // Load Repl data
