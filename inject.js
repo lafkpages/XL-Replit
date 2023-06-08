@@ -502,6 +502,10 @@ function injectAccountSwitcher() {
 }
 
 function injectMonacoEditors() {
+  if (!settings['monaco']) {
+    return false;
+  }
+
   if (typeof monaco == 'undefined') {
     throw new Error('Monaco is not defined');
   }
