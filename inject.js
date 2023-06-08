@@ -523,7 +523,7 @@ function injectMonacoEditors() {
       )?.[1] || null;
 
     // If no file path, ignore
-    if (!filePath) {
+    if (!filePath || filePath == 'loading') {
       continue;
     }
 
