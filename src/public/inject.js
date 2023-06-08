@@ -609,7 +609,7 @@ function injectMonacoEditors() {
     monacoEditor.setModel(monacoModel);
 
     // Monaco Editor ID
-    const editorId = monacoEditor._id; // UNDOCUMENTED!
+    const editorId = monacoEditor.getId();
 
     xlMonacoEditors[editorId] = filePath;
 
@@ -977,7 +977,7 @@ async function replsPathFunction() {
 
       if (shouldCheckUnusedEditors) {
         for (const editor of monaco.editor.getEditors()) {
-          const editorId = editor._id; // UNDOCUMENTED!
+          const editorId = editor.getId();
 
           // Search for the editor ID in the DOM
           const editorElm = layoutContainer.querySelector(
