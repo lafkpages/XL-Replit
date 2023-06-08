@@ -76,18 +76,44 @@ let replitProtocol = null;
 // Overwrite global WebSocket class
 const _WebSocket = WebSocket;
 let govalWebSocket = null;
+let govalWebSocketOnMessage = null;
+let govalWebSocketConns = 0;
 WebSocket = class WebSocket extends _WebSocket {
   constructor(url) {
     if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url)) {
+      govalWebSocketConns++;
+
       console.debug('[XL] Intercepted Replit Goval WebSocket');
       govalWebSocket = super(...arguments);
+
+      this._isGovalWebSocket = true;
 
       govalWebSocket.addEventListener('message', (e) => {
         // const data = decodeGovalMessage(e.data);
       });
+
+      govalWebSocket.addEventListener('close', () => {
+        govalWebSocket = null;
+        govalWebSocketOnMessage = null;
+      });
     } else {
       super(...arguments);
     }
+  }
+
+  set onmessage(v) {
+    if (v && this._isGovalWebSocket) {
+      console.debug('[XL] Intercepted Crosis WebSocket onmessage', v);
+      govalWebSocketOnMessage = v;
+      super.onmessage = (e) => {
+        console.debug('[XL] Intercepted');
+        govalWebSocketOnMessage.call(govalWebSocket, e);
+      };
+    } else {
+      super.onmessage = v;
+    }
+
+    return v;
   }
 };
 
