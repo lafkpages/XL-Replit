@@ -534,6 +534,7 @@ function injectMonacoEditors() {
     const monacoEditor = monaco.editor.create(cmEditor, {
       value: `// Test monaco editor from XL Replit\n// ${filePath}`,
       language: 'javascript',
+      automaticLayout: true,
     });
 
     // Add attribute to skip this in the future
