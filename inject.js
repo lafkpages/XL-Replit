@@ -225,21 +225,77 @@ function requirePromise() {
   });
 }
 
-function sendGovalMessage(channel, message) {
-  if (govalWebSocket) {
-    govalWebSocket.send(
-      replitProtocol.api.Command.encode(
-        new replitProtocol.api.Command({
-          channel,
-          ...message,
-        })
-      ).finish()
-    );
-  }
+function sendGovalMessageHandler(ref, resolve) {
+  return (e) => {
+    const data = decodeGovalMessage(new Uint8Array(e.data));
+
+    if (data.ref == ref) {
+      resolve(data);
+    }
+  };
+}
+
+function sendGovalMessage(channel, message, response = false) {
+  return new Promise((resolve, reject) => {
+    if (govalWebSocket) {
+      const ref =
+        'xlreplit' + crypto.randomUUID().replace(/-/g, '').substring(0, 8);
+
+      if (response) {
+        govalWebSocket.addEventListener(
+          'message',
+          sendGovalMessageHandler(ref, (data) => {
+            govalWebSocket.removeEventListener(
+              'message',
+              sendGovalMessageHandler
+            );
+            resolve(data);
+          })
+        );
+      }
+
+      govalWebSocket.send(
+        replitProtocol.api.Command.encode(
+          new replitProtocol.api.Command({
+            channel,
+            ref,
+            ...message,
+          })
+        ).finish()
+      );
+
+      if (!response) {
+        resolve();
+      }
+    }
+  });
 }
 
 function decodeGovalMessage(message) {
   return replitProtocol.api.Command.decode(message);
+}
+
+async function openGovalChannel(service, name, action = 0) {
+  const res = await sendGovalMessage(
+    0,
+    {
+      openChan: {
+        service,
+        name,
+        action,
+      },
+    },
+    true
+  );
+
+  if (res.openChanRes.error) {
+    // TODO: custom XL Replit Goval Error class
+    throw new Error(res.openChanRes.error);
+  }
+
+  xlGovalChannels[res.openChanRes.id] = res;
+
+  return res;
 }
 
 function injectCustomTips(replId, isTheme = false) {
@@ -769,6 +825,9 @@ async function replsPathFunction() {
   replitProtocol = await requirePromise([
     'https://unpkg.com/@replit/protocol/main/index.js',
   ]);
+
+  // Open exec Goval channel
+  // openGovalChannel('exec', 'xlreplitexec', 2);
 
   // Monaco Editor
   if (settings['monaco']) {
