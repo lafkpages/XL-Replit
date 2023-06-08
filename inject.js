@@ -133,6 +133,18 @@ WebSocket = class WebSocket extends _WebSocket {
   }
 };
 
+// XL Replit errors
+class XLReplitError extends Error {
+  constructor(message, data = null) {
+    super(message);
+    this.name = 'XLReplitError';
+
+    if (data) {
+      this.data = data;
+    }
+  }
+}
+
 // XL Replit Goval channels
 let xlGovalChannels = {};
 
@@ -330,7 +342,7 @@ async function openGovalChannel(service, name, action = 0) {
 
   if (res.openChanRes.error) {
     // TODO: custom XL Replit Goval Error class
-    throw new Error(res.openChanRes.error);
+    throw new XLReplitError(res.openChanRes.error, res);
   }
 
   xlGovalChannels[res.openChanRes.id] = {
