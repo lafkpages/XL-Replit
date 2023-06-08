@@ -531,15 +531,30 @@ function injectMonacoEditors() {
       continue;
     }
 
+    // Editor value
+    const value = `// Test monaco editor from XL Replit\n// ${filePath}`;
+
+    // Monaco model
+    let monacoModel = null;
+    try {
+      monacoModel = monaco.editor.createModel(
+        value,
+        undefined,
+        monaco.Uri.file(filePath)
+      );
+    } catch {
+      continue;
+    }
+
     // Remove CodeMirror editor
     cmEditor.textContent = '';
 
     // Inject Monaco editor
     const monacoEditor = monaco.editor.create(cmEditor, {
-      value: `// Test monaco editor from XL Replit\n// ${filePath}`,
-      language: 'javascript',
+      value,
       automaticLayout: true,
     });
+    monacoEditor.setModel(monacoModel);
 
     // Add attribute to skip this in the future
     cmEditor.dataset.xlMonacoInjected = '1';
