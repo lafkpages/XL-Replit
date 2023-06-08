@@ -530,8 +530,6 @@ function registerMonacoReplitTheme() {
       ),
     }));
 
-    console.debug('[XL] Monaco theme rules:', rules);
-
     monaco.editor.defineTheme('replit', {
       base,
       rules,
