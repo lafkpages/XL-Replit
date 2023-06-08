@@ -516,12 +516,23 @@ function injectMonacoEditors() {
       continue;
     }
 
+    // Get file path
+    const filePath =
+      cmEditor.parentElement.parentElement.dataset.cy.match(
+        /^workspace-cm-editor-(.+)$/i
+      )?.[1] || null;
+
+    // If no file path, ignore
+    if (!filePath) {
+      continue;
+    }
+
     // Remove CodeMirror editor
     cmEditor.textContent = '';
 
     // Inject Monaco editor
     const monacoEditor = monaco.editor.create(cmEditor, {
-      value: 'Test monaco editor from XL Replit',
+      value: `// Test monaco editor from XL Replit\n// ${filePath}`,
       language: 'javascript',
     });
 
