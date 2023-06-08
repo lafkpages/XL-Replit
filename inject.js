@@ -558,6 +558,7 @@ function injectMonacoEditors() {
 
     // Add attribute to skip this in the future
     cmEditor.dataset.xlMonacoInjected = '1';
+    cmEditor.dataset.xlMonacoId = monacoEditor._id; // UNDOCUMENTED!
   }
 }
 
