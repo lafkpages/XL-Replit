@@ -78,6 +78,7 @@ const _WebSocket = WebSocket;
 let govalWebSocket = null;
 let govalWebSocketOnMessage = null;
 let govalWebSocketConns = 0;
+const govalWebSocketRefHandlers = {};
 WebSocket = class WebSocket extends _WebSocket {
   constructor(url) {
     if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url)) {
@@ -87,10 +88,6 @@ WebSocket = class WebSocket extends _WebSocket {
       govalWebSocket = super(...arguments);
 
       this._isGovalWebSocket = true;
-
-      govalWebSocket.addEventListener('message', (e) => {
-        // const data = decodeGovalMessage(e.data);
-      });
 
       govalWebSocket.addEventListener('close', () => {
         govalWebSocket = null;
@@ -102,18 +99,50 @@ WebSocket = class WebSocket extends _WebSocket {
   }
 
   set onmessage(v) {
-    if (v && this._isGovalWebSocket) {
-      console.debug('[XL] Intercepted Crosis WebSocket onmessage', v);
-      govalWebSocketOnMessage = v;
-      super.onmessage = (e) => {
-        console.debug('[XL] Intercepted');
-        govalWebSocketOnMessage.call(govalWebSocket, e);
-      };
+    if (this._isGovalWebSocket) {
+      if (v) {
+        govalWebSocketOnMessage = v;
+        super.onmessage = (e) => {
+          const data = decodeGovalMessage(e.data);
+
+          if (govalWebSocketRefHandlers[data?.ref]) {
+            console.debug(
+              '[XL] Found Goval message handler for ref:',
+              data.ref
+            );
+            govalWebSocketRefHandlers[data.ref](data);
+            delete govalWebSocketRefHandlers[data.ref];
+            return;
+          }
+
+          if (xlGovalChannels[data?.channel]) {
+            if (xlGovalChannels[data.channel].handler) {
+              console.debug(
+                '[XL] Found Goval message handler for channel:',
+                data.channel
+              );
+              xlGovalChannels[data.channel](data);
+            }
+            return;
+          }
+
+          console.debug(
+            '[XL] Forwarding Goval message to Replit handler:',
+            data
+          );
+
+          return govalWebSocketOnMessage.call(govalWebSocket, e);
+        };
+      }
     } else {
       super.onmessage = v;
     }
 
     return v;
+  }
+
+  get onmessage() {
+    return super.onmessage;
   }
 };
 
@@ -268,16 +297,7 @@ function sendGovalMessage(channel, message, response = false) {
         'xlreplit' + crypto.randomUUID().replace(/-/g, '').substring(0, 8);
 
       if (response) {
-        govalWebSocket.addEventListener(
-          'message',
-          sendGovalMessageHandler(ref, (data) => {
-            govalWebSocket.removeEventListener(
-              'message',
-              sendGovalMessageHandler
-            );
-            resolve(data);
-          })
-        );
+        govalWebSocketRefHandlers[ref] = resolve;
       }
 
       govalWebSocket.send(
@@ -323,7 +343,10 @@ async function openGovalChannel(service, name, action = 0) {
     throw new Error(res.openChanRes.error);
   }
 
-  xlGovalChannels[res.openChanRes.id] = res;
+  xlGovalChannels[res.openChanRes.id] = {
+    openChanRes: res,
+    handler: null,
+  };
 
   return res;
 }
