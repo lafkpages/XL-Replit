@@ -618,6 +618,9 @@ function injectMonacoEditors() {
     // Current user ID
     const userId = findApolloState('CurrentUser')?.id || null;
 
+    // Flush OTs timeout
+    let flushOtsTimeout = null;
+
     // Create OT channel
     openGovalChannel('ot', `ot-xl:${filePath}`, 2).then((res) => {
       xlMonacoEditors[editorId].otChannel = res.openChanRes.id;
@@ -716,6 +719,7 @@ function injectMonacoEditors() {
 
       // Send OTs
       sendGovalMessage(
+        // TODO: debounce this
         xlMonacoEditors[editorId].otChannel,
         {
           ot: {
@@ -728,9 +732,13 @@ function injectMonacoEditors() {
         console.debug('[XL] Send OTs:', res);
 
         // Flush OTs
-        sendGovalMessage(xlMonacoEditors[editorId].otChannel, {
-          flush: {},
-        });
+        clearTimeout(flushOtsTimeout);
+        flushOtsTimeout = setTimeout(() => {
+          console.debug('[XL] Flushing OTs');
+          sendGovalMessage(xlMonacoEditors[editorId].otChannel, {
+            flush: {},
+          });
+        }, 1000);
       });
     });
 
