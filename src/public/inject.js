@@ -738,6 +738,20 @@ function injectMonacoEditors() {
     cmEditor.dataset.xlMonacoInjected = '1';
     cmEditor.dataset.xlMonacoId = editorId;
   }
+
+  // When WS disconnects, kill all editors
+  govalWebSocket?.addEventListener('close', () => {
+    const cmEditors = document.getElementsByClassName('cm-editor');
+
+    for (const cmEditor of cmEditors) {
+      delete cmEditor.dataset.xlMonacoInjected;
+    }
+
+    for (const editor of monaco.editor.getEditors()) {
+      editor.getModel().dispose();
+      editor.dispose();
+    }
+  });
 }
 
 function registerMonacoReplitTheme() {
