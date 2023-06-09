@@ -2,51 +2,85 @@
 // https://replit.com/@LuisAFK/OT-Catchup#ot.js
 //
 
-function simplifyOTs(ots) {
-  // Remove unnecessary/empty moves/inserts
+function simplifyOTs(ots, recurse = true) {
+  // Remove unnecessary/empty skips/inserts
   const result1 = [];
   for (let i = 0; i < ots.length; i++) {
     const ot = ots[i];
 
-    if (ot.move == 0 || ot.insert?.length == 0) {
+    if (ot.skip == 0 || ot.insert?.length == 0) {
       continue;
     }
 
-    if (i == ots.length - 1 && ot.move) {
+    if (i == ots.length - 1 && ot.skip) {
       continue;
     }
 
     result1.push(ot);
   }
 
-  // Combine consecutive moves/inserts
+  // Combine consecutive skips/inserts
   const result2 = [];
   for (let i = 0; i < result1.length; i++) {
     const ot = result1[i];
     const nextOt = result1[i + 1];
 
-    if (!nextOt) {
-      continue;
-    }
+    if (nextOt) {
+      if (ot.insert && nextOt.insert) {
+        result2.push({
+          insert: ot.insert + nextOt.insert,
+        });
+        continue;
+      }
 
-    if (ot.insert && nextOt.insert) {
-      result2.push({
-        insert: ot.insert + nextOt.insert,
-      });
-      continue;
-    }
-
-    if (ot.move && nextOt.move) {
-      result2.push({
-        move: ot.move + nextOt.move,
-      });
-      continue;
+      if (ot.skip && nextOt.skip) {
+        result2.push({
+          skip: ot.skip + nextOt.skip,
+        });
+        continue;
+      }
     }
 
     result2.push(ot);
   }
 
-  return result2;
+  // Recurse until fully clean
+  let result3 = result2;
+  if (recurse) {
+    let previousLength = result3.length;
+    while (true) {
+      result3 = simplifyOTs(result3, false);
+
+      if (result3.length == previousLength) {
+        break;
+      }
+
+      previousLength = result3.length;
+    }
+  }
+
+  return result3;
+}
+
+function flattenOTs(ots, file = '') {
+  // TIDO: actually flatten instead of goofy negative skip workaround
+
+  const result = [];
+
+  for (const otGroup of ots) {
+    const { cursor, file: newFile } = applyOTs(file, otGroup);
+
+    file = newFile;
+
+    console.debug(file, otGroup, cursor);
+    result.push(...otGroup);
+
+    result.push({
+      skip: -cursor,
+    });
+  }
+
+  return simplifyOTs(result);
 }
 
 function applyOTs(file, ots, start = 0, err = true) {
@@ -105,7 +139,7 @@ function applyOTs(file, ots, start = 0, err = true) {
 function verifyOTs(stale, latest, ots, err = true) {
   try {
     return applyOTs(stale, ots, 0, err).file == latest;
-  } catch (_) {
+  } catch {
     return false;
   }
 }
