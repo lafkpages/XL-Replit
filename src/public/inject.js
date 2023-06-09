@@ -293,7 +293,7 @@ function requirePromise() {
 
 function sendGovalMessage(channel, message, response = false) {
   return new Promise((resolve, reject) => {
-    if (govalWebSocket) {
+    if (govalWebSocket?.readyState == WebSocket.OPEN) {
       const ref =
         'xlreplit' + crypto.randomUUID().replace(/-/g, '').substring(0, 8);
 
@@ -316,6 +316,8 @@ function sendGovalMessage(channel, message, response = false) {
       if (!response) {
         resolve();
       }
+    } else {
+      reject('Goval WebSocket not open');
     }
   });
 }
