@@ -2,8 +2,57 @@
 // https://replit.com/@LuisAFK/OT-Catchup#ot.js
 //
 
+function simplifyOTs(ots) {
+  // Remove unnecessary/empty moves/inserts
+  const result1 = [];
+  for (let i = 0; i < ots.length; i++) {
+    const ot = ots[i];
+
+    if (ot.move == 0 || ot.insert?.length == 0) {
+      continue;
+    }
+
+    if (i == ots.length - 1 && ot.move) {
+      continue;
+    }
+
+    result1.push(ot);
+  }
+
+  // Combine consecutive moves/inserts
+  const result2 = [];
+  for (let i = 0; i < result1.length; i++) {
+    const ot = result1[i];
+    const nextOt = result1[i + 1];
+
+    if (!nextOt) {
+      continue;
+    }
+
+    if (ot.insert && nextOt.insert) {
+      result2.push({
+        insert: ot.insert + nextOt.insert,
+      });
+      continue;
+    }
+
+    if (ot.move && nextOt.move) {
+      result2.push({
+        move: ot.move + nextOt.move,
+      });
+      continue;
+    }
+
+    result2.push(ot);
+  }
+
+  return result2;
+}
+
 function applyOTs(file, ots, start = 0, err = true) {
   let cursor = start;
+
+  ots = simplifyOTs(ots);
 
   for (let ot of ots) {
     // According to Turbio's crosis docs, the following is a valid OT:
@@ -80,5 +129,5 @@ function diffsToOTs(diffs) {
     }
   }
 
-  return ots;
+  return simplifyOTs(ots);
 }
