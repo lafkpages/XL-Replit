@@ -355,6 +355,27 @@ async function openGovalChannel(service, name, action = 0) {
   return res;
 }
 
+async function closeGovalChannel(id, action = 0) {
+  const res = await sendGovalMessage(
+    0,
+    {
+      closeChan: {
+        id,
+        action,
+      },
+    },
+    true
+  );
+
+  if (res.closeChanRes.error) {
+    throw new XLReplitError(res.closeChanRes.error, res);
+  }
+
+  delete xlGovalChannels[id];
+
+  return res;
+}
+
 function injectCustomTips(replId, isTheme = false) {
   const tipsCont = document.querySelector('div#tips');
 
