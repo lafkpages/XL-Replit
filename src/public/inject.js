@@ -108,6 +108,11 @@ WebSocket = class WebSocket extends _WebSocket {
           if (replitProtocol) {
             const data = decodeGovalMessage(e.data);
 
+            // Debug logs
+            if (data?.ref?.startsWith('xlreplit')) {
+              console.debug('[XL] Got Replit Goval message:', data);
+            }
+
             if (govalWebSocketRefHandlers[data?.ref]) {
               govalWebSocketRefHandlers[data.ref](data);
               delete govalWebSocketRefHandlers[data.ref];
@@ -116,7 +121,7 @@ WebSocket = class WebSocket extends _WebSocket {
 
             if (xlGovalChannels[data?.channel]) {
               if (xlGovalChannels[data.channel].handler) {
-                xlGovalChannels[data.channel](data);
+                xlGovalChannels[data.channel].handler(data);
               }
               return;
             }
@@ -286,16 +291,6 @@ function requirePromise() {
   });
 }
 
-function sendGovalMessageHandler(ref, resolve) {
-  return (e) => {
-    const data = decodeGovalMessage(e.data);
-
-    if (data.ref == ref) {
-      resolve(data);
-    }
-  };
-}
-
 function sendGovalMessage(channel, message, response = false) {
   return new Promise((resolve, reject) => {
     if (govalWebSocket) {
@@ -303,7 +298,9 @@ function sendGovalMessage(channel, message, response = false) {
         'xlreplit' + crypto.randomUUID().replace(/-/g, '').substring(0, 8);
 
       if (response) {
-        govalWebSocketRefHandlers[ref] = resolve;
+        govalWebSocketRefHandlers[ref] = (data) => {
+          resolve(data);
+        };
       }
 
       govalWebSocket.send(
@@ -612,7 +609,111 @@ function injectMonacoEditors() {
     const editorId = monacoEditor.getId();
 
     // Save editor file path
-    xlMonacoEditors[editorId] = filePath;
+    xlMonacoEditors[editorId] = { filePath };
+
+    // Is .setValue() being called?
+    let isSetValue = false;
+
+    // Create OT channel
+    openGovalChannel('ot', `ot-xl:${filePath}`, 2).then((res) => {
+      xlMonacoEditors[editorId].otChannel = res.openChanRes.id;
+
+      // Link file
+      sendGovalMessage(
+        res.openChanRes.id,
+        {
+          otLinkFile: {
+            file: {
+              path: filePath,
+            },
+          },
+        },
+        true
+      ).then((otLinkFileRes) => {
+        const contentsBin =
+          otLinkFileRes?.otLinkFileResponse?.linkedFile?.content || null;
+        const contentsStr = contentsBin
+          ? new TextDecoder('utf-8').decode(contentsBin)
+          : null;
+
+        if (contentsBin) {
+          isSetValue = true;
+          monacoEditor.setValue(contentsStr);
+          isSetValue = false;
+        }
+
+        xlMonacoEditors[editorId].version =
+          otLinkFileRes.otLinkFileResponse.version;
+      });
+
+      // Listen to channel messages
+      xlGovalChannels[res.openChanRes.id].handler = (msg) => {
+        console.debug('[XL] OT message received', msg);
+
+        if (msg?.otstatus?.contents) {
+          // monacoEditor.setValue(msg.otstatus.contents);
+        }
+
+        if (msg?.ot?.version) {
+          xlMonacoEditors[editorId].version = msg.ot.version;
+        }
+      };
+    });
+
+    // On change
+    monacoEditor.onDidChangeModelContent((e) => {
+      if (isSetValue) {
+        return;
+      }
+
+      console.debug('[XL] Monaco editor changed', e);
+
+      const ots = [];
+
+      let cursor = 0;
+
+      // Generate OTs from changes
+      for (const change of e.changes) {
+        if (change.rangeOffset != cursor) {
+          ots.push({
+            skip: change.rangeOffset - cursor,
+          });
+        }
+
+        if (change.rangeLength) {
+          ots.push({
+            delete: change.rangeLength,
+          });
+        }
+
+        if (change.text) {
+          ots.push({
+            insert: change.text,
+          });
+        }
+      }
+
+      console.debug('[XL] Monaco editor OTs:', ots);
+
+      // Send OTs
+      sendGovalMessage(
+        xlMonacoEditors[editorId].otChannel,
+        {
+          ot: {
+            spookyVersion: xlMonacoEditors[editorId].version,
+            op: ots,
+          },
+        },
+        true
+      ).then((res) => {
+        console.debug('[XL] Send OTs:', res);
+
+        // Flush OTs
+        sendGovalMessage(xlMonacoEditors[editorId].otChannel, {
+          flush: {},
+        });
+      });
+    });
 
     // Add attribute to skip this in the future
     cmEditor.dataset.xlMonacoInjected = '1';
@@ -988,7 +1089,7 @@ async function replsPathFunction() {
           if (!editorElm) {
             console.debug(
               `[XL] Disposing unused Monaco Editor for file`,
-              xlMonacoEditors[editorId]
+              xlMonacoEditors[editorId].filePath
             );
             editor.dispose();
             delete xlMonacoEditors[editorId];
