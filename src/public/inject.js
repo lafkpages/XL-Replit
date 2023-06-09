@@ -615,6 +615,9 @@ function injectMonacoEditors() {
     // Is .setValue() being called?
     let isSetValue = false;
 
+    // Current user ID
+    const userId = findApolloState('CurrentUser')?.id || null;
+
     // Create OT channel
     openGovalChannel('ot', `ot-xl:${filePath}`, 2).then((res) => {
       xlMonacoEditors[editorId].otChannel = res.openChanRes.id;
@@ -655,8 +658,23 @@ function injectMonacoEditors() {
           // monacoEditor.setValue(msg.otstatus.contents);
         }
 
-        if (msg?.ot?.version) {
-          xlMonacoEditors[editorId].version = msg.ot.version;
+        if (msg?.ot) {
+          if (msg.ot.version) {
+            xlMonacoEditors[editorId].version = msg.ot.version;
+          }
+
+          if (msg.ot.op instanceof Array) {
+            if (msg.ot.userId != userId) {
+              const { file: newVal } = applyOTs(
+                monacoEditor.getValue(),
+                msg.ot.op
+              );
+
+              isSetValue = true;
+              monacoEditor.setValue(newVal);
+              isSetValue = false;
+            }
+          }
         }
       };
     });
@@ -1055,6 +1073,9 @@ async function replsPathFunction() {
   replitProtocol = await requirePromise([
     'https://unpkg.com/@replit/protocol/main/index.js',
   ]);
+
+  // Load OT utils
+  await loadScript(`${XL_REPLIT_EXTENSION_URL}/src/public/ot.js`);
 
   // Layout container
   const layoutContainer = document.querySelector('main header ~ div');
