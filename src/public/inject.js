@@ -344,7 +344,6 @@ async function openGovalChannel(service, name, action = 0) {
   );
 
   if (res.openChanRes.error) {
-    // TODO: custom XL Replit Goval Error class
     throw new XLReplitError(res.openChanRes.error, res);
   }
 
