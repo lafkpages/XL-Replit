@@ -582,7 +582,7 @@ function injectMonacoEditors() {
     }
 
     // Editor value
-    const value = `// Test monaco editor from XL Replit\n// ${filePath}`;
+    const value = `Loading ${filePath} ...`;
 
     // Monaco model
     let monacoModel = null;
