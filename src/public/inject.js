@@ -591,7 +591,8 @@ function injectMonacoEditors() {
         undefined,
         monaco.Uri.file(filePath)
       );
-    } catch {
+    } catch (e) {
+      console.warn(`[XL] Failed to create Monaco model for ${filePath}:`, e);
       continue;
     }
 
@@ -1091,6 +1092,7 @@ async function replsPathFunction() {
               `[XL] Disposing unused Monaco Editor for file`,
               xlMonacoEditors[editorId].filePath
             );
+            editor.getModel().dispose();
             editor.dispose();
             delete xlMonacoEditors[editorId];
           }
