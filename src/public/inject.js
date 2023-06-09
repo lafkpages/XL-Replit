@@ -28,7 +28,7 @@ const username =
   document
     .getElementsByClassName('username')[0]
     ?.textContent.replace(/^@/, '') ||
-  __NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
+  globalThis.__NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
   null;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
