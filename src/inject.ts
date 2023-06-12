@@ -554,6 +554,9 @@ function injectAccountSwitcher() {
   const themeSwitcherCont = document.querySelector(
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
   )?.parentElement;
+
+  // TODO: Firefox doesn't support :has() yet
+
   if (themeSwitcherCont) {
     // Build account switcher
     const accountSwitcherIcon = document
