@@ -189,3 +189,44 @@ div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button {
 div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button.primary {
   background: var(--accent-primary-dimmer);
 }
+
+div#xl-replit-account-switcher-cont {
+  position: relative;
+}
+
+#xl-replit-account-switcher-icon {
+  position: absolute;
+  left: 10px;
+  top: 11px;
+  pointer-events: none;
+}
+
+#xl-replit-account-switcher-arrow {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  pointer-events: none;
+}
+
+select#xl-replit-account-switcher {
+  appearance: none;
+  line-height: var(--line-height-default);
+  font-size: var(--font-size-default);
+  font-family: var(--font-family-default);
+  padding-left: 32px;
+  padding-right: 8px;
+}
+
+#xl-tosdr-badge {
+  display: block;
+  margin-bottom: var(--space-24);
+  height: min-content;
+}
+
+#xl-tosdr-badge img {
+  display: block;
+}
+
+[data-xl-replit-large-cursor='1'] .cm-cursor {
+  transform: scale(1.5);
+}

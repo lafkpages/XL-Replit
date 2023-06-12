@@ -1,0 +1,82 @@
+html {
+  width: 500px;
+  height: 200px;
+
+  --yellowish: #3f2900;
+}
+
+body {
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block-end: 0px;
+}
+
+input {
+  border: 1px solid grey;
+  border-radius: 3px;
+}
+
+input[data-valid] {
+  border-width: 2px;
+}
+
+input[data-valid='1'] {
+  border-color: green;
+}
+
+input[data-valid='0'] {
+  border-color: red;
+}
+
+div.settings-cont {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+div.settings-cont > div:first-of-type {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.settings-cont > div.advanced {
+  display: none;
+  color: var(--yellowish);
+}
+
+div.settings-cont[data-advanced='1'] > div.advanced {
+  display: block;
+}
+
+div.settings-cont > div > * {
+  vertical-align: middle;
+}
+
+div#experiments > div {
+  color: var(--yellowish);
+}
+
+div#experiments-cont {
+  display: none;
+}
+
+div#experiments-cont[data-experiments='1'] {
+  display: contents;
+}

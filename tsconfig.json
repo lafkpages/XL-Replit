@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "ES2022"],
+    "strict": true,
+    "module": "UMD",
+    "moduleResolution": "node",
+    "target": "es6",
+    "sourceMap": false,
+    "rootDir": "src",
+    "outDir": "dist/js",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["requirejs", "chrome"]
+  }
+}
