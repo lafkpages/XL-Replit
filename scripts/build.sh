@@ -1,9 +1,15 @@
 #!/bin/bash
 
-isDev="0"
 if [ "$1" = "dev" ]; then
   isDev="1"
+  export NODE_ENV="dev"
+else
+  isDev="0"
+  export NODE_ENV="production"
 fi
+
+# Install dependencies
+npm i
 
 # Remove old builds
 rm -rf "dist"
