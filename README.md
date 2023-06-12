@@ -52,6 +52,8 @@ Click on Load unpacked and select the `dist` folder.
 
 Go to the [Firefox debugging page](about:debugging#/runtime/this-firefox) and click on Load Temporary Add-on, then select the `dist/manifest.json` file.
 
+Also, note that on Firefox you must have enabled the `layout.css.has-selector.enabled` flag in the [`about:config` page](about:config).
+
 ## Suggest data
 
 If you have some relevant data for someone's profile, please fill out [this form](https://xl-replit.lafkpages.tech/suggestData) with the data and it will be reviewed by a moderator.
