@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/webextension.json",
   "manifest_version": 3,
   "name": "XL Replit",
   "description": "Extra features for the Replit website.",
