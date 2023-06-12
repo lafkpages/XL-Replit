@@ -6,8 +6,8 @@
   "minimum_chrome_version": "105",
   "author": "LuisAFK",
   "icons": {
-    "192": "assets/favicon.png",
-    "128": "assets/favicon128.png"
+    "192": "public/assets/favicon.png",
+    "128": "public/assets/favicon128.png"
   },
   "permissions": ["storage", "declarativeNetRequest"],
   "optional_permissions": ["cookies"],
@@ -21,7 +21,7 @@
       {
         "id": "block_gql",
         "enabled": false,
-        "path": "src/net-rules/block_gql.json"
+        "path": "net-rules/block_gql.json"
       }
     ]
   },
@@ -32,26 +32,26 @@
         "https://firewalledreplit.com/*",
         "https://staging.replit.com/*"
       ],
-      "css": ["src/content.css"],
-      "js": ["src/content.js"],
+      "css": ["css/content.css"],
+      "js": ["content.js"],
       "run_at": "document_start"
     }
   ],
   "background": {
-    "service_worker": "src/service-worker.js"
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/public/*"],
+      "resources": ["public/*", "inject.js", "ot.js"],
       "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"]
     }
   ],
   "action": {
-    "default_popup": "src/popup.html",
+    "default_popup": "html/popup.html",
     "default_title": "XL Replit",
     "default_icon": {
-      "192": "assets/favicon.png",
-      "128": "assets/favicon128.png"
+      "192": "public/assets/favicon.png",
+      "128": "public/assets/favicon128.png"
     }
   }
 }

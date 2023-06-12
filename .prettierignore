@@ -1,2 +1,4 @@
-src/public/2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js
-src/public/require.js
+public/2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js
+public/require.js
+dist
+node_modules

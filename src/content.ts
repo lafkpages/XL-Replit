@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
       }
 
       const s = document.createElement('script');
-      s.src = chrome.runtime.getURL('src/public/inject.js');
+      s.src = chrome.runtime.getURL('inject.js');
       s.dataset.sid = sids?.length ? `1${sids[activeSid]}` : '0,null';
       s.dataset.activeSid = activeSid.toString();
       s.dataset.usernames = usernames?.join(',') || '';
-      s.dataset.settings = settings ? JSON.stringify(settings) : null;
+      s.dataset.settings = settings ? JSON.stringify(settings) : undefined;
       document.head.appendChild(s);
       console.debug('[XL] Injected script');
     });
@@ -41,24 +41,31 @@ window.addEventListener('load', (e) => {
   }
 });
 
-window.addEventListener('xl-replit-change-active-sid', (e) => {
-  console.debug('[XL] Changing active SID to', e.detail);
-  chrome.storage.local.get(['sid']).then(({ sid: sids }) => {
-    chrome.storage.local
-      .set({
-        activeSid: e.detail,
-      })
-      .then(() => {
-        chrome.runtime.sendMessage(
-          {
-            type: 'change-active-sid',
-            value: sids[e.detail],
-          },
-          {},
-          () => {
-            window.location.reload();
-          }
-        );
-      });
-  });
-});
+window.addEventListener(
+  'xl-replit-change-active-sid',
+  (e: Event | CustomEvent<string>) => {
+    if (!('detail' in e)) {
+      return;
+    }
+
+    console.debug('[XL] Changing active SID to', e.detail);
+    chrome.storage.local.get(['sid']).then(({ sid: sids }) => {
+      chrome.storage.local
+        .set({
+          activeSid: e.detail,
+        })
+        .then(() => {
+          chrome.runtime.sendMessage(
+            {
+              type: 'change-active-sid',
+              value: sids[e.detail],
+            },
+            {},
+            () => {
+              window.location.reload();
+            }
+          );
+        });
+    });
+  }
+);

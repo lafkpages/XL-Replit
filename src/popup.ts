@@ -1,12 +1,25 @@
-const sidsCont = document.getElementById('sids');
-const saveSidButton = document.getElementById('save-sid');
-const delButton = document.getElementById('delete-sid');
-const newSidButton = document.getElementById('new-sid');
-const settingsCont = document.getElementById('settings');
-const experimentsCont = document.getElementById('experiments-cont');
+const sidsCont = document.getElementById('sids') as HTMLDivElement;
+const saveSidButton = document.getElementById(
+  'save-sid'
+) as HTMLButtonElement | null;
+const delButton = document.getElementById(
+  'delete-sid'
+) as HTMLButtonElement | null;
+const newSidButton = document.getElementById(
+  'new-sid'
+) as HTMLButtonElement | null;
+const settingsCont = document.getElementById('settings') as HTMLDivElement;
+const experimentsCont = document.getElementById(
+  'experiments-cont'
+) as HTMLDivElement;
 
 let userId = null;
-let settings = {
+let settings: {
+  [key: string]: boolean;
+
+  // For now, settings are boolean. In the future,
+  // maybe allow more types?
+} = {
   'show-advanced-settings': false,
   'account-switcher': false,
   'old-cover-page': false,
@@ -23,7 +36,9 @@ let settings = {
 };
 
 // Some settings require optional permissions
-const settingPermissions = {
+const settingPermissions: {
+  [key: string]: string[]; // TODO: make key keyof settings
+} = {
   'account-switcher': ['cookies'],
 };
 
@@ -36,14 +51,14 @@ const REPLIT_ORIGINS = [
 const REPLIT_URLS = REPLIT_ORIGINS.map((url) => url + '/*');
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
-function parseSid(sid) {
+function parseSid(sid: string) {
   if (sid[1] != ':') {
     return decodeURIComponent(sid);
   }
   return sid;
 }
 
-function setSetting(key, val) {
+function setSetting(key: string, val: boolean) {
   return new Promise((resolve, reject) => {
     settings[key] = val;
 
@@ -54,18 +69,18 @@ function setSetting(key, val) {
       .then(() => {
         console.log('[XL] Saved settings');
 
-        resolve();
+        resolve(true);
       })
       .catch(reject);
 
     switch (key) {
       case 'show-advanced-settings': {
-        settingsCont.dataset.advanced = +val;
+        settingsCont.dataset.advanced = (+val).toString();
         break;
       }
 
       case 'show-experiments': {
-        experimentsCont.dataset.experiments = +val;
+        experimentsCont.dataset.experiments = (+val).toString();
         break;
       }
 
@@ -80,8 +95,10 @@ function setSetting(key, val) {
   });
 }
 
-saveSidButton.addEventListener('click', (e) => {
-  const sids = [...sidsCont.children].map((i) => parseSid(i.value));
+saveSidButton?.addEventListener('click', (e) => {
+  const sids = Array.from(
+    sidsCont.children as HTMLCollectionOf<HTMLInputElement>
+  ).map((i) => parseSid(i.value));
 
   // check if the SIDs are correct
   fetch(`${BACKEND}/checkSid`, {
@@ -92,13 +109,14 @@ saveSidButton.addEventListener('click', (e) => {
     },
   }).then((resp) => {
     resp.text().then((results) => {
-      const usernames = resp.headers.get('x-usernames').split(',');
+      const usernames = resp.headers.get('x-usernames')?.split(',');
       console.log('[XL] Got usernames:', usernames);
       console.log('[XL] SIDs valid:', results);
 
       for (let i = 0; i < results.length; i++) {
-        sidsCont.children[i].dataset.valid = results[i];
-        sidsCont.children[i].title = usernames[i];
+        const input = sidsCont.children[i] as HTMLInputElement;
+        input.dataset.valid = results[i];
+        input.title = usernames?.[i] || '';
       }
 
       chrome.storage.local
@@ -124,7 +142,7 @@ saveSidButton.addEventListener('click', (e) => {
 //     });
 // });
 
-newSidButton.addEventListener('click', (e) => {
+newSidButton?.addEventListener('click', (e) => {
   const inp = document.createElement('input');
   inp.type = 'text';
   inp.placeholder = 'Enter your SID here...';
@@ -137,7 +155,9 @@ chrome.storage.local
   .then(({ userId: storedUserId, sid: sids, settings: storedSettings }) => {
     if (storedUserId) {
       // sidInput.disabled = false;
-      saveSidButton.disabled = false;
+      if (saveSidButton) {
+        saveSidButton.disabled = false;
+      }
       userId = storedUserId;
       console.debug('[XL] Got user ID from storage:', userId);
     }
@@ -150,7 +170,7 @@ chrome.storage.local
       console.debug('[XL] Got SIDs from storage');
 
       for (let i = 0; i < sids.length; i++) {
-        let inp = sidsCont.children[i];
+        let inp = sidsCont.children[i] as HTMLInputElement;
 
         if (!inp) {
           inp = document.createElement('input');
@@ -178,7 +198,7 @@ chrome.storage.local
     }
 
     for (const [key, val] of Object.entries(settings)) {
-      const elm = document.querySelector(
+      const elm: HTMLInputElement | null = document.querySelector(
         `div.settings-cont input[name="${key}"]`
       );
 
@@ -189,26 +209,31 @@ chrome.storage.local
       if (elm.type == 'checkbox') {
         elm.checked = val;
       } else {
-        elm.value = val;
+        elm.value = val.toString();
       }
 
       if (key == 'show-advanced-settings') {
-        settingsCont.dataset.advanced = +val;
+        settingsCont.dataset.advanced = (+val).toString();
       } else if (key == 'show-experiments') {
-        experimentsCont.dataset.experiments = +val;
+        experimentsCont.dataset.experiments = (+val).toString();
       }
     }
   });
 
 document.addEventListener('input', (e) => {
-  if (!e.target.matches('div.settings-cont *')) {
+  if (!(e.target instanceof HTMLInputElement)) {
+    return;
+  }
+
+  if (!e.target?.matches('div.settings-cont *')) {
     return;
   }
 
   console.debug('[XL] Settings changed');
 
   const key = e.target.name;
-  const val = e.target.type == 'checkbox' ? e.target.checked : e.target.value;
+  const val =
+    /*e.target.type == 'checkbox' ?*/ e.target.checked; /*: e.target.value*/
 
   if (key in settingPermissions) {
     chrome.permissions

@@ -61,7 +61,7 @@ div.settings-cont > div.advanced {
   color: var(--yellowish);
 }
 
-div.settings-cont[data-advanced="1"] > div.advanced {
+div.settings-cont[data-advanced='1'] > div.advanced {
   display: block;
 }
 
@@ -77,6 +77,6 @@ div#experiments-cont {
   display: none;
 }
 
-div#experiments-cont[data-experiments="1"] {
+div#experiments-cont[data-experiments='1'] {
   display: contents;
 }

@@ -227,6 +227,6 @@ select#xl-replit-account-switcher {
   display: block;
 }
 
-[data-xl-replit-large-cursor="1"] .cm-cursor {
+[data-xl-replit-large-cursor='1'] .cm-cursor {
   transform: scale(1.5);
 }

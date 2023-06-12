@@ -2,9 +2,12 @@
 // https://replit.com/@LuisAFK/OT-Catchup#ot.js
 //
 
-function simplifyOTs(ots, recurse = true) {
+import type { OTv1, OT, Diff, OTv2 } from './types';
+
+export function simplifyOTs(ots: OTv1[], recurse = true) {
   // Remove unnecessary/empty skips/inserts
-  const result1 = [];
+  const result1: OTv1[] = [];
+
   for (let i = 0; i < ots.length; i++) {
     const ot = ots[i];
 
@@ -20,7 +23,7 @@ function simplifyOTs(ots, recurse = true) {
   }
 
   // Combine consecutive skips/inserts
-  const result2 = [];
+  const result2: OTv1[] = [];
   for (let i = 0; i < result1.length; i++) {
     const ot = result1[i];
     const nextOt = result1[i + 1];
@@ -62,10 +65,10 @@ function simplifyOTs(ots, recurse = true) {
   return result3;
 }
 
-function flattenOTs(ots, file = '') {
+export function flattenOTs(ots: OTv1[][], file = '') {
   // TIDO: actually flatten instead of goofy negative skip workaround
 
-  const result = [];
+  const result: OTv1[] = [];
 
   for (const otGroup of ots) {
     const { cursor, file: newFile } = applyOTs(file, otGroup);
@@ -83,50 +86,25 @@ function flattenOTs(ots, file = '') {
   return simplifyOTs(result);
 }
 
-function applyOTs(file, ots, start = 0, err = true) {
+export function applyOTs(file: string, ots: OT[], start = 0, err = true) {
   let cursor = start;
 
-  ots = simplifyOTs(ots);
+  const _ots = simplifyOTs(otsV2ToV1(ots));
 
-  for (let ot of ots) {
-    // According to Turbio's crosis docs, the following is a valid OT:
-    // { insert: 'hi' }
-
+  for (let ot of _ots) {
     if (ot.insert) {
-      ot = {
-        op: 'insert',
-        chars: ot.insert,
-      };
+      file = file.substring(0, cursor) + ot.insert + file.substring(cursor);
+      cursor += ot.insert.length;
     } else if (ot.delete) {
-      ot = {
-        op: 'delete',
-        count: ot.delete,
-      };
+      if (cursor + ot.delete > file.length && err) {
+        throw new Error("Can't delete past the end of a string");
+      }
+      file = file.substring(0, cursor) + file.substr(cursor + ot.delete);
     } else if (ot.skip) {
-      ot = {
-        op: 'skip',
-        count: ot.skip,
-      };
-    }
-
-    switch (ot.ot || ot.op) {
-      case 'insert':
-        file = file.substr(0, cursor) + ot.chars + file.substr(cursor);
-        cursor += ot.chars.length;
-        break;
-
-      case 'delete':
-        if (cursor + ot.count > file.length && err) {
-          throw new Error("Can't delete past the end of a string");
-        }
-        file = file.substr(0, cursor) + file.substr(cursor + ot.count);
-        break;
-
-      case 'skip':
-        cursor += ot.count;
-        if (cursor > file.length && err) {
-          throw new Error("Can't skip past the end of a string");
-        }
+      cursor += ot.skip;
+      if (cursor > file.length && err) {
+        throw new Error("Can't skip past the end of a string");
+      }
     }
   }
 
@@ -136,7 +114,12 @@ function applyOTs(file, ots, start = 0, err = true) {
   };
 }
 
-function verifyOTs(stale, latest, ots, err = true) {
+export function verifyOTs(
+  stale: string,
+  latest: string,
+  ots: OT[],
+  err = true
+) {
   try {
     return applyOTs(stale, ots, 0, err).file == latest;
   } catch {
@@ -144,8 +127,8 @@ function verifyOTs(stale, latest, ots, err = true) {
   }
 }
 
-function diffsToOTs(diffs) {
-  const ots = [];
+export function diffsToOTs(diffs: Diff[]) {
+  const ots: OTv1[] = [];
 
   for (const diff of diffs) {
     if (diff.added) {
@@ -164,4 +147,31 @@ function diffsToOTs(diffs) {
   }
 
   return simplifyOTs(ots);
+}
+
+export function otV2ToV1(ot: OT) {
+  if ('op' in ot) {
+    switch (ot.op) {
+      case 'insert':
+        return {
+          insert: ot.value,
+        };
+
+      case 'delete':
+        return {
+          delete: ot.count,
+        };
+
+      case 'skip':
+        return {
+          skip: ot.count,
+        };
+    }
+  }
+
+  return ot;
+}
+
+export function otsV2ToV1(ots: OT[]) {
+  return ots.map(otV2ToV1);
 }

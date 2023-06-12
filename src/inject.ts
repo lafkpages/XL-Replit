@@ -1,11 +1,19 @@
+import { applyOTs } from './ot';
+import { api as replitProtocol } from '@replit/protocol';
+import type { ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
+
+if (!(document.currentScript && 'src' in document.currentScript)) {
+  throw new Error('Assertion failed');
+}
+
 console.debug('[XL] Inject script loaded');
 
 // Get the selected SID passed from content script
-const rawSid = document.currentScript.dataset.sid;
+const rawSid = document.currentScript.dataset.sid || '0';
 delete document.currentScript.dataset.sid;
 
 // Get the index of the active SID
-const activeSid = parseInt(document.currentScript.dataset.activeSid);
+const activeSid = parseInt(document.currentScript.dataset.activeSid!);
 delete document.currentScript.dataset.activeSid;
 
 // Get XL settings
@@ -18,8 +26,8 @@ const hasSid = rawSid[0] == '1';
 const sid = hasSid ? rawSid.substring(1) : null;
 
 // Get usernames (same order as SIDs)
-const usernames = document.currentScript.dataset.usernames
-  .split(',')
+const usernames = document.currentScript.dataset
+  .usernames!.split(',')
   .filter((u) => !!u);
 delete document.currentScript.dataset.usernames;
 
@@ -27,7 +35,7 @@ delete document.currentScript.dataset.usernames;
 const username =
   document
     .getElementsByClassName('username')[0]
-    ?.textContent.replace(/^@/, '') ||
+    ?.textContent?.replace(/^@/, '') ||
   globalThis.__NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
   null;
 
@@ -49,16 +57,16 @@ const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
 // Fire URL change events
 (() => {
   const oldPushState = history.pushState;
-  history.pushState = function pushState() {
-    const ret = oldPushState.apply(this, arguments);
+  history.pushState = function pushState(state, unused, url?) {
+    const ret = oldPushState.apply(this, [state, unused, url]);
     window.dispatchEvent(new Event('pushstate'));
     window.dispatchEvent(new Event('locationchange'));
     return ret;
   };
 
   const oldReplaceState = history.replaceState;
-  history.replaceState = function replaceState() {
-    const ret = oldReplaceState.apply(this, arguments);
+  history.replaceState = function replaceState(state, unused, url?) {
+    const ret = oldReplaceState.apply(this, [state, unused, url]);
     window.dispatchEvent(new Event('replacestate'));
     window.dispatchEvent(new Event('locationchange'));
     return ret;
@@ -72,22 +80,25 @@ const noNextUrls = /^\/(graphql|is_authenticated|\?(__cf))$/;
 // Has loaded RequireJS
 let hasLoadedRequireJS = false;
 
-// Replit protocol API
-let replitProtocol = null;
-
 // Overwrite global WebSocket class
 const _WebSocket = WebSocket;
-let govalWebSocket = null;
-let govalWebSocketOnMessage = null;
+let govalWebSocket: WebSocket | null = null;
+let govalWebSocketOnMessage: ((e: MessageEvent) => void) | null = null;
 let govalWebSocketConns = 0;
-const govalWebSocketRefHandlers = {};
+const govalWebSocketRefHandlers: {
+  [ref: string]: (data: any) => void;
+} = {};
 WebSocket = class WebSocket extends _WebSocket {
-  constructor(url) {
-    if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url)) {
+  _isGovalWebSocket: boolean = false;
+
+  constructor(url: string | URL, protocols: string | string[] = []) {
+    super(url, protocols);
+
+    if (!govalWebSocket && REPLIT_GOVAL_URL_REGEX.test(url.toString())) {
       govalWebSocketConns++;
 
       console.debug('[XL] Intercepted Replit Goval WebSocket');
-      govalWebSocket = super(...arguments);
+      govalWebSocket = this;
 
       this._isGovalWebSocket = true;
 
@@ -95,8 +106,6 @@ WebSocket = class WebSocket extends _WebSocket {
         govalWebSocket = null;
         govalWebSocketOnMessage = null;
       });
-    } else {
-      super(...arguments);
     }
   }
 
@@ -120,21 +129,21 @@ WebSocket = class WebSocket extends _WebSocket {
             }
 
             if (xlGovalChannels[data?.channel]) {
-              if (xlGovalChannels[data.channel].handler) {
-                xlGovalChannels[data.channel].handler(data);
+              if (xlGovalChannels[data.channel].handler instanceof Function) {
+                xlGovalChannels[data.channel].handler!(data);
               }
               return;
             }
           }
 
-          return govalWebSocketOnMessage.call(govalWebSocket, e);
+          return govalWebSocket && govalWebSocketOnMessage
+            ? govalWebSocketOnMessage.call(govalWebSocket, e)
+            : null;
         };
       }
     } else {
       super.onmessage = v;
     }
-
-    return v;
   }
 
   get onmessage() {
@@ -144,7 +153,9 @@ WebSocket = class WebSocket extends _WebSocket {
 
 // XL Replit errors
 class XLReplitError extends Error {
-  constructor(message, data = null) {
+  data: any;
+
+  constructor(message: string, data: any = null) {
     super(message);
     this.name = 'XLReplitError';
 
@@ -155,15 +166,28 @@ class XLReplitError extends Error {
 }
 
 // XL Replit Goval channels
-let xlGovalChannels = {};
+let xlGovalChannels: {
+  [channel: number]: XLGovalChannel;
+} = {};
 
 // XL Monaco Editors by IDs
-const xlMonacoEditors = {};
+const xlMonacoEditors: {
+  [id: string]: {
+    filePath: string;
+    otChannel?: number;
+    version?: number;
+  };
+} = {};
 
-async function graphQl(path, variables) {
+async function graphQl(
+  path: string,
+  variables: {
+    [key: string]: string;
+  } = {}
+) {
   const urlParams = new URLSearchParams();
-  for (const kv of Object.entries(variables)) {
-    urlParams.set(...kv);
+  for (const [k, v] of Object.entries(variables)) {
+    urlParams.set(k, v);
   }
 
   return await (
@@ -177,41 +201,49 @@ async function graphQl(path, variables) {
   ).json();
 }
 
-async function getProfileUser(lookup, byUsername = false) {
+async function getProfileUser(lookup: string, byUsername = false) {
   return (
     await graphQl('getProfileUser', {
       lookup,
-      byUsername,
+      byUsername: byUsername.toString(),
     })
   ).data[byUsername ? 'userByUsername' : 'user'];
 }
 
-async function getXLUserData(id) {
+async function getXLUserData(id: string) {
   return await (await fetch(`${BACKEND}/user/${encodeURI(id)}`)).json();
 }
 
-async function inviteReadOnlyUserToRepl(replId, username) {
+async function inviteReadOnlyUserToRepl(replId: UUID, username: string) {
   return await graphQl('inviteReadOnly', {
     replId,
     username,
   });
 }
 
-async function getReplByURL(url) {
+async function getReplByURL(url: string) {
   return await graphQl('getReplData', {
     url,
   });
 }
 
-async function getReadOnlyReplByURL(url) {
+async function getReadOnlyReplByURL(url: string) {
   return await graphQl('getReplDataReadOnly', {
     url,
   });
 }
 
-async function tipCycles(amount, id, isTheme = false) {
+async function tipCycles(
+  amount: string | number,
+  id: string | number,
+  isTheme = false
+) {
+  id = id.toString();
+
+  // TODO: make id type UUID
+
   return await graphQl('tipCycles', {
-    amount,
+    amount: amount.toString(),
     ...(isTheme
       ? {
           themeId: id,
@@ -220,27 +252,31 @@ async function tipCycles(amount, id, isTheme = false) {
   });
 }
 
-function capitalize(str) {
-  str = str.split('');
+function capitalize(str: string) {
+  const arr = str.split('');
 
   for (let i = 0; i < str.length; i++) {
     if (i == 0 || /[^\w']/.test(str[i - 1])) {
-      str[i] = str[i].toUpperCase();
+      arr[i] = str[i].toUpperCase();
     }
   }
 
-  return str.join('');
+  return arr.join('');
 }
 
 function getFlags() {
-  return __REPLIT_REDUX_STORE__.getState().user.userInfo.gating || [];
+  return (
+    __REPLIT_REDUX_STORE__?.getState()?.user?.userInfo?.gating ||
+    __NEXT_DATA__?.props.flags ||
+    []
+  );
 }
 
-function getFlag(flag) {
+function getFlag(flag: string) {
   return getFlags().find((f) => f.controlName == flag);
 }
 
-function setFlag(flag, value) {
+function setFlag(flag: string, value: any) {
   const flagObj = getFlag(flag);
 
   if (flagObj) {
@@ -251,27 +287,27 @@ function setFlag(flag, value) {
   return false;
 }
 
-function getXlFlagsElm() {
+function getXlFlagsElm(): HTMLElement {
   return document.querySelector('div#__next > div') || document.body;
 }
 
-function xlFlagToDataset(flag) {
+function xlFlagToDataset(flag: string) {
   return `xlReplit${flag[0].toUpperCase()}${flag.substring(1)}`;
 }
 
-function getXlFlag(flag) {
+function getXlFlag(flag: string) {
   return getXlFlagsElm().dataset[xlFlagToDataset(flag)];
 }
 
-function setXlFlag(flag, value) {
+function setXlFlag(flag: string, value: string) {
   getXlFlagsElm().dataset[xlFlagToDataset(flag)] = value;
 }
 
-function deleteXlFlag(flag) {
+function deleteXlFlag(flag: string) {
   delete getXlFlagsElm().dataset[xlFlagToDataset(flag)];
 }
 
-function loadScript(src) {
+function loadScript(src: string) {
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = src;
@@ -281,17 +317,28 @@ function loadScript(src) {
   });
 }
 
-function requirePromise() {
+function requirePromise(module: string[]) {
   return new Promise((resolve, reject) => {
     try {
-      require(...arguments, resolve);
+      require(module, resolve);
     } catch (e) {
       reject(e);
     }
   });
 }
 
-function sendGovalMessage(channel, message, response = false) {
+function sendGovalMessage(
+  channel: number,
+  message: {},
+  response = false
+): Promise<replitProtocol.Command | null> {
+  if (!(govalWebSocket instanceof WebSocket && replitProtocol)) {
+    throw new XLReplitError('Assertion failed', {
+      govalWebSocketInstanceOfWebSocket: govalWebSocket instanceof WebSocket,
+      replitProtocol: !!replitProtocol,
+    });
+  }
+
   return new Promise((resolve, reject) => {
     if (govalWebSocket?.readyState == WebSocket.OPEN) {
       const ref =
@@ -304,8 +351,8 @@ function sendGovalMessage(channel, message, response = false) {
       }
 
       govalWebSocket.send(
-        replitProtocol.api.Command.encode(
-          new replitProtocol.api.Command({
+        replitProtocol.Command.encode(
+          replitProtocol.Command.create({
             channel,
             ref,
             ...message,
@@ -314,7 +361,7 @@ function sendGovalMessage(channel, message, response = false) {
       );
 
       if (!response) {
-        resolve();
+        resolve(null);
       }
     } else {
       reject('Goval WebSocket not open');
@@ -322,15 +369,21 @@ function sendGovalMessage(channel, message, response = false) {
   });
 }
 
-function decodeGovalMessage(message) {
+function decodeGovalMessage(message: Uint8Array | ArrayBuffer) {
   if (message instanceof ArrayBuffer) {
     message = new Uint8Array(message);
   }
 
-  return replitProtocol.api.Command.decode(message);
+  if (!replitProtocol) {
+    throw new XLReplitError('Assertion failed', {
+      replitProtocol: !!replitProtocol,
+    });
+  }
+
+  return replitProtocol.Command.decode(message as Uint8Array);
 }
 
-async function openGovalChannel(service, name, action = 0) {
+async function openGovalChannel(service: string, name = '', action = 0) {
   const res = await sendGovalMessage(
     0,
     {
@@ -343,19 +396,32 @@ async function openGovalChannel(service, name, action = 0) {
     true
   );
 
-  if (res.openChanRes.error) {
+  if (!res) {
+    throw new XLReplitError('No response', res);
+  }
+
+  if (!res?.openChanRes) {
+    throw new XLReplitError('No open channel response', res);
+  }
+
+  if (res?.openChanRes?.error) {
     throw new XLReplitError(res.openChanRes.error, res);
+  }
+
+  if (!res?.openChanRes?.id) {
+    throw new XLReplitError('Open channel response with no ID', res);
   }
 
   xlGovalChannels[res.openChanRes.id] = {
     openChanRes: res,
-    handler: null,
   };
 
-  return res;
+  return res as replitProtocol.Command & {
+    openChanRes: replitProtocol.OpenChannelRes;
+  };
 }
 
-async function closeGovalChannel(id, action = 0) {
+async function closeGovalChannel(id: number, action = 0) {
   const res = await sendGovalMessage(
     0,
     {
@@ -367,8 +433,12 @@ async function closeGovalChannel(id, action = 0) {
     true
   );
 
-  if (res.closeChanRes.error) {
-    throw new XLReplitError(res.closeChanRes.error, res);
+  if (!res?.closeChanRes) {
+    throw new XLReplitError('No close channel response', res);
+  }
+
+  if ('error' in res?.closeChanRes) {
+    throw new XLReplitError(res.closeChanRes.error as string, res);
   }
 
   delete xlGovalChannels[id];
@@ -376,14 +446,14 @@ async function closeGovalChannel(id, action = 0) {
   return res;
 }
 
-function injectCustomTips(replId, isTheme = false) {
+function injectCustomTips(replId: UUID | number, isTheme = false) {
   const tipsCont = document.querySelector('div#tips');
 
   const tipButtonsCont =
     tipsCont?.querySelector('div > div:nth-child(3)')?.parentElement || null;
 
   // If Repl can't be tipped
-  if (!tipsCont || !tipButtonsCont) {
+  if (!tipsCont || !tipButtonsCont || !tipButtonsCont.parentElement) {
     return false;
   }
 
@@ -417,8 +487,8 @@ function injectCustomTips(replId, isTheme = false) {
   customTipPopupTitle.textContent = 'Custom Tip';
   customTipPopupInp.placeholder = 'Amount of cycles...';
   customTipPopupInp.type = 'number';
-  customTipPopupInp.min = 10;
-  customTipPopupInp.value = 10;
+  customTipPopupInp.min = '10';
+  customTipPopupInp.value = '10';
   customTipPopupInp.required = true;
   customTipPopupCancel.textContent = 'Cancel';
   customTipPopupCancel.type = 'button';
@@ -464,7 +534,7 @@ function injectCustomTips(replId, isTheme = false) {
         customTipPopupCont.classList.remove('show');
 
         // Reload to update tip data
-        next.router.reload();
+        next?.router.reload();
       }
     );
   });
@@ -487,17 +557,22 @@ function injectAccountSwitcher() {
   )?.parentElement;
   if (themeSwitcherCont) {
     // Build account switcher
+    const accountSwitcherIcon = document
+      .querySelector('ul li a[href^="/teams"] svg')
+      ?.cloneNode(true) as SVGElement | undefined;
+
+    if (!accountSwitcherIcon) {
+      return false;
+    }
+
     const themeSwitcher = themeSwitcherCont.children[0];
     const themeSwitcherBtnCont = themeSwitcher.children[0];
-    const themeSwitcherBtn = themeSwitcherBtnCont.querySelector('button');
+    const themeSwitcherBtn = themeSwitcherBtnCont.querySelector('button')!;
     const accountSwitcherCont = document.createElement('div');
     accountSwitcherCont.className = themeSwitcher.className;
     accountSwitcherCont.id = 'xl-replit-account-switcher-cont';
     const accountSwitcherBtnCont = document.createElement('div');
     accountSwitcherBtnCont.className = themeSwitcherBtnCont.className;
-    const accountSwitcherIcon = document
-      .querySelector('ul li a[href^="/teams"] svg')
-      .cloneNode(true);
     accountSwitcherIcon.id = 'xl-replit-account-switcher-icon';
     const accountSwitcherBtn = document.createElement('select');
     accountSwitcherBtn.className = themeSwitcherBtn.className;
@@ -509,17 +584,19 @@ function injectAccountSwitcher() {
     for (let i = 0; i < accountSwitcherUsernames.length; i++) {
       const accountOpt = document.createElement('option');
       accountOpt.textContent = accountSwitcherUsernames[i];
-      accountOpt.value = i;
+      accountOpt.value = i.toString();
       accountOpt.selected = i == activeSid;
       accountSwitcherBtn.appendChild(accountOpt);
     }
     const accountSwitcherArrow = themeSwitcherBtnCont
       .querySelector('svg:nth-of-type(2)')
-      .cloneNode(true);
-    accountSwitcherArrow.id = 'xl-replit-account-switcher-arrow';
+      ?.cloneNode(true) as SVGElement | undefined;
     accountSwitcherBtnCont.appendChild(accountSwitcherIcon);
     accountSwitcherBtnCont.appendChild(accountSwitcherBtn);
-    accountSwitcherBtnCont.appendChild(accountSwitcherArrow);
+    if (accountSwitcherArrow) {
+      accountSwitcherArrow.id = 'xl-replit-account-switcher-arrow';
+      accountSwitcherBtnCont.appendChild(accountSwitcherArrow);
+    }
     accountSwitcherCont.appendChild(accountSwitcherBtnCont);
     themeSwitcherCont.insertBefore(
       accountSwitcherCont,
@@ -550,17 +627,23 @@ function injectMonacoEditors() {
 
   registerMonacoReplitTheme();
 
-  const cmEditors = document.getElementsByClassName('cm-editor');
+  const cmEditors = document.getElementsByClassName(
+    'cm-editor'
+  ) as HTMLCollectionOf<HTMLDivElement>;
 
-  for (const cmEditor of cmEditors) {
+  for (const cmEditor of Array.from(cmEditors)) {
     // Ignore if already injected
     if (cmEditor.dataset.xlMonacoInjected) {
       continue;
     }
 
+    if (!cmEditor.parentElement?.parentElement) {
+      continue;
+    }
+
     // Get file path
     const filePath =
-      cmEditor.parentElement.parentElement.dataset.cy.match(
+      cmEditor.parentElement.parentElement.dataset.cy?.match(
         /^workspace-cm-editor-(.+)$/i
       )?.[1] || null;
 
@@ -582,6 +665,7 @@ function injectMonacoEditors() {
           if (
             mutation.type == 'attributes' &&
             mutation.attributeName == 'data-cy' &&
+            mutation.target instanceof HTMLElement &&
             mutation.target.dataset.cy != 'workspace-cm-editor-loading'
           ) {
             injectMonacoEditors();
@@ -641,7 +725,7 @@ function injectMonacoEditors() {
     const userId = findApolloState('CurrentUser')?.id || null;
 
     // Flush OTs timeout
-    let flushOtsTimeout = null;
+    let flushOtsTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Create OT channel
     openGovalChannel('ot', `ot-xl:${filePath}`, 2).then((res) => {
@@ -659,6 +743,10 @@ function injectMonacoEditors() {
         },
         true
       ).then((otLinkFileRes) => {
+        if (!otLinkFileRes) {
+          throw new XLReplitError('Failed to link file', editorId);
+        }
+
         const contentsBin =
           otLinkFileRes?.otLinkFileResponse?.linkedFile?.content || null;
         const contentsStr = contentsBin
@@ -671,8 +759,10 @@ function injectMonacoEditors() {
           isSetValue = false;
         }
 
-        xlMonacoEditors[editorId].version =
-          otLinkFileRes.otLinkFileResponse.version;
+        if (typeof otLinkFileRes?.otLinkFileResponse?.version == 'number') {
+          xlMonacoEditors[editorId].version =
+            otLinkFileRes.otLinkFileResponse.version;
+        }
       });
 
       // Listen to channel messages
@@ -705,7 +795,8 @@ function injectMonacoEditors() {
     });
 
     // On change
-    monacoEditor.onDidChangeModelContent((e) => {
+    monacoEditor.onDidChangeModelContent((e: any) => {
+      // TODO: fix e type
       if (isSetValue) {
         return;
       }
@@ -742,7 +833,7 @@ function injectMonacoEditors() {
       // Send OTs
       sendGovalMessage(
         // TODO: debounce this
-        xlMonacoEditors[editorId].otChannel,
+        xlMonacoEditors[editorId].otChannel!,
         {
           ot: {
             spookyVersion: xlMonacoEditors[editorId].version,
@@ -754,10 +845,12 @@ function injectMonacoEditors() {
         console.debug('[XL] Send OTs:', res);
 
         // Flush OTs
-        clearTimeout(flushOtsTimeout);
+        if (flushOtsTimeout) {
+          clearTimeout(flushOtsTimeout);
+        }
         flushOtsTimeout = setTimeout(() => {
           console.debug('[XL] Flushing OTs');
-          sendGovalMessage(xlMonacoEditors[editorId].otChannel, {
+          sendGovalMessage(xlMonacoEditors[editorId].otChannel!, {
             flush: {},
           });
         }, 1000);
@@ -771,13 +864,15 @@ function injectMonacoEditors() {
 
   // When WS disconnects, kill all editors
   govalWebSocket?.addEventListener('close', () => {
-    const cmEditors = document.getElementsByClassName('cm-editor');
+    const cmEditors = document.getElementsByClassName(
+      'cm-editor'
+    ) as HTMLCollectionOf<HTMLDivElement>;
 
-    for (const cmEditor of cmEditors) {
+    for (const cmEditor of Array.from(cmEditors)) {
       delete cmEditor.dataset.xlMonacoInjected;
     }
 
-    for (const editor of monaco.editor.getEditors()) {
+    for (const editor of monaco?.editor.getEditors()) {
       editor.getModel().dispose();
       editor.dispose();
     }
@@ -798,20 +893,22 @@ function registerMonacoReplitTheme() {
   const base = getCurrentThemeType() == 'light' ? 'vs' : 'vs-dark';
 
   if (themeValues) {
-    const rules = themeValues.values.editor.syntaxHighlighting.map((rule) => ({
-      token: rule.tags[0].name,
+    const rules = (
+      themeValues.values.editor.syntaxHighlighting as ReplitThemeEditorValue[]
+    ).map((rule) => ({
+      token: rule.tags![0].name,
       ...Object.fromEntries(
-        Object.entries(rule.values).map(([k, v]) => {
+        Object.entries(rule.values!).map(([k, v]) => {
           k =
             {
               color: 'foreground',
             }[k] || k;
 
-          v = cssVarToValue(v) || v;
+          v = cssVarToValue(v as string) || v;
 
           if (k.endsWith('ground') && k.length == 10) {
-            if (v[0] == '#') {
-              v = v.substring(1);
+            if ((v as string)[0] == '#') {
+              v = (v as string).substring(1);
             }
           }
 
@@ -844,7 +941,7 @@ function registerMonacoReplitTheme() {
   setXlFlag('monacoThemeRegistered', '1');
 }
 
-function cssVarToValue(css, elm = null) {
+function cssVarToValue(css: string, elm: Element | null = null) {
   const m = css.trim().match(/^var\((.+?)\)$/);
 
   if (!m) {
@@ -858,7 +955,7 @@ function cssVarToValue(css, elm = null) {
   return getComputedStyle(elm).getPropertyValue(m[1]).trim();
 }
 
-function getCurrentThemeType() {
+function getCurrentThemeType(): 'light' | 'dark' | null {
   const customTheme = findApolloState('CustomTheme');
 
   if (customTheme) {
@@ -885,7 +982,11 @@ function getCurrentThemeType() {
   return 'dark';
 }
 
-function findApolloState(query) {
+function findApolloState(query: string | ((key: string) => boolean)) {
+  if (!__NEXT_DATA__?.props?.apolloState) {
+    return null;
+  }
+
   if (typeof query == 'string') {
     const origQuery = query;
     query = (key) => {
@@ -903,7 +1004,7 @@ function findApolloState(query) {
 }
 
 async function profilesPathFunction() {
-  const profileUsername = next.router.state.query.username;
+  const profileUsername = next?.router?.state?.query?.username as string;
 
   // Prevent this from running twice
   const xlReplitPage = `profiles/${profileUsername}`;
@@ -941,7 +1042,7 @@ async function profilesPathFunction() {
     : null;
 
   // Make sure user didn't navigate elsewhere while loading data
-  if (next.router.state.route != '/profile') {
+  if (next?.router?.state?.route != '/profile') {
     return;
   }
 
@@ -951,12 +1052,15 @@ async function profilesPathFunction() {
     .forEach((elm) => elm.remove());
 
   // Load DOM
-  const pfpUrl = document.querySelector('meta[property="og:image"]').content;
-  const pfpCont = document.querySelector(
-    'main div img[src^="data:image"]'
-  ).parentElement;
-  const cont = document.querySelector('main > div:last-of-type > div');
-  const socialMediasDiv = cont.children[2];
+  const pfpUrl = (
+    document.querySelector('meta[property="og:image"]') as HTMLMetaElement
+  ).content;
+  const pfpCont = document.querySelector('main div img[src^="data:image"]')!
+    .parentElement!; // TODO: don't use !, use an if
+  const cont = document.querySelector(
+    'main > div:last-of-type > div'
+  ) as HTMLDivElement;
+  const socialMediasDiv = cont.children[2] as HTMLElement;
 
   // Inject HTML
   document.documentElement.style.setProperty(
@@ -967,7 +1071,7 @@ async function profilesPathFunction() {
   pfpSaveBtn.id = 'xl-replit-profile-pfp-save';
   pfpSaveBtn.textContent = 'Download';
   pfpSaveBtn.role = 'button';
-  pfpSaveBtn.tabIndex = '0';
+  pfpSaveBtn.tabIndex = 0;
   pfpSaveBtn.href = pfpUrl;
   pfpSaveBtn.download = `${profileUsername}-pfp.png`;
   pfpSaveBtn.target = '_blank';
@@ -978,7 +1082,15 @@ async function profilesPathFunction() {
   div.className = socialMediasDiv?.className || '';
   if (socialMediasDiv) socialMediasDiv.style.marginBottom = '0px';
 
-  const items = {
+  const items: {
+    [key: string]: {
+      link?: string | null;
+      value?: string | boolean | null;
+      icon?: string;
+      capitalize?: boolean;
+      flag?: boolean;
+    };
+  } = {
     Discord: {
       value: xlUser.discord?.join(', '),
       icon: 'https://img.icons8.com/material/64/null/discord-new-logo.png',
@@ -1046,11 +1158,11 @@ async function profilesPathFunction() {
     let img = null;
 
     // Capitalize
-    if (item[1].capitalize) {
+    if (item[1].capitalize && typeof item[1].value == 'string') {
       item[1].value = capitalize(item[1].value);
     }
 
-    a.dataset.value = item[1].value;
+    a.dataset.value = item[1].value.toString();
     if (item[1].icon) {
       // Add icon
       img = document.createElement('img');
@@ -1059,7 +1171,7 @@ async function profilesPathFunction() {
       a.appendChild(img);
 
       // Add value
-      const textNode = document.createTextNode(item[1].value);
+      const textNode = document.createTextNode(item[1].value.toString());
       a.appendChild(textNode);
     } else if (item[1].flag && item[1].value) {
       a.textContent = item[0];
@@ -1068,7 +1180,7 @@ async function profilesPathFunction() {
     }
 
     a.className = 'xl-replit-profile-item';
-    if (item[1].link) {
+    if (item[1].link && a instanceof HTMLAnchorElement) {
       a.href = item[1].link;
     } else if (!item[1].flag) {
       a.classList.add('xl-replit-profile-item-copy');
@@ -1081,8 +1193,11 @@ async function profilesPathFunction() {
 }
 
 async function replsPathFunction() {
-  const m = next.router.state.query.replUrl.match(replUrlRegex);
-  let replSlug = m[2];
+  const m =
+    (next?.router?.state?.query?.replUrl as string | undefined)?.match(
+      replUrlRegex
+    ) || null;
+  let replSlug = m?.[2] || null;
 
   // Prevent this from running twice
   const xlReplitPage = `repls/${replSlug}`;
@@ -1095,7 +1210,7 @@ async function replsPathFunction() {
   console.log('[XL] Loading XL Replit data for Repl', replSlug);
 
   // Enable debug
-  if (settings['auto-debug']) {
+  if (settings['auto-debug'] && next?.router?.state?.query) {
     next.router.state.query.debug = true;
   }
 
@@ -1106,20 +1221,13 @@ async function replsPathFunction() {
 
   // Load libs
   require.config({
-    baseUrl: 'https://unpkg.com',
     paths: {
-      protobufjs:
-        'https://unpkg.com/protobufjs/dist/minimal/protobuf.min.js?a=', // PLEASE SOMEONE FIX THIS
-      long: 'https://unpkg.com/long@5.2.3/umd/index.js?a=',
       vs: `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs`,
     },
   });
-  replitProtocol = await requirePromise([
-    'https://unpkg.com/@replit/protocol/main/index.js',
-  ]);
 
   // Load OT utils
-  await loadScript(`${XL_REPLIT_EXTENSION_URL}/src/public/ot.js`);
+  await loadScript(`${XL_REPLIT_EXTENSION_URL}/ot.js`);
 
   // Layout container
   const layoutContainer = document.querySelector('main header ~ div');
@@ -1133,45 +1241,48 @@ async function replsPathFunction() {
     injectMonacoEditors();
 
     // Dispose editors when a pane is closed
-    const mutationObserver = new MutationObserver((mutations) => {
-      let shouldCheckUnusedEditors = false;
+    if (layoutContainer) {
+      const mutationObserver = new MutationObserver((mutations) => {
+        let shouldCheckUnusedEditors = false;
 
-      for (const mutation of mutations) {
-        if (mutation.removedNodes.length) {
-          shouldCheckUnusedEditors = true;
-          break;
-        }
-      }
-
-      if (shouldCheckUnusedEditors) {
-        for (const editor of monaco.editor.getEditors()) {
-          const editorId = editor.getId();
-
-          // Search for the editor ID in the DOM
-          const editorElm = layoutContainer.querySelector(
-            `[data-xl-monaco-id="${editorId}"] .monaco-editor`
-          );
-
-          if (!editorElm) {
-            console.debug(
-              `[XL] Disposing unused Monaco Editor for file`,
-              xlMonacoEditors[editorId].filePath
-            );
-            editor.getModel().dispose();
-            editor.dispose();
-            delete xlMonacoEditors[editorId];
+        for (const mutation of mutations) {
+          if (mutation.removedNodes.length) {
+            shouldCheckUnusedEditors = true;
+            break;
           }
         }
-      }
-    });
-    mutationObserver.observe(layoutContainer, {
-      childList: true,
-    });
+
+        if (shouldCheckUnusedEditors) {
+          for (const editor of monaco?.editor.getEditors()) {
+            const editorId = editor.getId();
+
+            // Search for the editor ID in the DOM
+            const editorElm =
+              layoutContainer.querySelector(
+                `[data-xl-monaco-id="${editorId}"] .monaco-editor`
+              ) || null;
+
+            if (!editorElm) {
+              console.debug(
+                `[XL] Disposing unused Monaco Editor for file`,
+                xlMonacoEditors[editorId].filePath
+              );
+              editor.getModel().dispose();
+              editor.dispose();
+              delete xlMonacoEditors[editorId];
+            }
+          }
+        }
+      });
+      mutationObserver.observe(layoutContainer, {
+        childList: true,
+      });
+    }
   }
 
   // Load Repl data
   const repl = await getReplByURL(window.location.pathname);
-  const replId = repl.data.repl.id;
+  const replId: UUID = repl.data.repl.id;
   replSlug = repl.data.repl.slug;
 
   const runBtn = document.querySelector(
@@ -1179,70 +1290,94 @@ async function replsPathFunction() {
   );
   const inviteBtnSelector =
     'main#main-content header > div:last-of-type div button';
-  let inviteForm = null;
-  let inviteFormInp = null;
-  let inviteFormBtn = null;
-  let inviteFormCloseBtn = null;
+  let inviteForm: HTMLFormElement | null = null;
+  let inviteFormInp: HTMLInputElement | null = null;
+  let inviteFormBtn: HTMLDivElement | null = null;
+  let inviteFormCloseBtn: HTMLButtonElement | null = null;
 
-  document.addEventListener('click', (e) => {
-    // Reinject Monaco editors, Justin Case
-    injectMonacoEditors();
-
-    // Inject read-only invite option when invite form is opened
-    if (!e.target.matches(`${inviteBtnSelector}, ${inviteBtnSelector} *`))
-      return;
-
-    setTimeout(() => {
-      console.log('[XL] Injecting read-only invite option');
-      inviteForm = document.querySelector('form');
-      inviteFormInp = inviteForm.querySelector('input');
-      inviteFormBtn = inviteForm.querySelector(
-        'div > button[type=submit]'
-      ).parentElement;
-      inviteFormCloseBtn = document.querySelector(
-        'div[class*=Modal] div[class*=Modal] div.close-control button'
-      );
-      inviteForm.style.gridTemplateColumns = '1fr auto auto';
-      const readOnlySelect = document.createElement('select');
-      const readOnlySelectReadWriteOpt = document.createElement('option');
-      const readOnlySelectReadOnlyOpt = document.createElement('option');
-      readOnlySelect.id = 'xl-replit-invite-mode-select';
-      readOnlySelectReadWriteOpt.textContent = 'Read and write';
-      readOnlySelectReadWriteOpt.value = 'rw';
-      readOnlySelectReadOnlyOpt.textContent = 'Read only';
-      readOnlySelectReadOnlyOpt.value = 'r';
-      readOnlySelect.appendChild(readOnlySelectReadWriteOpt);
-      readOnlySelect.appendChild(readOnlySelectReadOnlyOpt);
-      inviteForm.insertBefore(readOnlySelect, inviteFormBtn);
-
-      // Disable read-only if no SID provided
-      if (!hasSid) {
-        readOnlySelectReadOnlyOpt.disabled = true;
-        readOnlySelect.title =
-          'Read only is disabled as you have not provided your Replit SID to the extension. To use this feature, open the extension popup and paste your Replit SID in there.';
+  document.addEventListener(
+    'click',
+    (
+      e: MouseEvent & {
+        target?: EventTarget | HTMLElement | null;
       }
+    ) => {
+      // Reinject Monaco editors, Justin Case
+      injectMonacoEditors();
 
-      // Prevent default invite action if read-only
-      inviteFormBtn.addEventListener('click', (e) => {
-        const mode = readOnlySelect.value;
+      // Inject read-only invite option when invite form is opened
+      if (!(e.target && 'matches' in e.target)) return;
+      if (!e.target.matches(`${inviteBtnSelector}, ${inviteBtnSelector} *`))
+        return;
 
-        // Handle read-only invites ourselves
-        if (mode == 'r' && inviteFormInp.value) {
-          e.preventDefault();
+      setTimeout(() => {
+        console.log('[XL] Injecting read-only invite option');
 
-          inviteReadOnlyUserToRepl(replId, inviteFormInp.value).then((data) => {
-            console.debug('[XL] Invited user as read-only to Repl:', data);
-          });
+        inviteForm = document.querySelector('form');
+
+        if (!inviteForm) {
+          return;
         }
-      });
-    }, 1000);
-  });
+
+        inviteFormInp = inviteForm.querySelector('input') || null;
+
+        inviteFormBtn =
+          (inviteForm.querySelector('div > button[type=submit]')
+            ?.parentElement as HTMLDivElement | null) || null;
+
+        inviteFormCloseBtn = document.querySelector(
+          'div[class*=Modal] div[class*=Modal] div.close-control button'
+        );
+
+        inviteForm.style.gridTemplateColumns = '1fr auto auto';
+        const readOnlySelect = document.createElement('select');
+        const readOnlySelectReadWriteOpt = document.createElement('option');
+        const readOnlySelectReadOnlyOpt = document.createElement('option');
+        readOnlySelect.id = 'xl-replit-invite-mode-select';
+        readOnlySelectReadWriteOpt.textContent = 'Read and write';
+        readOnlySelectReadWriteOpt.value = 'rw';
+        readOnlySelectReadOnlyOpt.textContent = 'Read only';
+        readOnlySelectReadOnlyOpt.value = 'r';
+        readOnlySelect.appendChild(readOnlySelectReadWriteOpt);
+        readOnlySelect.appendChild(readOnlySelectReadOnlyOpt);
+        inviteForm.insertBefore(readOnlySelect, inviteFormBtn);
+
+        // Disable read-only if no SID provided
+        if (!hasSid) {
+          readOnlySelectReadOnlyOpt.disabled = true;
+          readOnlySelect.title =
+            'Read only is disabled as you have not provided your Replit SID to the extension. To use this feature, open the extension popup and paste your Replit SID in there.';
+        }
+
+        // Prevent default invite action if read-only
+        inviteFormBtn?.addEventListener('click', (e) => {
+          const mode = readOnlySelect.value;
+
+          // Handle read-only invites ourselves
+          if (mode == 'r' && inviteFormInp?.value) {
+            e.preventDefault();
+
+            inviteReadOnlyUserToRepl(replId, inviteFormInp.value).then(
+              (data) => {
+                console.debug('[XL] Invited user as read-only to Repl:', data);
+              }
+            );
+          }
+        });
+      }, 1000);
+    }
+  );
 
   injectMonacoEditors();
 }
 
 async function replSpotlightPathFunction() {
-  const m = next.router.state.query.replUrl.match(replUrlRegex);
+  const m = (next?.router?.state?.query?.replUrl as string).match(replUrlRegex);
+
+  if (!m) {
+    return;
+  }
+
   let replSlug = m[2];
 
   // Prevent this from running twice
@@ -1258,11 +1393,11 @@ async function replSpotlightPathFunction() {
   const repl = (await getReadOnlyReplByURL(m[0])).data.repl;
   replSlug = repl.slug;
 
-  const didInjectCustomTips = injectCustomTips(repl.id);
+  injectCustomTips(repl.id);
 }
 
 async function themePathFunction() {
-  const themeId = next.router.state.query.themeId;
+  const themeId = next?.router?.state?.query?.themeId as number;
 
   // Prevent this from running twice
   const xlReplitPage = `theme/${themeId}`;
@@ -1286,6 +1421,13 @@ async function termsPathFunction() {
   }
   setXlFlag('page', xlReplitPage);
 
+  // Get main content container
+  const cont = document.querySelector('main .content');
+
+  if (!cont) {
+    return;
+  }
+
   // Inject ToS;DR badge
   const tosdrBadgeImg = new Image();
   tosdrBadgeImg.src = `https://shields.tosdr.org/${TOSDR_SERVICE_ID}.svg`;
@@ -1299,7 +1441,7 @@ async function termsPathFunction() {
   tosdrBadgeLink.id = 'xl-tosdr-badge';
   tosdrBadgeLink.appendChild(tosdrBadgeImg);
 
-  document.querySelector('main .content').prepend(tosdrBadgeLink);
+  cont.prepend(tosdrBadgeLink);
 }
 
 async function main() {
@@ -1310,14 +1452,14 @@ async function main() {
 
   // Load RequireJS
   if (!hasLoadedRequireJS) {
-    await loadScript(`${XL_REPLIT_EXTENSION_URL}/src/public/require.js`);
+    await loadScript(`${XL_REPLIT_EXTENSION_URL}/public/require.js`);
     hasLoadedRequireJS = true;
   }
 
   // Inject account switcher
   injectAccountSwitcher();
 
-  switch (typeof next == 'undefined' ? null : next.router.state.route) {
+  switch (next?.router?.state?.route) {
     case '/profile':
       return profilesPathFunction();
 
@@ -1346,11 +1488,23 @@ window.addEventListener('locationchange', (e) => {
 });
 
 // When item is clicked
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('xl-replit-profile-item-copy')) {
-    navigator.clipboard.writeText(e.target.dataset.value);
+document.addEventListener(
+  'click',
+  (
+    e: MouseEvent & {
+      target?: EventTarget | HTMLElement | null;
+    }
+  ) => {
+    if (e.target && 'classList' in e.target) {
+      if (
+        e.target.classList.contains('xl-replit-profile-item-copy') &&
+        e.target.dataset.value
+      ) {
+        navigator.clipboard.writeText(e.target.dataset.value);
+      }
+    }
   }
-});
+);
 
 // Modify flags
 (async () => {
@@ -1361,10 +1515,10 @@ document.addEventListener('click', (e) => {
   }
 
   // Wait for Next to load
-  while (typeof next == 'undefined') {}
+  while (!('next' in globalThis)) {}
 
   // Set flags
-  next.router.push(`#${SET_FLAGS_HASH}`);
+  next!.router.push(`#${SET_FLAGS_HASH}`);
   if (settings['old-cover-page']) {
     setFlag('flag-new-cover-page', false);
   }
@@ -1387,12 +1541,12 @@ document.addEventListener('click', (e) => {
   if (settings['disable-github-import']) {
     setFlag('flag-disable-github-import', true);
   }
-  next.router.back();
+  next!.router.back();
 
   // Listen for location changes
   // TODO: handle client-side router onLoad
-  const nextRouterPush = next.router.push;
-  next.router.push = function () {
+  const nextRouterPush = next!.router.push;
+  next!.router.push = function () {
     const realUrlToNavigate =
       arguments[arguments.length - 1]?.pathname || arguments[1] || null;
 
@@ -1406,6 +1560,7 @@ document.addEventListener('click', (e) => {
 
     if (settings['force-ssr']) {
       window.location.assign(realUrlToNavigate);
+      return {};
     } else {
       const val = nextRouterPush.bind(this)(...arguments);
 

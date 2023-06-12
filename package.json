@@ -1,0 +1,29 @@
+{
+  "name": "xl-replit",
+  "version": "0.1.0",
+  "description": "Extra features for the Replit website.",
+  "keywords": [],
+  "author": "LuisAFK",
+  "scripts": {
+    "_old_watch": "webpack --config webpack/webpack.dev.js --watch",
+    "_old_build": "webpack --config webpack/webpack.prod.js",
+    "dev": "bash ./scripts/build.sh dev",
+    "build": "bash ./scripts/build.sh prod",
+    "clean": "rm -rf dist",
+    "format": "npx prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lafkpages/XL-Replit.git"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.237",
+    "@types/requirejs": "^2.1.34",
+    "esbuild": "^0.18.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "@replit/protocol": "^0.3.12"
+  }
+}
