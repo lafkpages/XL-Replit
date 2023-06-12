@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "regexFilter": "^(https|wss):\\/\\/((staging\\.)?replit|firewalledreplit)\\.com\\/graphql(_subscriptions)?$",
+      "resource_types": ["other", "websocket", "webtransport", "xmlhttprequest"]
+    }
+  }
+]

@@ -1,0 +1,8 @@
+name: TruffleHog OSS
+on: [push, pull_request]
+jobs:
+  TruffleHog-OSS:
+    runs-on: ubuntu-latest
+    steps:
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.39.0

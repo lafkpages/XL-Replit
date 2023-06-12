@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/css/popup.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XL Replit</title>
+
+    <script src="/popup.js" defer></script>
+    <script src="/public/2.5.3-crypto-sha1-hmac-pbkdf2-blockmodes-aes.js"></script>
+  </head>
+  <body>
+    <h1>XL Replit</h1>
+    <p>An enhanced version of Replit.</p>
+
+    <h2>Features</h2>
+    <ul>
+      <li>Account switcher</li>
+      <li>Custom tips</li>
+      <li>User's email addresses</li>
+      <li>Shows a user's known alt accounts and other data</li>
+      <li>Easily download a user's profile picture</li>
+      <li>Read-only invites for private Repls</li>
+      <li>Monaco</li>
+    </ul>
+
+    <h2>Suggest data</h2>
+    <p>
+      If you have some relevant data for someone's profile, please fill out
+      <a href="https://xl-replit.lafkpages.tech/suggestData" target="_blank"
+        >this form</a
+      >
+      with the data and it will be reviewed by a moderator.
+    </p>
+
+    <h2>Replit SID</h2>
+    <p>
+      Some features of this extension require using your Replit session to
+      perform authenticated actions via Replit's GraphQL. To enable these
+      features, please enter your Replit SID bellow. Note that you can have
+      multiple SIDs for different accounts to use with the account switcher.
+    </p>
+    <div id="sids">
+      <input type="text" id="sid-inp" placeholder="Enter your SID here..." />
+    </div>
+    <div>
+      <!-- TODO: fix bug where this always stays disabled. Removed meanwhile -->
+      <button id="save-sid">Save</button>
+      <button id="new-sid">New</button>
+    </div>
+
+    <h2>Settings</h2>
+    <p>Toggle different features on or off.</p>
+    <div id="settings" class="settings-cont">
+      <div>
+        <input
+          type="checkbox"
+          name="show-advanced-settings"
+          id="show-advanced-settings"
+        />
+        <label for="show-advanced-settings">Show advanced settings</label>
+      </div>
+      <div>
+        <input type="checkbox" name="account-switcher" id="account-switcher" />
+        <label for="account-switcher">Show Account switcher</label>
+      </div>
+      <!-- <div>
+        <input type="checkbox" name="old-cover-page" id="old-cover-page">
+        <label for="old-cover-page">Old cover pages</label>
+      </div> -->
+      <div class="advanced">
+        <input type="checkbox" name="show-experiments" id="show-experiments" />
+        <label for="show-experiments">Show experiments</label>
+      </div>
+      <div class="advanced">
+        <input type="checkbox" name="nix-modules-tool" id="nix-modules-tool" />
+        <label for="nix-modules-tool">Show Nix modules tool</label>
+      </div>
+      <!-- <div>
+        <input type="checkbox" name="extensions-beta" id="extensions-beta">
+        <label for="extensions-beta">Extensions beta</label>
+      </div> -->
+      <!-- <div>
+        <input type="checkbox" name="ssh-tool" id="ssh-tool">
+        <label for="ssh-tool">Show SSH tool</label>
+      </div> -->
+      <div class="advanced">
+        <input type="checkbox" name="auto-debug" id="auto-debug" />
+        <label for="auto-debug">Show debug pane</label>
+      </div>
+      <div class="advanced">
+        <input type="checkbox" name="force-ssr" id="force-ssr" />
+        <label for="force-ssr">Force SSR</label>
+      </div>
+    </div>
+
+    <div id="experiments-cont">
+      <h2>Experiments</h2>
+      <p>Toggle experiments on or off.</p>
+      <div id="experiments" class="settings-cont">
+        <div>
+          <input type="checkbox" name="block-graphql" id="block-graphql" />
+          <label for="block-graphql">Block GraphQL</label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            name="disable-github-import"
+            id="disable-github-import"
+          />
+          <label for="disable-github-import">Disable GitHub import</label>
+        </div>
+        <div>
+          <input type="checkbox" name="large-cursor" id="large-cursor" />
+          <label for="large-cursor">Large cursors</label>
+        </div>
+        <div>
+          <input type="checkbox" name="monaco" id="monaco" />
+          <label for="monaco">Monaco Editor</label>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

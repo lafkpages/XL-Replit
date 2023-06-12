@@ -1,0 +1,232 @@
+main div#xl-replit-profile {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: var(--replit-profile-size, 25vw);
+}
+
+main div#xl-replit-profile > * {
+  width: min-content;
+  display: inline-block;
+}
+
+main div#xl-replit-profile .xl-replit-profile-item {
+  width: max-content;
+  cursor: pointer;
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: var(--border-radius-4);
+  padding: var(--space-4);
+  margin-bottom: var(--space-8);
+  margin-right: var(--space-16);
+  border: none;
+  color: var(--foreground-dimmer);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
+
+main div#xl-replit-profile .xl-replit-profile-item:hover {
+  background: var(--interactive-background--active);
+}
+
+main div#xl-replit-profile .xl-replit-profile-item-icon {
+  width: 16px;
+  height: 16px;
+  filter: invert(0.5);
+  margin-right: var(--space-8);
+}
+
+main #xl-replit-profile-pfp-save {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background: var(--foreground-dimmer);
+  border-radius: 50%;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transform: rotate(45deg);
+  color: black;
+}
+
+main #xl-replit-profile-pfp-save:hover {
+  opacity: 0.5;
+}
+
+select#xl-replit-invite-mode-select {
+  padding: var(--space-8);
+  border-radius: var(--border-radius-4);
+  border: 1px solid transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+select#xl-replit-invite-mode-select:active,
+select#xl-replit-invite-mode-select:focus {
+  border-color: var(--accent-primary-default);
+}
+
+div#tips > div {
+  flex-wrap: wrap;
+  gap: var(--space-12) 0px;
+}
+
+div#tips .xl-replit-tip-data-cont {
+  margin-left: auto;
+}
+
+button#xl-replit-custom-tip-btn {
+  cursor: pointer;
+  background: var(--interactive-background);
+  border-radius: var(--border-radius-8);
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid transparent;
+  white-space: pre-line;
+  font-size: var(--font-size-default);
+  transition-property: background, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+button#xl-replit-custom-tip-btn:hover {
+  background: var(--interactive-background--active);
+  transition-property: background, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+button#xl-replit-custom-tip-btn span:first-child {
+  display: block;
+  margin-bottom: var(--space-8);
+  line-height: 1.2;
+  font-size: var(--font-size-subhead-big);
+}
+
+div#xl-replit-custom-tip-popup-cont {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 300000;
+  background: var(--background-overlay);
+  padding: var(--space-64) var(--space-32);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+div#xl-replit-custom-tip-popup-cont.show {
+  display: flex;
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup {
+  background: var(--background-default);
+  border: 1px solid var(--background-highest);
+  border-radius: var(--border-radius-8);
+  box-shadow: var(--shadow-2);
+  padding: var(--space-16);
+  --interactive-background: var(--background-higher);
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup h2 {
+  font-size: var(--font-size-header-default);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-header-default);
+  margin-bottom: var(--space-16);
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup input {
+  border: 1px solid transparent;
+  border-color: var(--interactive-border);
+  border-radius: var(--border-radius-8);
+  background: var(--interactive-background);
+  padding: var(--space-4) var(--space-8);
+  margin-bottom: var(--space-16);
+  color: var(--foreground-default);
+  font-size: var(--font-size-default);
+  line-height: 22px;
+  font-family: var(--font-family-default);
+  outline: none;
+  transition-property: border-color, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup input:focus {
+  box-shadow: 0 0 0 2px var(--accent-primary-default);
+  outline: transparent solid 2px;
+  outline-offset: 4px;
+  transition-property: border-color, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button {
+  cursor: pointer;
+  background: var(--interactive-background);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-8);
+  padding: var(--space-8);
+  height: 32px;
+  transition-property: background;
+  transition-duration: 120ms;
+  transition-timing-function: ease-out;
+  padding: var(--space-8);
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+div#xl-replit-custom-tip-popup-cont #xl-replit-custom-tip-popup button.primary {
+  background: var(--accent-primary-dimmer);
+}
+
+div#xl-replit-account-switcher-cont {
+  position: relative;
+}
+
+#xl-replit-account-switcher-icon {
+  position: absolute;
+  left: 10px;
+  top: 11px;
+  pointer-events: none;
+}
+
+#xl-replit-account-switcher-arrow {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  pointer-events: none;
+}
+
+select#xl-replit-account-switcher {
+  appearance: none;
+  line-height: var(--line-height-default);
+  font-size: var(--font-size-default);
+  font-family: var(--font-family-default);
+  padding-left: 32px;
+  padding-right: 8px;
+}
+
+#xl-tosdr-badge {
+  display: block;
+  margin-bottom: var(--space-24);
+  height: min-content;
+}
+
+#xl-tosdr-badge img {
+  display: block;
+}
+
+[data-xl-replit-large-cursor='1'] .cm-cursor {
+  transform: scale(1.5);
+}
