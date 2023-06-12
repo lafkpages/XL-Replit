@@ -47,7 +47,6 @@ const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
 const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 const TOSDR_SERVICE_ID = 1676;
 const SET_FLAGS_HASH = 'xl-set-flags';
-const MONACO_VERSION = '0.39.0';
 const REPLIT_GOVAL_URL_REGEX = /^wss?:\/\/.+?\/wsv2\/v2\.public\..+?$/;
 const XL_REPLIT_EXTENSION_URL = new URL(document.currentScript.src).origin;
 
@@ -1222,7 +1221,7 @@ async function replsPathFunction() {
   // Load libs
   require.config({
     paths: {
-      vs: `https://unpkg.com/monaco-editor@${MONACO_VERSION}/min/vs`,
+      vs: `${XL_REPLIT_EXTENSION_URL}/public/vs`,
     },
   });
 
