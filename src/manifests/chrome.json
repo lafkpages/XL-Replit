@@ -6,6 +6,10 @@
   "version": "1.1",
   "minimum_chrome_version": "105",
   "author": "LuisAFK",
+  "developer": {
+    "name": "LuisAFK",
+    "url": "https://github.com/lafkpages"
+  },
   "homepage_url": "https://github.com/lafkpages/XL-Replit",
   "icons": {
     "192": "public/assets/favicon.png",
