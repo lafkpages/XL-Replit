@@ -1,0 +1,10 @@
+{
+  "name": {
+    "message": "XL Replit",
+    "description": "The name of the extension."
+  },
+  "description": {
+    "message": "Extra features for the Replit website.",
+    "description": "The description of the extension."
+  }
+}

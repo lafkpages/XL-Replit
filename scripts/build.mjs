@@ -50,6 +50,9 @@ const manifest = await fs.readJson(`src/manifests/${browser}.json`);
 delete manifest['$schema'];
 await fs.writeJson(`dist/manifest.json`, manifest);
 
+// Copy localization files
+await fs.copy(`src/locales`, `dist/_locales`);
+
 // Copy public files
 await fs.copy('public', 'dist/public');
 
