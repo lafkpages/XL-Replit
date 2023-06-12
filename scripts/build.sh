@@ -1,5 +1,34 @@
 #!/bin/bash
 
+browser="$2"
+esbuildTarget=""
+
+# If no browser specified
+# TODO: build for all instead of erroring
+if [ -z "$browser" ]; then
+  echo "No browser specified" 2>&1
+  exit 1
+fi
+
+case "$browser" in
+
+  chrome)
+    echo "Building for Chrome"
+    esbuildTarget="chrome58"
+    ;;
+  
+  firefox)
+    echo "Building for Firefox"
+    esbuildTarget="firefox57"
+    ;;
+  
+  *)
+    echo "Unrecognized browser: $browser" 2>&1
+    exit 1
+    ;;
+
+esac
+
 if [ "$1" = "dev" ]; then
   isDev="1"
   export NODE_ENV="dev"
@@ -16,7 +45,7 @@ rm -rf "dist"
 mkdir "dist"
 
 # Copy manifest
-cp "src/manifest.json" "dist/manifest.json"
+cp "src/manifests/$browser.json" "dist/manifest.json"
 
 # Copy public files
 cp -r "public" "dist/public"
@@ -35,7 +64,7 @@ cp -r "node_modules/monaco-editor/$monacoMode/vs" "dist/public/vs"
 cp "node_modules/requirejs/require.js" "dist/public/require.js"
 
 # ESBuild options
-opts="--bundle --target=chrome58"
+opts="--bundle --target=$esbuildTarget"
 if [ "$isDev" = "1" ]; then
   # Enable sourcemaps and watch in development
   opts="$opts --sourcemap --watch"

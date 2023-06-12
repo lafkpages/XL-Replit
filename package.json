@@ -9,6 +9,10 @@
     "_old_build": "webpack --config webpack/webpack.prod.js",
     "dev": "bash ./scripts/build.sh dev",
     "build": "bash ./scripts/build.sh prod",
+    "dev:chrome": "bash ./scripts/build.sh dev chrome",
+    "build:chrome": "bash ./scripts/build.sh prod chrome",
+    "dev:firefox": "bash ./scripts/build.sh dev firefox",
+    "build:firefox": "bash ./scripts/build.sh prod firefox",
     "clean": "rm -rf dist",
     "format": "npx prettier --write ."
   },
