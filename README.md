@@ -35,14 +35,22 @@ Install dependencies:
 npm i
 ```
 
-Build:
+When building, you must specify the browser you want to build for. For example, to build for Chrome:
 
 ```sh
-npm run build
+npm run build:chrome
 ```
 
-Then, go to the [Chrome extensions page](chrome://extensions) and enable developer mode.
+For Firefox, just replace `chrome` with `firefox`.
+
+### Loading extension in Chrome
+
+Go to the [Chrome extensions page](chrome://extensions) and enable developer mode.
 Click on Load unpacked and select the `dist` folder.
+
+### Loading extension in Firefox
+
+Go to the [Firefox debugging page](about:debugging#/runtime/this-firefox) and click on Load Temporary Add-on, then select the `dist/manifest.json` file.
 
 ## Suggest data
 
