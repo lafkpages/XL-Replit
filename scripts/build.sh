@@ -25,6 +25,9 @@ if [ "$isDev" = "1" ]; then
 fi
 cp -r "node_modules/monaco-editor/$monacoMode/vs" "dist/public/vs"
 
+# Copy RequireJS lib
+cp "node_modules/requirejs/require.js" "dist/public/require.js"
+
 # ESBuild options
 opts="--bundle --target=chrome58"
 if [ "$isDev" = "1" ]; then
