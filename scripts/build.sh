@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO: use zx
+# TODO: remove $schema from manifest when building
+# TODO: minify manifest when building in production
+
 browser="$2"
 esbuildTarget=""
 
