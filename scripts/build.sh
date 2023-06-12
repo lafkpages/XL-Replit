@@ -14,14 +14,9 @@ cp -r src/{html,css,net-rules} dist
 
 opts="--bundle --target=chrome58"
 if [ "$isDev" = "1" ]; then
-  opts="$opts --sourcemap"
+  opts="$opts --sourcemap --watch"
 else
   opts="$opts --minify"
 fi
 
-# TODO: do in one command
-./node_modules/.bin/esbuild src/inject.ts     --outfile=dist/inject.js     $opts
-./node_modules/.bin/esbuild src/background.ts --outfile=dist/background.js $opts
-./node_modules/.bin/esbuild src/popup.ts      --outfile=dist/popup.js      $opts
-./node_modules/.bin/esbuild src/content.ts    --outfile=dist/content.js    $opts
-./node_modules/.bin/esbuild src/ot.ts         --outfile=dist/ot.js         $opts
+./node_modules/.bin/esbuild src/{inject,background,popup,content,ot}.ts --outdir=dist $opts
