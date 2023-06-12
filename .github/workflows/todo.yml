@@ -1,0 +1,8 @@
+name: Todo issues
+on: [push]
+jobs:
+  Todo-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: todo-actions
+        uses: dtinth/todo-actions@v0.2.0
