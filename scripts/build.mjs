@@ -1,8 +1,5 @@
 #!/usr/bin/env zx
 
-// TODO: remove $schema from manifest when building
-// TODO: minify manifest when building in production
-
 const args = argv._;
 if (args[0] == path.basename(__filename)) {
   args.shift();
@@ -49,7 +46,9 @@ await $`npm i`;
 await fs.emptyDir('dist');
 
 // Copy manifest
-await fs.copy(`src/manifests/${browser}.json`, 'dist/manifest.json');
+const manifest = await fs.readJson(`src/manifests/${browser}.json`);
+delete manifest['$schema'];
+await fs.writeJson(`dist/manifest.json`, manifest);
 
 // Copy public files
 await fs.copy('public', 'dist/public');
