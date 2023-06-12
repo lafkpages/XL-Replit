@@ -18,6 +18,32 @@ An enhanced version of Replit.
 - Read-only invites for private Repls
 - Monaco :eyes:
 
+## Installation
+
+Since this isn't on the Chrome Webstore yet, you must build it yourself.
+
+Clone the repository:
+
+```sh
+git clone https://github.com/lafkpages/XL-Replit.git
+cd XL-Replit
+```
+
+Install dependencies:
+
+```sh
+npm i
+```
+
+Build:
+
+```sh
+npm run build
+```
+
+Then, go to the [Chrome extensions page](chrome://extensions) and enable developer mode.
+Click on Load unpacked and select the `dist` folder.
+
 ## Suggest data
 
 If you have some relevant data for someone's profile, please fill out [this form](https://xl-replit.lafkpages.tech/suggestData) with the data and it will be reviewed by a moderator.
