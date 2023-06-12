@@ -16,7 +16,8 @@
         "data",
         "content",
         "ideas",
-        "maintenance"
+        "maintenance",
+        "translation"
       ]
     }
   ],
@@ -25,5 +26,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "XL-Replit",
-  "projectOwner": "lafkpages"
+  "projectOwner": "lafkpages",
+  "commitType": "docs"
 }
