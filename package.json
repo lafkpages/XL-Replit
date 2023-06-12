@@ -31,5 +31,8 @@
     "@replit/protocol": "^0.3.12",
     "monaco-editor": "^0.39.0",
     "requirejs": "^2.3.6"
+  },
+  "peerDependencies": {
+    "zx": "^7.2.2"
   }
 }
