@@ -60,9 +60,9 @@ export interface ReplitReduxState {
     userInfo?: {
       bio?: string;
       captchaScore?: number;
-      customThemeValues?: ReplitCustomThemeValues;
-      customerId?: number;
-      editorPreferences?: ReplitEditorPreferences;
+      customThemeValues?: ReplitCustomThemeValues | null;
+      customerId?: number | null;
+      editorPreferences?: ReplitEditorPreferences | null;
       email?: string;
       emailHash?: string;
       emailNotifications?: boolean;
@@ -75,7 +75,7 @@ export interface ReplitReduxState {
         url?: string;
       };
       id?: number;
-      installedCustomThemeVersionId?: number;
+      installedCustomThemeVersionId?: number | null;
       isLoggedIn?: boolean;
       isOverLimit?: boolean;
       isTeam?: boolean;
