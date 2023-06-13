@@ -9,7 +9,7 @@ const browser = argv.browser || args[1];
 let esbuildTarget = '';
 
 // If no browser specified
-// TODO: build for all instead of erroring
+// TODO [$64882183a4b7eb0009c714f6]: build for all instead of erroring
 if (!browser) {
   echo('No browser specified');
   exit(1);

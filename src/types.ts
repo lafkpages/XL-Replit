@@ -114,5 +114,5 @@ export interface XLGovalChannel {
   openChanRes?: replitProtocol.Command;
 }
 
-// TODO: import from crypto
+// TODO [$64882183a4b7eb0009c714ff]: import from crypto
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
