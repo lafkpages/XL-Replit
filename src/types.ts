@@ -62,7 +62,7 @@ export interface ReplitReduxState {
       captchaScore?: number;
       customThemeValues?: CustomThemeValues;
       customerId?: number;
-      editorPreferences?: any; // TODO
+      editorPreferences?: ReplitEditorPreferences;
       email?: string;
       emailHash?: string;
       emailNotifications?: boolean;
@@ -116,6 +116,17 @@ export interface ReplitThemeEditorValue {
     modifiers?: string[] | null;
     name?: string;
   })[];
+}
+
+export interface ReplitEditorPreferences {
+  codeSuggestion?: boolean;
+  extraDelight?: boolean;
+  fontSize?: number;
+  isLayoutStacked?: boolean;
+  minimapDisplay?: 'characters' | 'blocks' | 'none';
+  theme?: string;
+  webviewAutoOpenOnPortOpened?: boolean;
+  wrapping?: boolean;
 }
 
 export interface XLGovalChannel {
