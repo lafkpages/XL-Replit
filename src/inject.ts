@@ -1,6 +1,11 @@
 import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
-import type { ReplitCustomThemeValues, ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
+import type {
+  ReplitCustomThemeValues,
+  ReplitThemeEditorValue,
+  XLGovalChannel,
+  UUID,
+} from './types';
 
 module.exports = {};
 
@@ -20,15 +25,17 @@ delete document.currentScript.dataset.activeSid;
 
 // Get XL settings
 const rawSettings = document.currentScript.dataset.settings;
-const settings = rawSettings ? (() => {
-  try {
-    return JSON.parse(rawSettings);
+const settings = rawSettings
+  ? (() => {
+      try {
+        return JSON.parse(rawSettings);
 
-    // TODO [$64887dca931d17000873c0d3]: validate settings
-  } catch {
-    return {};
-  }
-})() : {};
+        // TODO [$64887dca931d17000873c0d3]: validate settings
+      } catch {
+        return {};
+      }
+    })()
+  : {};
 delete document.currentScript.dataset.settings;
 module.exports.settings = settings;
 
@@ -910,16 +917,14 @@ function registerMonacoReplitTheme() {
     return;
   }
 
-  const themeValues = findApolloState('ThemeVersion') as ({
+  const themeValues = findApolloState('ThemeVersion') as {
     values?: ReplitCustomThemeValues;
-  } | null);
+  } | null;
 
   const base = getCurrentThemeType() == 'light' ? 'vs' : 'vs-dark';
 
   if (themeValues?.values) {
-    const rules = (
-      themeValues.values.editor.syntaxHighlighting
-    ).map((rule) => ({
+    const rules = themeValues.values.editor.syntaxHighlighting.map((rule) => ({
       token: rule.tags![0].name,
       ...Object.fromEntries(
         Object.entries(rule.values!).map(([k, v]) => {
