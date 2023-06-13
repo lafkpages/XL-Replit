@@ -22,7 +22,7 @@ const settings = rawSettings ? (() => {
   try {
     return JSON.parse(rawSettings);
 
-    // TODO: validate settings
+    // TODO [$64887dca931d17000873c0d3]: validate settings
   } catch {
     return {};
   }
