@@ -18,7 +18,7 @@ delete document.currentScript.dataset.activeSid;
 
 // Get XL settings
 const rawSettings = document.currentScript.dataset.settings;
-const settings = rawSettings ? JSON.parse(rawSettings) : {};
+const settings = rawSettings ? JSON.parse(rawSettings) : {}; // TODO: catch parse errors
 delete document.currentScript.dataset.settings;
 
 // Check for SID?
