@@ -60,7 +60,7 @@ export interface ReplitReduxState {
     userInfo?: {
       bio?: string;
       captchaScore?: number;
-      customThemeValues?: any; // TODO
+      customThemeValues?: CustomThemeValues;
       customerId?: number;
       editorPreferences?: any; // TODO
       email?: string;
@@ -89,6 +89,15 @@ export interface ReplitReduxState {
       timeCreated?: string;
       username?: string;
     };
+  };
+}
+
+export interface CustomThemeValues {
+  editor: {
+    syntaxHighlighting: ReplitThemeEditorValue[];
+  };
+  global: {
+    [key: string]: string;
   };
 }
 

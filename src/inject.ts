@@ -1,6 +1,6 @@
 import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
-import type { ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
+import type { CustomThemeValues, ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
 
 if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
@@ -890,13 +890,15 @@ function registerMonacoReplitTheme() {
     return;
   }
 
-  const themeValues = findApolloState('ThemeVersion');
+  const themeValues = findApolloState('ThemeVersion') as ({
+    values?: CustomThemeValues;
+  } | null);
 
   const base = getCurrentThemeType() == 'light' ? 'vs' : 'vs-dark';
 
-  if (themeValues) {
+  if (themeValues?.values) {
     const rules = (
-      themeValues.values.editor.syntaxHighlighting as ReplitThemeEditorValue[]
+      themeValues.values.editor.syntaxHighlighting
     ).map((rule) => ({
       token: rule.tags![0].name,
       ...Object.fromEntries(
