@@ -72,9 +72,12 @@ await fs.copy('node_modules/requirejs/require.js', 'dist/public/require.js');
 let opts = ['--bundle', '--minify', `--target=${esbuildTarget}`];
 if (isDev) {
   // Enable sourcemaps and watch in development
-  opts.push('--sourcemap', '--watch');
+  opts.push('--sourcemap' /*, '--watch'*/);
+
+  // Watch temporarily disabled due to multiple esbuild commands
 } else {
 }
 
 // Build TypeScript files into JavaScript
-await $`./node_modules/.bin/esbuild src/{inject,background,popup,content,ot}.ts --outdir=dist ${opts}`;
+await $`./node_modules/.bin/esbuild src/inject.ts --outdir=dist ${opts} --global-name=xlReplit`;
+await $`./node_modules/.bin/esbuild src/{background,popup,content,ot}.ts --outdir=dist ${opts}`;
