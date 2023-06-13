@@ -505,6 +505,8 @@ function injectCustomTips(replId: UUID | number, isTheme = false) {
   customTipPopupInp.placeholder = 'Amount of cycles...';
   customTipPopupInp.type = 'number';
   customTipPopupInp.min = '10';
+  // TODO: Implement tip splitting on server. See #43
+  customTipPopupInp.max = '1000';
   customTipPopupInp.value = '10';
   customTipPopupInp.required = true;
   customTipPopupCancel.textContent = 'Cancel';
