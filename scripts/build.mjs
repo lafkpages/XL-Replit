@@ -69,13 +69,11 @@ await fs.copy(`node_modules/monaco-editor/${monacoMode}/vs`, 'dist/public/vs');
 await fs.copy('node_modules/requirejs/require.js', 'dist/public/require.js');
 
 // ESBuild options
-let opts = ['--bundle', `--target=${esbuildTarget}`];
+let opts = ['--bundle', '--minify', `--target=${esbuildTarget}`];
 if (isDev) {
   // Enable sourcemaps and watch in development
   opts.push('--sourcemap', '--watch');
 } else {
-  // Minify in production
-  opts.push('--minify');
 }
 
 // Build TypeScript files into JavaScript
