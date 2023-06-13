@@ -60,7 +60,7 @@ export interface ReplitReduxState {
     userInfo?: {
       bio?: string;
       captchaScore?: number;
-      customThemeValues?: CustomThemeValues;
+      customThemeValues?: ReplitCustomThemeValues;
       customerId?: number;
       editorPreferences?: ReplitEditorPreferences;
       email?: string;
@@ -92,7 +92,7 @@ export interface ReplitReduxState {
   };
 }
 
-export interface CustomThemeValues {
+export interface ReplitCustomThemeValues {
   editor: {
     syntaxHighlighting: ReplitThemeEditorValue[];
   };
