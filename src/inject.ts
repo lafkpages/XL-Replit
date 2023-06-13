@@ -2,7 +2,7 @@ import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
 import type { ReplitCustomThemeValues, ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
 
-module.exports = 'testing IIFE';
+module.exports = {};
 
 if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
@@ -30,6 +30,7 @@ const settings = rawSettings ? (() => {
   }
 })() : {};
 delete document.currentScript.dataset.settings;
+module.exports.settings = settings;
 
 // Check for SID?
 const hasSid = rawSid[0] == '1';
@@ -48,6 +49,7 @@ const username =
     ?.textContent?.replace(/^@/, '') ||
   globalThis.__NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
   null;
+module.exports.username = username;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
@@ -160,6 +162,10 @@ WebSocket = class WebSocket extends _WebSocket {
   }
 };
 
+// Export Goval WebSocket
+module.exports.govalWebSocket = govalWebSocket;
+// TODO: Goval WS not properly exported
+
 // XL Replit errors
 class XLReplitError extends Error {
   data: any;
@@ -173,6 +179,7 @@ class XLReplitError extends Error {
     }
   }
 }
+module.exports.XLReplitError = XLReplitError;
 
 // XL Replit Goval channels
 let xlGovalChannels: {
@@ -187,6 +194,7 @@ const xlMonacoEditors: {
     version?: number;
   };
 } = {};
+module.exports.xlMonacoEditors = xlMonacoEditors;
 
 async function graphQl(
   path: string,
