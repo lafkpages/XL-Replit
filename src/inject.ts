@@ -2,6 +2,8 @@ import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
 import type { ReplitCustomThemeValues, ReplitThemeEditorValue, XLGovalChannel, UUID } from './types';
 
+module.exports = 'testing IIFE';
+
 if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
 }

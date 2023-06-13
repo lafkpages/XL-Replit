@@ -60,6 +60,10 @@ declare global {
           file: (path: string) => any;
         };
       };
+
+  var module: {
+    exports: any;
+  };
 }
 
 export {};
