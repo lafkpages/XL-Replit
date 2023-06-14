@@ -59,7 +59,9 @@ const username =
 module.exports.username = username;
 
 // Current user ID
-let userId = (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user?.userInfo?.id || null;
+let userId =
+  (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user
+    ?.userInfo?.id || null;
 module.exports.userId = userId;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
@@ -211,9 +213,9 @@ module.exports.xlMonacoEditors = xlMonacoEditors;
 // Function to get user's editor preferences
 function getEditorPreferences() {
   return (
-    __REPLIT_REDUX_STORE__?.getState() ||
-    __NEXT_DATA__?.props.reduxState
-  )?.user?.userInfo?.editorPreferences || null;
+    (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)
+      ?.user?.userInfo?.editorPreferences || null
+  );
 }
 module.exports.getEditorPreferences = getEditorPreferences;
 
@@ -1343,24 +1345,32 @@ async function replsPathFunction() {
   let inviteFormCloseBtn: HTMLButtonElement | null = null;
 
   // Tools container
-  const toolsCont = document.querySelector('div[role=toolbar] button[draggable]')?.parentElement || null;
+  const toolsCont =
+    document.querySelector('div[role=toolbar] button[draggable]')
+      ?.parentElement || null;
 
   if (toolsCont) {
-    toolsCont.addEventListener('click', (e: MouseEvent & {
-      target?: EventTarget | HTMLElement | null;
-    }) => {console.log(e.target)
-      if (!(e.target instanceof HTMLElement)) {
-        return;
-      }
+    toolsCont.addEventListener(
+      'click',
+      (
+        e: MouseEvent & {
+          target?: EventTarget | HTMLElement | null;
+        }
+      ) => {
+        console.log(e.target);
+        if (!(e.target instanceof HTMLElement)) {
+          return;
+        }
 
-      if (e.target?.tagName == 'BUTTON') {
-        const toolName = e.target.textContent?.trim();
+        if (e.target?.tagName == 'BUTTON') {
+          const toolName = e.target.textContent?.trim();
 
-        if (toolName) {
-          console.debug('[XL] Clicked on tool:', toolName);
+          if (toolName) {
+            console.debug('[XL] Clicked on tool:', toolName);
+          }
         }
       }
-    });
+    );
   } else {
     console.warn('[XL] Could not find tools container');
   }
