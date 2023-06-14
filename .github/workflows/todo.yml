@@ -1,9 +1,9 @@
 name: 'TODO Comments'
 on: ['push']
 jobs:
-  build:
+  'TODO Comments':
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: 'actions/checkout@master'
-      - uses: 'alstr/todo-to-issue-action@v4.10.2'
-        id: 'todo'
+      - uses: 'actions/checkout@v3'
+      - name: 'TODO Comments'
+        uses: 'alstr/todo-to-issue-action@v4'
