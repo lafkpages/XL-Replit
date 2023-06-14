@@ -58,6 +58,10 @@ const username =
   null;
 module.exports.username = username;
 
+// Current user ID
+let userId = (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user?.userInfo?.id || null;
+module.exports.userId = userId;
+
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
 const replUrlRegex = /^\/@(.+?)\/(.+?)(\?.*)?$/;
@@ -765,9 +769,6 @@ function injectMonacoEditors() {
 
     // Is .setValue() being called?
     let isSetValue = false;
-
-    // Current user ID
-    const userId = findApolloState('CurrentUser')?.id || null;
 
     // Flush OTs timeout
     let flushOtsTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -1518,6 +1519,10 @@ async function main() {
     window.location.pathname + window.location.search + window.location.hash;
 
   console.debug('[XL] Running main');
+
+  // Get current user ID
+  userId = findApolloState('CurrentUser')?.id || userId;
+  module.exports.userId = userId;
 
   // Load RequireJS
   if (!hasLoadedRequireJS) {
