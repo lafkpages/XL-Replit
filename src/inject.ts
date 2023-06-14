@@ -1,10 +1,6 @@
 import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
-import type {
-  ReplitCustomThemeValues,
-  XLGovalChannel,
-  UUID,
-} from './types';
+import type { ReplitCustomThemeValues, XLGovalChannel, UUID } from './types';
 
 module.exports = {};
 
@@ -179,12 +175,12 @@ Object.defineProperties(module.exports, {
   govalWebSocket: {
     get() {
       return govalWebSocket;
-    }
+    },
   },
   govalWebSocketConns: {
     get() {
       return govalWebSocketConns;
-    }
+    },
   },
 });
 
