@@ -279,20 +279,18 @@ async function getReadOnlyReplByURL(url: string) {
 
 async function tipCycles(
   amount: string | number,
-  id: string | number,
+  id: UUID | number,
   isTheme = false
 ) {
-  id = id.toString();
-
-  // TODO: make id type UUID
+  const _id = id.toString();
 
   return await graphQl('tipCycles', {
     amount: amount.toString(),
     ...(isTheme
       ? {
-          themeId: id,
+          themeId: _id,
         }
-      : { replId: id }),
+      : { replId: _id }),
   });
 }
 
