@@ -208,7 +208,8 @@ let xlGovalChannels: {
 const xlMonacoEditors: {
   [id: string]: {
     filePath: string;
-    otChannel?: number;
+    channelName?: string;
+    channelId?: number;
     version?: number;
   };
 } = {};
@@ -768,8 +769,11 @@ function injectMonacoEditors() {
     // Monaco Editor ID
     const editorId = monacoEditor.getId();
 
+    // Goval channel name
+    const channelName = `ot-xl:${filePath}`;
+
     // Save editor file path
-    xlMonacoEditors[editorId] = { filePath };
+    xlMonacoEditors[editorId] = { filePath, channelName };
 
     // Is .setValue() being called?
     let isSetValue = false;
@@ -778,8 +782,8 @@ function injectMonacoEditors() {
     let flushOtsTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Create OT channel
-    openGovalChannel('ot', `ot-xl:${filePath}`, 2).then((res) => {
-      xlMonacoEditors[editorId].otChannel = res.openChanRes.id;
+    openGovalChannel('ot', channelName, 2).then((res) => {
+      xlMonacoEditors[editorId].channelId = res.openChanRes.id;
 
       // Link file
       sendGovalMessage(
@@ -883,7 +887,7 @@ function injectMonacoEditors() {
       // Send OTs
       sendGovalMessage(
         // TODO: Debounce Monaco onChange
-        xlMonacoEditors[editorId].otChannel!,
+        xlMonacoEditors[editorId].channelId!,
         {
           ot: {
             spookyVersion: xlMonacoEditors[editorId].version,
@@ -900,7 +904,7 @@ function injectMonacoEditors() {
         }
         flushOtsTimeout = setTimeout(() => {
           console.debug('[XL] Flushing OTs');
-          sendGovalMessage(xlMonacoEditors[editorId].otChannel!, {
+          sendGovalMessage(xlMonacoEditors[editorId].channelId!, {
             flush: {},
           });
         }, 1000);
@@ -923,6 +927,9 @@ function injectMonacoEditors() {
     }
 
     for (const editor of monaco?.editor.getEditors()) {
+      const editorId = editor.getId();
+
+      // Dispose Monaco editor and model
       editor.getModel().dispose();
       editor.dispose();
     }
@@ -1303,7 +1310,7 @@ async function replsPathFunction() {
 
     // Dispose editors when a pane is closed
     if (layoutContainer) {
-      const mutationObserver = new MutationObserver((mutations) => {
+      const mutationObserver = new MutationObserver(async (mutations) => {
         let shouldCheckUnusedEditors = false;
 
         for (const mutation of mutations) {
@@ -1328,8 +1335,17 @@ async function replsPathFunction() {
                 `[XL] Disposing unused Monaco Editor for file`,
                 xlMonacoEditors[editorId].filePath
               );
+
+              // Dispose editor and model
               editor.getModel().dispose();
               editor.dispose();
+
+              // Close Goval channel
+              if (xlMonacoEditors[editorId].channelId) {
+                await closeGovalChannel(xlMonacoEditors[editorId].channelId!);
+              }
+
+              // Delete editor from list
               delete xlMonacoEditors[editorId];
             }
           }
