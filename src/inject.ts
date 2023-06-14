@@ -925,6 +925,7 @@ function injectMonacoEditors() {
     }
   });
 }
+module.exports.injectMonacoEditors = injectMonacoEditors;
 
 function registerMonacoReplitTheme() {
   if (typeof monaco == 'undefined') {
