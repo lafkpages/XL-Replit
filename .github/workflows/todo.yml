@@ -5,5 +5,5 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@master'
-      - uses: 'buluma/todo-to-issue-action@v4.6.2'
+      - uses: 'alstr/todo-to-issue-action@v4.10.2'
         id: 'todo'
