@@ -6,9 +6,3 @@ jobs:
     steps:
       - name: TruffleHog OSS
         uses: trufflesecurity/trufflehog@v3.39.0
-  Todo-comments:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Code Todo Bot
-        uses: bilalshaikh42/todo@v0.0.1
