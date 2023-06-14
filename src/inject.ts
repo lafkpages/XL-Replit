@@ -1047,6 +1047,7 @@ function findApolloState(query: string | ((key: string) => boolean)) {
 
   return null;
 }
+module.exports.findApolloState = findApolloState;
 
 async function profilesPathFunction() {
   const profileUsername = next?.router?.state?.query?.username as string;
