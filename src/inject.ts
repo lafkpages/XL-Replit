@@ -298,6 +298,9 @@ function capitalize(str: string) {
   return arr.join('');
 }
 
+// Replit flags exports
+module.exports.flags = {};
+
 function getFlags() {
   return (
     __REPLIT_REDUX_STORE__?.getState()?.user?.userInfo?.gating ||
@@ -305,10 +308,12 @@ function getFlags() {
     []
   );
 }
+module.exports.flags.getAll = getFlags;
 
 function getFlag(flag: string) {
   return getFlags().find((f) => f.controlName == flag);
 }
+module.exports.flags.get = getFlag;
 
 function setFlag(flag: string, value: any) {
   const flagObj = getFlag(flag);
@@ -320,6 +325,7 @@ function setFlag(flag: string, value: any) {
 
   return false;
 }
+module.exports.flags.set = setFlag;
 
 function getXlFlagsElm(): HTMLElement {
   return document.querySelector('div#__next > div') || document.body;
