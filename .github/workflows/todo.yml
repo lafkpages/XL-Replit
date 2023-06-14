@@ -1,7 +1,7 @@
 name: 'TODO Comments'
 on: ['push']
 jobs:
-  'TODO Comments':
+  todo-comments:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@v3'
