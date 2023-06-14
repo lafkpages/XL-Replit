@@ -882,7 +882,7 @@ function injectMonacoEditors() {
 
       // Send OTs
       sendGovalMessage(
-        // TODO: debounce this
+        // TODO: Debounce Monaco onChange
         xlMonacoEditors[editorId].otChannel!,
         {
           ot: {
