@@ -5,8 +5,6 @@
   "keywords": [],
   "author": "LuisAFK",
   "scripts": {
-    "_old_watch": "webpack --config webpack/webpack.dev.js --watch",
-    "_old_build": "webpack --config webpack/webpack.prod.js",
     "dev": "zx ./scripts/build.mjs dev",
     "build": "zx ./scripts/build.mjs prod",
     "dev:chrome": "zx ./scripts/build.mjs dev chrome",
