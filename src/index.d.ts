@@ -45,7 +45,7 @@ declare global {
         // [Symbol('observable')]: Function;
       };
 
-  // TODO [$64882183a4b7eb0009c714f8]: use type defs from monaco-editor
+  // TODO: use type defs from monaco-editor
   var monaco:
     | undefined
     | {

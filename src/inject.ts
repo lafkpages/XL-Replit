@@ -29,7 +29,7 @@ const settings = rawSettings
       try {
         return JSON.parse(rawSettings);
 
-        // TODO [$64887dca931d17000873c0d3]: validate settings
+        // TODO: validate settings
       } catch {
         return {};
       }
@@ -288,7 +288,7 @@ async function tipCycles(
 ) {
   id = id.toString();
 
-  // TODO [$64882183a4b7eb0009c714f9]: make id type UUID
+  // TODO: make id type UUID
 
   return await graphQl('tipCycles', {
     amount: amount.toString(),
@@ -612,7 +612,7 @@ function injectAccountSwitcher() {
     'div:has(> :nth-child(2)) > :has(> div[data-cy="preferences-theme-dropdown"])'
   )?.parentElement;
 
-  // TODO [$64882183a4b7eb0009c714fa]: Firefox doesn't support :has() yet
+  // TODO: Firefox doesn't support :has() yet
 
   if (themeSwitcherCont) {
     // Build account switcher
@@ -852,7 +852,7 @@ function injectMonacoEditors() {
 
     // On change
     monacoEditor.onDidChangeModelContent((e: any) => {
-      // TODO [$64882183a4b7eb0009c714fb]: fix e type
+      // TODO: fix e type
       if (isSetValue) {
         return;
       }
@@ -888,7 +888,7 @@ function injectMonacoEditors() {
 
       // Send OTs
       sendGovalMessage(
-        // TODO [$64882183a4b7eb0009c714fc]: debounce this
+        // TODO: debounce this
         xlMonacoEditors[editorId].otChannel!,
         {
           ot: {
@@ -1637,13 +1637,13 @@ document.addEventListener(
   next!.router.back();
 
   // Listen for location changes
-  // TODO [$64882183a4b7eb0009c714fd]: handle client-side router onLoad
+  // TODO: handle client-side router onLoad
   const nextRouterPush = next!.router.push;
   next!.router.push = function () {
     const realUrlToNavigate =
       arguments[arguments.length - 1]?.pathname || arguments[1] || null;
 
-    // TODO [$64882183a4b7eb0009c714fe]: don't use last argument, find argument index
+    // TODO: don't use last argument, find argument index
 
     console.debug(
       '[XL] Intercepted Next Router push:',
