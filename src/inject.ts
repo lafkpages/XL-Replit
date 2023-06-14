@@ -1399,6 +1399,9 @@ async function replsPathFunction() {
   const toolsCont =
     document.querySelector('div[role=toolbar] button[draggable]')
       ?.parentElement || null;
+  
+  // Use parentElement to avoid using :has()
+  // for compatibility with older browsers
 
   if (toolsCont) {
     toolsCont.addEventListener(
