@@ -1341,6 +1341,29 @@ async function replsPathFunction() {
   let inviteFormBtn: HTMLDivElement | null = null;
   let inviteFormCloseBtn: HTMLButtonElement | null = null;
 
+  // Tools container
+  const toolsCont = document.querySelector('div[role=toolbar] button[draggable]')?.parentElement || null;
+
+  if (toolsCont) {
+    toolsCont.addEventListener('click', (e: MouseEvent & {
+      target?: EventTarget | HTMLElement | null;
+    }) => {console.log(e.target)
+      if (!(e.target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (e.target?.tagName == 'BUTTON') {
+        const toolName = e.target.textContent?.trim();
+
+        if (toolName) {
+          console.debug('[XL] Clicked on tool:', toolName);
+        }
+      }
+    });
+  } else {
+    console.warn('[XL] Could not find tools container');
+  }
+
   document.addEventListener(
     'click',
     (
