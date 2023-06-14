@@ -670,7 +670,7 @@ function injectAccountSwitcher() {
   }
 }
 
-function injectMonacoEditors() {
+async function injectMonacoEditors() {
   if (!settings['monaco']) {
     return false;
   }
@@ -738,6 +738,28 @@ function injectMonacoEditors() {
       cmEditor.dataset.xlMonacoObserved = '1';
 
       continue;
+    }
+
+    // If editor already exists
+    for (const editor of monaco.editor.getEditors()) {
+      const editorId = editor.getId();
+
+      // Dispose old duplicate editors
+      if (xlMonacoEditors[editorId].filePath == filePath) {
+        console.debug(
+          `[XL] Disposing old duplicate Monaco editor for ${filePath}`
+        );
+
+        editor.getModel().dispose();
+        editor.dispose();
+
+        if (xlMonacoEditors[editorId].channelId) {
+          await closeGovalChannel(xlMonacoEditors[editorId].channelId!);
+        }
+
+        delete xlMonacoEditors[editorId];
+        break;
+      }
     }
 
     // Editor value
