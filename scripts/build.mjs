@@ -39,9 +39,6 @@ if (argv.dev || argv._[0] == 'dev') {
   NODE_ENV = 'dev';
 }
 
-// Install dependencies
-await $`npm i`;
-
 // Remove old builds
 await fs.emptyDir('dist');
 
