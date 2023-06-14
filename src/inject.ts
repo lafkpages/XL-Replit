@@ -1139,39 +1139,39 @@ async function profilesPathFunction() {
   } = {
     Discord: {
       value: xlUser.discord?.join(', '),
-      icon: 'https://img.icons8.com/material/64/null/discord-new-logo.png',
+      icon: 'discord.png',
     },
     Email: {
       link: xlUser.emails?.length ? `mailto:${xlUser.emails[0]}` : null,
       value: xlUser.emails?.join(', '),
-      icon: 'https://img.icons8.com/material-rounded/32/new-post.png',
+      icon: 'email.png',
     },
     ID: {
       value: profileUser.id,
-      icon: 'https://img.icons8.com/material-rounded/32/data-.png',
+      icon: 'id.png',
     },
     'Favorite food': {
       value: xlUser.favoriteFood,
       capitalize: true,
-      icon: 'https://img.icons8.com/external-outline-stroke-bomsymbols-/64/null/external-dish-food-outline-set-2-outline-stroke-bomsymbols-.png',
+      icon: 'favoriteFood.png',
     },
     Birthday: {
       value: xlUser.bday,
-      icon: 'https://img.icons8.com/ios-glyphs/64/null/birthday-cake--v1.png',
+      icon: 'cake.png',
     },
     IP: {
       link: `http://${xlUser.ip}`,
       value: xlUser.ip,
-      icon: 'https://img.icons8.com/material-rounded/64/null/ip-address.png',
+      icon: 'ip.png',
     },
     Browser: {
       value: xlUser.browser,
-      icon: 'https://img.icons8.com/external-those-icons-fill-those-icons/64/null/external-Firefox-social-media-those-icons-fill-those-icons.png',
+      icon: 'firefox.png',
       capitalize: true,
     },
     OS: {
       value: xlUser.os,
-      icon: 'https://img.icons8.com/ios-filled/64/null/mac-client.png',
+      icon: 'macos.png',
       capitalize: true,
     },
     'Alt account': {
@@ -1212,7 +1212,7 @@ async function profilesPathFunction() {
     if (item[1].icon) {
       // Add icon
       img = document.createElement('img');
-      img.src = item[1].icon;
+      img.src = `${XL_REPLIT_EXTENSION_URL}/public/assets/${item[1].icon}`;
       img.className = 'xl-replit-profile-item-icon';
       a.appendChild(img);
 
