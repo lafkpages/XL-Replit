@@ -2,7 +2,14 @@
   "name": "xl-replit",
   "version": "0.1.0",
   "description": "Extra features for the Replit website.",
-  "keywords": [],
+  "keywords": [
+    "xl",
+    "replit",
+    "chrome",
+    "firefox",
+    "browser",
+    "extension"
+  ],
   "author": "LuisAFK",
   "scripts": {
     "dev": "zx ./scripts/build.mjs dev",
