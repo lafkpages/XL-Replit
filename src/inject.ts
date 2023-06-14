@@ -1109,8 +1109,9 @@ async function profilesPathFunction() {
   const pfpUrl = (
     document.querySelector('meta[property="og:image"]') as HTMLMetaElement
   ).content;
-  const pfpCont = document.querySelector('main div img[src^="data:image"]')
-    ?.parentElement || null;
+  const pfpCont =
+    document.querySelector('main div img[src^="data:image"]')?.parentElement ||
+    null;
 
   if (!pfpCont) {
     console.warn(
