@@ -203,6 +203,15 @@ const xlMonacoEditors: {
 } = {};
 module.exports.xlMonacoEditors = xlMonacoEditors;
 
+// Function to get user's editor preferences
+function getEditorPreferences() {
+  return (
+    __REPLIT_REDUX_STORE__?.getState() ||
+    __NEXT_DATA__?.props.reduxState
+  )?.user?.userInfo?.editorPreferences || null;
+}
+module.exports.getEditorPreferences = getEditorPreferences;
+
 async function graphQl(
   path: string,
   variables: {
