@@ -1109,8 +1109,16 @@ async function profilesPathFunction() {
   const pfpUrl = (
     document.querySelector('meta[property="og:image"]') as HTMLMetaElement
   ).content;
-  const pfpCont = document.querySelector('main div img[src^="data:image"]')!
-    .parentElement!; // TODO: don't use !, use an if
+  const pfpCont = document.querySelector('main div img[src^="data:image"]')
+    ?.parentElement || null;
+
+  if (!pfpCont) {
+    console.warn(
+      '[XL] Could not find profile picture container, aborting XL Replit Profiles'
+    );
+    return;
+  }
+
   const cont = document.querySelector(
     'main > div:last-of-type > div'
   ) as HTMLDivElement;
