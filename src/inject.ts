@@ -117,11 +117,13 @@ WebSocket = class WebSocket extends _WebSocket {
 
       console.debug('[XL] Intercepted Replit Goval WebSocket');
       govalWebSocket = this;
+      module.exports.govalWebSocket = govalWebSocket;
 
       this._isGovalWebSocket = true;
 
       govalWebSocket.addEventListener('close', () => {
         govalWebSocket = null;
+        module.exports.govalWebSocket = null;
         govalWebSocketOnMessage = null;
       });
     }
@@ -171,7 +173,6 @@ WebSocket = class WebSocket extends _WebSocket {
 
 // Export Goval WebSocket
 module.exports.govalWebSocket = govalWebSocket;
-// TODO: Goval WS not properly exported
 
 // XL Replit errors
 class XLReplitError extends Error {
