@@ -804,74 +804,73 @@ async function injectMonacoEditors() {
     let flushOtsTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Create OT channel
-    openGovalChannel('ot', channelName, 2).then((res) => {
-      xlMonacoEditors[editorId].channelId = res.openChanRes.id;
+    const openOtChan = await openGovalChannel('ot', channelName, 2)
+    xlMonacoEditors[editorId].channelId = openOtChan.openChanRes.id;
 
-      // Link file
-      sendGovalMessage(
-        res.openChanRes.id,
-        {
-          otLinkFile: {
-            file: {
-              path: filePath,
-            },
+    // Link file
+    const linkFileRes = await sendGovalMessage(
+      openOtChan.openChanRes.id,
+      {
+        otLinkFile: {
+          file: {
+            path: filePath,
           },
         },
-        true
-      ).then((otLinkFileRes) => {
-        if (!otLinkFileRes) {
-          throw new XLReplitError('Failed to link file', editorId);
+      },
+      true
+    );
+
+    if (!linkFileRes) {
+      throw new XLReplitError('Failed to link file', editorId);
+    }
+
+    const contentsBin =
+      linkFileRes?.otLinkFileResponse?.linkedFile?.content || null;
+    const contentsStr = contentsBin
+      ? new TextDecoder('utf-8').decode(contentsBin)
+      : null;
+
+    if (contentsBin) {
+      isSetValue = true;
+      monacoEditor.setValue(contentsStr);
+      isSetValue = false;
+    }
+
+    if (typeof linkFileRes?.otLinkFileResponse?.version == 'number') {
+      xlMonacoEditors[editorId].version =
+        linkFileRes.otLinkFileResponse.version;
+    }
+
+    // Listen to channel messages
+    xlGovalChannels[openOtChan.openChanRes.id].handler = (msg) => {
+      console.debug('[XL] OT message received', msg);
+
+      if (msg?.otstatus?.contents) {
+        // monacoEditor.setValue(msg.otstatus.contents);
+      }
+
+      if (msg?.ot) {
+        if (msg.ot.version) {
+          xlMonacoEditors[editorId].version = msg.ot.version;
         }
 
-        const contentsBin =
-          otLinkFileRes?.otLinkFileResponse?.linkedFile?.content || null;
-        const contentsStr = contentsBin
-          ? new TextDecoder('utf-8').decode(contentsBin)
-          : null;
+        if (msg.ot.op instanceof Array) {
+          if (msg.ot.userId != userId) {
+            const { file: newVal } = applyOTs(
+              monacoEditor.getValue(),
+              msg.ot.op
+            );
 
-        if (contentsBin) {
-          isSetValue = true;
-          monacoEditor.setValue(contentsStr);
-          isSetValue = false;
-        }
-
-        if (typeof otLinkFileRes?.otLinkFileResponse?.version == 'number') {
-          xlMonacoEditors[editorId].version =
-            otLinkFileRes.otLinkFileResponse.version;
-        }
-      });
-
-      // Listen to channel messages
-      xlGovalChannels[res.openChanRes.id].handler = (msg) => {
-        console.debug('[XL] OT message received', msg);
-
-        if (msg?.otstatus?.contents) {
-          // monacoEditor.setValue(msg.otstatus.contents);
-        }
-
-        if (msg?.ot) {
-          if (msg.ot.version) {
-            xlMonacoEditors[editorId].version = msg.ot.version;
+            isSetValue = true;
+            monacoEditor.setValue(newVal);
+            isSetValue = false;
           }
-
-          if (msg.ot.op instanceof Array) {
-            if (msg.ot.userId != userId) {
-              const { file: newVal } = applyOTs(
-                monacoEditor.getValue(),
-                msg.ot.op
-              );
-
-              isSetValue = true;
-              monacoEditor.setValue(newVal);
-              isSetValue = false;
-            }
-          }
         }
-      };
-    });
+      }
+    };
 
     // On change
-    monacoEditor.onDidChangeModelContent((e: any) => {
+    monacoEditor.onDidChangeModelContent(async (e: any) => {
       // TODO: fix e type
       if (isSetValue) {
         return;
@@ -907,7 +906,7 @@ async function injectMonacoEditors() {
       console.debug('[XL] Monaco editor OTs:', ots);
 
       // Send OTs
-      sendGovalMessage(
+      const sendOtRes = await sendGovalMessage(
         // TODO: Debounce Monaco onChange
         xlMonacoEditors[editorId].channelId!,
         {
@@ -917,20 +916,20 @@ async function injectMonacoEditors() {
           },
         },
         true
-      ).then((res) => {
-        console.debug('[XL] Send OTs:', res);
+      );
 
-        // Flush OTs
-        if (flushOtsTimeout) {
-          clearTimeout(flushOtsTimeout);
-        }
-        flushOtsTimeout = setTimeout(() => {
-          console.debug('[XL] Flushing OTs');
-          sendGovalMessage(xlMonacoEditors[editorId].channelId!, {
-            flush: {},
-          });
-        }, 1000);
-      });
+      console.debug('[XL] Send OTs:', sendOtRes);
+
+      // Flush OTs
+      if (flushOtsTimeout) {
+        clearTimeout(flushOtsTimeout);
+      }
+      flushOtsTimeout = setTimeout(() => {
+        console.debug('[XL] Flushing OTs');
+        sendGovalMessage(xlMonacoEditors[editorId].channelId!, {
+          flush: {},
+        });
+      }, 1000);
     });
 
     // Add attribute to skip this in the future
