@@ -2,7 +2,6 @@ import { applyOTs } from './ot';
 import { api as replitProtocol } from '@replit/protocol';
 import type {
   ReplitCustomThemeValues,
-  ReplitThemeEditorValue,
   XLGovalChannel,
   UUID,
 } from './types';
