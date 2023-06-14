@@ -469,6 +469,7 @@ async function openGovalChannel(service: string, name = '', action = 0) {
     openChanRes: replitProtocol.OpenChannelRes;
   };
 }
+module.exports.openGovalChannel = openGovalChannel;
 
 async function closeGovalChannel(id: number, action = 0) {
   const res = await sendGovalMessage(
@@ -494,6 +495,7 @@ async function closeGovalChannel(id: number, action = 0) {
 
   return res;
 }
+module.exports.closeGovalChannel = closeGovalChannel;
 
 function injectCustomTips(replId: UUID | number, isTheme = false) {
   const tipsCont = document.querySelector('div#tips');
