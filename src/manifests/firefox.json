@@ -59,7 +59,8 @@
         "inject.js",
         "util/ot.js",
         "html/index.html",
-        "index.js"
+        "index.js",
+        "css/xl.css"
       ],
       "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"]
     }
