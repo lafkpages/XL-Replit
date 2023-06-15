@@ -1,4 +1,4 @@
-import { ReplitAccent, replitAccents, ReplitAccentVariations, replitAccentVariations, replitAccentVariationsBasic, ReplitAccentVariationsBasic } from "./types";
+import { ReplitAccent, replitAccents, ReplitAccentVariations, replitAccentVariations, replitAccentVariationsBasic, ReplitAccentVariationsBasic, ReplitThemeGlobalValues } from "./types";
 
 document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');
@@ -49,17 +49,7 @@ window.addEventListener('load', (e) => {
     document.documentElement
   );
 
-  // TODO: move type to types file
-  const themeValues: {
-    accents: {
-      [key in ReplitAccent]?: {
-        [key in ReplitAccentVariationsBasic]?: string;
-      };
-    },
-    backgrounds: {
-      [key in ReplitAccentVariations]?: string;
-    }
-  } = {
+  const themeValues: ReplitThemeGlobalValues = {
     accents: {},
     backgrounds: {},
   };

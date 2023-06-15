@@ -118,6 +118,17 @@ export interface ReplitThemeEditorValue {
   })[];
 }
 
+export interface ReplitThemeGlobalValues {
+  accents: {
+    [key in ReplitAccent]?: {
+      [key in ReplitAccentVariationsBasic]?: string;
+    };
+  },
+  backgrounds: {
+    [key in ReplitAccentVariations]?: string;
+  }
+}
+
 export interface ReplitEditorPreferences {
   codeSuggestion?: boolean;
   extraDelight?: boolean;
