@@ -39,31 +39,47 @@ if (argv.dev || argv._[0] == 'dev') {
   NODE_ENV = 'dev';
 }
 
+// Build directory
+const distDir = 'dist';
+const buildDir = `${distDir}/${browser}`;
+
 // Remove old builds
-await fs.emptyDir('dist');
+if (await fs.pathExists(`${distDir}/manifest.json`)) {
+  await fs.emptyDir(distDir);
+} else {
+  await fs.emptyDir(buildDir);
+}
+
+await fs.ensureDir(buildDir);
 
 // Copy manifest
 const manifest = await fs.readJson(`src/manifests/${browser}.json`);
 delete manifest['$schema'];
-await fs.writeJson(`dist/manifest.json`, manifest);
+await fs.writeJson(`${buildDir}/manifest.json`, manifest);
 
 // Copy localization files
-await fs.copy(`src/locales`, `dist/_locales`);
+await fs.copy(`src/locales`, `${buildDir}/_locales`);
 
 // Copy public files
-await fs.copy('public', 'dist/public');
+await fs.copy('public', `${buildDir}/public`);
 
 // Copy HTML, CSS and net rules
 for (const folder of ['html', 'css', 'net-rules']) {
-  await fs.copy(`src/${folder}`, `dist/${folder}`);
+  await fs.copy(`src/${folder}`, `${buildDir}/${folder}`);
 }
 
 // Copy Monaco editor from Node modules
 const monacoMode = isDev ? 'dev' : 'min';
-await fs.copy(`node_modules/monaco-editor/${monacoMode}/vs`, 'dist/public/vs');
+await fs.copy(
+  `node_modules/monaco-editor/${monacoMode}/vs`,
+  `${buildDir}/public/vs`
+);
 
 // Copy RequireJS lib
-await fs.copy('node_modules/requirejs/require.js', 'dist/public/require.js');
+await fs.copy(
+  'node_modules/requirejs/require.js',
+  `${buildDir}/public/require.js`
+);
 
 // ESBuild options
 let opts = ['--bundle', '--minify', `--target=${esbuildTarget}`];
@@ -76,5 +92,5 @@ if (isDev) {
 }
 
 // Build TypeScript files into JavaScript
-await $`./node_modules/.bin/esbuild src/inject.ts --outdir=dist ${opts} --global-name=xlReplit`;
-await $`./node_modules/.bin/esbuild src/{background,popup,content,ot}.ts --outdir=dist ${opts}`;
+await $`./node_modules/.bin/esbuild src/inject.ts --outdir=${buildDir} ${opts} --global-name=xlReplit`;
+await $`./node_modules/.bin/esbuild src/{background,popup,content,ot}.ts --outdir=${buildDir} ${opts}`;
