@@ -50,7 +50,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["public/*", "inject.js", "ot.js", "html/index.html"],
+      "resources": ["public/*", "inject.js", "util/ot.js", "html/index.html"],
       "matches": ["https://*.replit.com/*", "https://*.firewalledreplit.com/*"]
     }
   ],
