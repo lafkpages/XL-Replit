@@ -1,3 +1,5 @@
+import { ReplitAccent, replitAccents, ReplitAccentVariations, replitAccentVariations, replitAccentVariationsBasic, ReplitAccentVariationsBasic } from "./types";
+
 document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');
   chrome.storage.local
@@ -39,6 +41,56 @@ window.addEventListener('load', (e) => {
         console.debug('[XL] Saved user ID to local CRX storage');
       });
   }
+
+  // Save theme values
+  // TODO: make this an util func
+  const themeContainerStyles = getComputedStyle(
+    document.querySelector('.replit-ui-theme-root') ||
+    document.documentElement
+  );
+
+  // TODO: move type to types file
+  const themeValues: {
+    accents: {
+      [key in ReplitAccent]?: {
+        [key in ReplitAccentVariationsBasic]?: string;
+      };
+    },
+    backgrounds: {
+      [key in ReplitAccentVariations]?: string;
+    }
+  } = {
+    accents: {},
+    backgrounds: {},
+  };
+
+  for (const accent of replitAccents) {
+    for (const variation of replitAccentVariationsBasic) {
+      const value = themeContainerStyles.getPropertyValue(
+        `--accent-${accent}-${variation}`
+      );
+
+      if (value) {
+        if (!themeValues.accents[accent]) {
+          themeValues.accents[accent] = {};
+        }
+
+        themeValues.accents[accent]![variation] = value;
+      }
+    }
+  }
+
+  for (const variation of replitAccentVariations) {
+    const value = themeContainerStyles.getPropertyValue(
+      `--background-${variation}`
+    );
+
+    if (value) {
+      themeValues.backgrounds[variation] = value;
+    }
+  }
+
+  console.log('[XL] Got theme values:', themeValues);
 });
 
 window.addEventListener(
