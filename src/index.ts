@@ -1,7 +1,3 @@
-import { applyGlobalThemeValuesToElement } from "./util/theme";
+import applySavedTheme from "./util/applySavedTheme";
 
-// Get theme
-chrome.storage.local.get(['themeValues'], ({ themeValues }) => {
-  // Apply theme
-  applyGlobalThemeValuesToElement(themeValues, document.body);
-});
+applySavedTheme();
