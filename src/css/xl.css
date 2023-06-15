@@ -100,3 +100,11 @@ body {
   font-size: 16px;
   line-height: 1.375;
 }
+
+button {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: var(--accent-primary-dimmer);
+  color: var(--foreground-default);
+}
