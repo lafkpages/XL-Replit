@@ -44,7 +44,9 @@ window.addEventListener('load', (e) => {
 
   // Save theme values
   const themeValues = getThemeGlobalValues();
-  console.log('[XL] Got theme values:', themeValues);
+  chrome.storage.local.set({
+    themeValues,
+  });
 });
 
 window.addEventListener(
