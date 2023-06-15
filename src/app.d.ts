@@ -1,3 +1,7 @@
+// /----------------------------------------------------\
+// | TODO: Make these type defs only apply to inject.ts |
+// \----------------------------------------------------/
+
 import type {
   GlobalNext,
   ReplitFlag,
