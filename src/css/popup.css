@@ -1,8 +1,6 @@
 html {
   width: 500px;
   height: 200px;
-
-  --yellowish: #3f2900;
 }
 
 body {
@@ -34,11 +32,11 @@ input[data-valid] {
 }
 
 input[data-valid='1'] {
-  border-color: green;
+  border-color: var(--accent-green-default);
 }
 
 input[data-valid='0'] {
-  border-color: red;
+  border-color: var(--accent-red-default);
 }
 
 div.settings-cont {
@@ -58,7 +56,7 @@ div.settings-cont > div:first-of-type {
 
 div.settings-cont > div.advanced {
   display: none;
-  color: var(--yellowish);
+  color: var(--accent-orange-strongest);
 }
 
 div.settings-cont[data-advanced='1'] > div.advanced {
@@ -70,7 +68,7 @@ div.settings-cont > div > * {
 }
 
 div#experiments > div {
-  color: var(--yellowish);
+  color: var(--accent-orange-strongest);
 }
 
 div#experiments-cont {
