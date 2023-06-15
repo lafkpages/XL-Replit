@@ -155,5 +155,25 @@ export const replitAccents = [
 
 export type ReplitAccent = (typeof replitAccents)[number];
 
+export const replitAccentVariationsBasic = [
+  'dimmest',
+  'dimmer',
+  'default',
+  'stronger',
+  'strongest'
+] as const;
+
+export type ReplitAccentVariationsBasic = (typeof replitAccentVariationsBasic)[number];
+
+export const replitAccentVariations = [
+  'root',
+  ...replitAccentVariationsBasic,
+  'overlay',
+  'higher',
+  'highest'
+] as const;
+
+export type ReplitAccentVariations = (typeof replitAccentVariations)[number];
+
 // TODO: import from crypto
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
