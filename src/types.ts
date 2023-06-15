@@ -118,15 +118,18 @@ export interface ReplitThemeEditorValue {
   })[];
 }
 
+export type ReplitThemeGlobalValuesProp = {
+  [key in ReplitAccentVariation]?: string;
+}
+
 export interface ReplitThemeGlobalValues {
   accents: {
     [key in ReplitAccent]?: {
-      [key in ReplitAccentVariationsBasic]?: string;
+      [key in ReplitAccentVariationBasic]?: string;
     };
   };
-  backgrounds: {
-    [key in ReplitAccentVariations]?: string;
-  };
+  background: ReplitThemeGlobalValuesProp;
+  foreground: ReplitThemeGlobalValuesProp;
 }
 
 export interface ReplitEditorPreferences {
@@ -174,7 +177,7 @@ export const replitAccentVariationsBasic = [
   'strongest',
 ] as const;
 
-export type ReplitAccentVariationsBasic =
+export type ReplitAccentVariationBasic =
   (typeof replitAccentVariationsBasic)[number];
 
 export const replitAccentVariations = [
@@ -185,7 +188,7 @@ export const replitAccentVariations = [
   'highest',
 ] as const;
 
-export type ReplitAccentVariations = (typeof replitAccentVariations)[number];
+export type ReplitAccentVariation = (typeof replitAccentVariations)[number];
 
 // TODO: import from crypto
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
