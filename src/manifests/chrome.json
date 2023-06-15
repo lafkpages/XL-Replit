@@ -25,6 +25,11 @@
         "id": "block_gql",
         "enabled": false,
         "path": "net-rules/block_gql.json"
+      },
+      {
+        "id": "xl_routes",
+        "enabled": true,
+        "path": "net-rules/xl_routes.json"
       }
     ]
   },
