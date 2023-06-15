@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
         activeSid = 0;
       }
 
+      // Inject script (inject.ts)
       const s = document.createElement('script');
       s.src = chrome.runtime.getURL('inject.js');
       s.dataset.sid = sids?.length ? `1${sids[activeSid]}` : '0,null';
