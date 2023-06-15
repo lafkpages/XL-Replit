@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
       s.dataset.settings = settings ? JSON.stringify(settings) : undefined;
       document.head.appendChild(s);
       console.debug('[XL] Injected script');
+
+      // Body classes
+      if (settings['hide-bookish']) {
+        document.body.dataset.xlReplitHideBookish = '1';
+      }
     });
 });
 

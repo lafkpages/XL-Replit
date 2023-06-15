@@ -29,6 +29,7 @@ let settings: {
   'ssh-tool': false,
   'auto-debug': false,
   'force-ssr': false,
+  'hide-bookish': false,
   'block-graphql': false,
   'disable-github-import': false,
   'large-cursor': false,

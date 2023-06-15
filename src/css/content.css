@@ -230,3 +230,8 @@ select#xl-replit-account-switcher {
 [data-xl-replit-large-cursor='1'] .cm-cursor {
   transform: scale(1.5);
 }
+
+/* Hide Bookish Memory flags setter */
+[data-xl-replit-hide-bookish="1"] .bookish-memory-flags-setter-button {
+  display: none !important;
+}
