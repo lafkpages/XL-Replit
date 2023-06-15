@@ -3,7 +3,17 @@ import {
   replitAccentVariations,
   replitAccentVariationsBasic,
   replitAccents,
+  ReplitAccent,
+  ReplitAccentVariations,
 } from '../types';
+
+export function getAccentVariable(accent: ReplitAccent, variation: ReplitAccentVariations) {
+  return `--accent-${accent}-${variation}`;
+}
+
+export function getBackgroundVariable(variation: ReplitAccentVariations) {
+  return `--background-${variation}`;
+}
 
 export function getThemeGlobalValues(elm?: HTMLElement) {
   const themeContainerStyles = getComputedStyle(
@@ -20,7 +30,7 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
   for (const accent of replitAccents) {
     for (const variation of replitAccentVariationsBasic) {
       const value = themeContainerStyles.getPropertyValue(
-        `--accent-${accent}-${variation}`
+        getAccentVariable(accent, variation)
       );
 
       if (value) {
@@ -35,7 +45,7 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
 
   for (const variation of replitAccentVariations) {
     const value = themeContainerStyles.getPropertyValue(
-      `--background-${variation}`
+      getBackgroundVariable(variation)
     );
 
     if (value) {
