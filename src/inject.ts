@@ -806,7 +806,7 @@ async function injectMonacoEditors() {
     let flushOtsTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Create OT channel
-    const openOtChan = await openGovalChannel('ot', channelName, 2)
+    const openOtChan = await openGovalChannel('ot', channelName, 2);
     xlMonacoEditors[editorId].channelId = openOtChan.openChanRes.id;
 
     // Link file
@@ -1396,7 +1396,7 @@ async function replsPathFunction() {
   const toolsCont =
     document.querySelector('div[role=toolbar] button[draggable]')
       ?.parentElement || null;
-  
+
   // Use parentElement to avoid using :has()
   // for compatibility with older browsers
 

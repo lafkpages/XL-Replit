@@ -123,10 +123,10 @@ export interface ReplitThemeGlobalValues {
     [key in ReplitAccent]?: {
       [key in ReplitAccentVariationsBasic]?: string;
     };
-  },
+  };
   backgrounds: {
     [key in ReplitAccentVariations]?: string;
-  }
+  };
 }
 
 export interface ReplitEditorPreferences {
@@ -161,7 +161,7 @@ export const replitAccents = [
   'magenta',
   'pink',
   'grey',
-  'brown'
+  'brown',
 ] as const;
 
 export type ReplitAccent = (typeof replitAccents)[number];
@@ -171,17 +171,18 @@ export const replitAccentVariationsBasic = [
   'dimmer',
   'default',
   'stronger',
-  'strongest'
+  'strongest',
 ] as const;
 
-export type ReplitAccentVariationsBasic = (typeof replitAccentVariationsBasic)[number];
+export type ReplitAccentVariationsBasic =
+  (typeof replitAccentVariationsBasic)[number];
 
 export const replitAccentVariations = [
   'root',
   ...replitAccentVariationsBasic,
   'overlay',
   'higher',
-  'highest'
+  'highest',
 ] as const;
 
 export type ReplitAccentVariations = (typeof replitAccentVariations)[number];

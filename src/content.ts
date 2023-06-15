@@ -1,4 +1,4 @@
-import { getThemeGlobalValues } from "./util/getTheme";
+import { getThemeGlobalValues } from './util/getTheme';
 
 document.addEventListener('DOMContentLoaded', (e) => {
   console.debug('[XL] Reading SID from CRX storage');

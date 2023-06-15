@@ -1,10 +1,15 @@
-import { ReplitThemeGlobalValues, replitAccentVariations, replitAccentVariationsBasic, replitAccents } from "../types";
+import {
+  ReplitThemeGlobalValues,
+  replitAccentVariations,
+  replitAccentVariationsBasic,
+  replitAccents,
+} from '../types';
 
 export function getThemeGlobalValues(elm?: HTMLElement) {
   const themeContainerStyles = getComputedStyle(
     elm ||
-    document.querySelector('.replit-ui-theme-root') ||
-    document.documentElement
+      document.querySelector('.replit-ui-theme-root') ||
+      document.documentElement
   );
 
   const themeValues: ReplitThemeGlobalValues = {
