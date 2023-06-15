@@ -4,7 +4,7 @@
     "priority": 1,
     "action": {
       "type": "redirect",
-      "redirect": { "extensionPath": "/public" }
+      "redirect": { "extensionPath": "/html/index.html" }
     },
     "condition": {
       "regexFilter": "^https?:\\/\\/(?:(?:staging\\.)?replit|firewalledreplit)\\.com\\/(xl(?:-replit)?)$",
