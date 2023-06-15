@@ -1,3 +1,7 @@
+import applySavedTheme from "./util/applySavedTheme";
+
+applySavedTheme();
+
 const sidsCont = document.getElementById('sids') as HTMLDivElement;
 const saveSidButton = document.getElementById(
   'save-sid'
