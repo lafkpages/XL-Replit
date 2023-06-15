@@ -498,6 +498,10 @@ async function closeGovalChannel(id: number, action = 0) {
 module.exports.closeGovalChannel = closeGovalChannel;
 
 function injectCustomTips(replId: UUID | number, isTheme = false) {
+  if (!settings['custom-tips']) {
+    return false;
+  }
+
   const tipsCont = document.querySelector('div#tips');
 
   const tipButtonsCont =

@@ -26,6 +26,7 @@ let settings: {
 } = {
   'show-advanced-settings': false,
   'account-switcher': false,
+  'custom-tips': false,
   'old-cover-page': false,
   'show-experiments': false,
   'nix-modules-tool': false,
