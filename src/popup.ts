@@ -25,8 +25,8 @@ let settings: {
   // maybe allow more types?
 } = {
   'show-advanced-settings': false,
-  'account-switcher': false,
-  'custom-tips': false,
+  'account-switcher': true,
+  'custom-tips': true,
   'old-cover-page': false,
   'show-experiments': false,
   'nix-modules-tool': false,
