@@ -55,3 +55,15 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
 
   return themeValues;
 }
+
+export function applyGlobalThemeValuesToElement(themeValues: ReplitThemeGlobalValues, elm: HTMLElement) {
+  for (const [accent, variations] of Object.entries(themeValues.accents)) {
+    for (const [variation, value] of Object.entries(variations)) {
+      elm.style.setProperty(getAccentVariable(accent as ReplitAccent, variation as ReplitAccentVariations), value);
+    }
+  }
+
+  for (const [variation, value] of Object.entries(themeValues.backgrounds)) {
+    elm.style.setProperty(getBackgroundVariable(variation as ReplitAccentVariations), value);
+  }
+}
