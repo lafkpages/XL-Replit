@@ -107,4 +107,5 @@ button {
   border: 1px solid transparent;
   background-color: var(--accent-primary-dimmer);
   color: var(--foreground-default);
+  cursor: pointer;
 }
