@@ -595,6 +595,15 @@ function injectCustomTips(replId: UUID | number, isTheme = false) {
   return true;
 }
 
+function switchAccount(sidIndex: number) {
+  return window.dispatchEvent(
+    new CustomEvent('xl-replit-change-active-sid', {
+      detail: sidIndex,
+    })
+  );
+}
+module.exports.switchAccount = switchAccount;
+
 function injectAccountSwitcher() {
   if (getXlFlag('accountSwitcher')) {
     return true;
@@ -659,11 +668,7 @@ function injectAccountSwitcher() {
       themeSwitcher.nextSibling
     );
     accountSwitcherBtn.addEventListener('input', () => {
-      window.dispatchEvent(
-        new CustomEvent('xl-replit-change-active-sid', {
-          detail: parseInt(accountSwitcherBtn.value),
-        })
-      );
+      switchAccount(parseInt(accountSwitcherBtn.value));
     });
     return true;
   } else {
