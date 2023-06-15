@@ -11,6 +11,9 @@ body {
   justify-content: center;
   padding: 20px;
   min-height: 100%;
+
+  /* Since this is a popup, use higher background */
+  background: var(--background-higher);
 }
 
 h1,
