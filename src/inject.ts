@@ -1317,9 +1317,6 @@ async function replsPathFunction() {
     },
   });
 
-  // Load OT utils
-  await loadScript(`${XL_REPLIT_EXTENSION_URL}/util/ot.js`);
-
   // Layout container
   const layoutContainer = document.querySelector('main header ~ div');
 
