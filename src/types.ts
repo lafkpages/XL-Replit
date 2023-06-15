@@ -134,5 +134,26 @@ export interface XLGovalChannel {
   openChanRes?: replitProtocol.Command;
 }
 
+export const replitAccents = [
+  'primary',
+  'positive',
+  'negative',
+  'red',
+  'orange',
+  'yellow',
+  'lime',
+  'green',
+  'teal',
+  'blue',
+  'blurple',
+  'purple',
+  'magenta',
+  'pink',
+  'grey',
+  'brown'
+] as const;
+
+export type ReplitAccent = (typeof replitAccents)[number];
+
 // TODO: import from crypto
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
