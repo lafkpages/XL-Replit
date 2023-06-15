@@ -13,7 +13,7 @@ export default function applySavedTheme(): Promise<boolean> {
       }
 
       // Apply theme
-      applyGlobalThemeValuesToElement(themeValues, document.body);
+      applyGlobalThemeValuesToElement(themeValues, document.documentElement);
 
       // Resolve
       resolve(true);
