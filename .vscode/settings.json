@@ -9,6 +9,6 @@
     "**/Thumbs.db": true,
     ".all-contributorsrc": true,
     "package-lock.json": true,
-    "dist/*/_metadata": true,
+    "dist/*/_metadata": true
   }
 }

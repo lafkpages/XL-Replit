@@ -1,4 +1,4 @@
-import applySavedTheme from "./util/applySavedTheme";
+import applySavedTheme from './util/applySavedTheme';
 
 applySavedTheme();
 

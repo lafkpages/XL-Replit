@@ -232,6 +232,6 @@ select#xl-replit-account-switcher {
 }
 
 /* Hide Bookish Memory flags setter */
-[data-xl-replit-hide-bookish="1"] .bookish-memory-flags-setter-button {
+[data-xl-replit-hide-bookish='1'] .bookish-memory-flags-setter-button {
   display: none !important;
 }

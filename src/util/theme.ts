@@ -8,11 +8,17 @@ import {
   ReplitAccentVariation,
 } from '../types';
 
-export function getAccentVariable(accent: ReplitAccent, variation: ReplitAccentVariation) {
+export function getAccentVariable(
+  accent: ReplitAccent,
+  variation: ReplitAccentVariation
+) {
   return `--accent-${accent}-${variation}`;
 }
 
-export function getOtherVariable(prop: string, variation: ReplitAccentVariation) {
+export function getOtherVariable(
+  prop: string,
+  variation: ReplitAccentVariation
+) {
   return `--${prop}-${variation}`;
 }
 
@@ -62,10 +68,19 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
   return themeValues;
 }
 
-export function applyGlobalThemeValuesToElement(themeValues: ReplitThemeGlobalValues, elm: HTMLElement) {
+export function applyGlobalThemeValuesToElement(
+  themeValues: ReplitThemeGlobalValues,
+  elm: HTMLElement
+) {
   for (const [accent, variations] of Object.entries(themeValues.accents)) {
     for (const [variation, value] of Object.entries(variations)) {
-      elm.style.setProperty(getAccentVariable(accent as ReplitAccent, variation as ReplitAccentVariation), value);
+      elm.style.setProperty(
+        getAccentVariable(
+          accent as ReplitAccent,
+          variation as ReplitAccentVariation
+        ),
+        value
+      );
     }
   }
 
@@ -78,7 +93,10 @@ export function applyGlobalThemeValuesToElement(themeValues: ReplitThemeGlobalVa
         continue;
       }
 
-      elm.style.setProperty(getOtherVariable(prop, variation as ReplitAccentVariation), variationValue as string);
+      elm.style.setProperty(
+        getOtherVariable(prop, variation as ReplitAccentVariation),
+        variationValue as string
+      );
     }
   }
 }

@@ -120,7 +120,7 @@ export interface ReplitThemeEditorValue {
 
 export type ReplitThemeGlobalValuesProp = {
   [key in ReplitAccentVariation]?: string;
-}
+};
 
 export interface ReplitThemeGlobalValues {
   accents: {
