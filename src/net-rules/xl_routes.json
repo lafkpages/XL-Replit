@@ -4,10 +4,10 @@
     "priority": 1,
     "action": {
       "type": "redirect",
-      "redirect": { "extensionPath": "/public/routes" }
+      "redirect": { "extensionPath": "/public" }
     },
     "condition": {
-      "regexFilter": "^https?:\\/\\/(?:(?:staging\\.)?replit|firewalledreplit)\\.com\\/(xl-replit)$",
+      "regexFilter": "^https?:\\/\\/(?:(?:staging\\.)?replit|firewalledreplit)\\.com\\/(xl(?:-replit)?)$",
       "resourceTypes": ["main_frame"]
     }
   }
