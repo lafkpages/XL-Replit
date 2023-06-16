@@ -1,5 +1,5 @@
 import applySavedTheme from './util/applySavedTheme';
-import type { XLSetting, XLSettings } from './types';
+import { xlSettings, XLSetting, XLSettings } from './types';
 
 applySavedTheme();
 
@@ -233,7 +233,13 @@ document.addEventListener('input', (e) => {
 
   console.debug('[XL] Settings changed');
 
-  const key = e.target.name;
+  const _key = e.target.name;
+
+  if (!([...xlSettings] as string[]).includes(_key)) {
+    return;
+  }
+
+  const key = _key as XLSetting;
   const val =
     /*e.target.type == 'checkbox' ?*/ e.target.checked; /*: e.target.value*/
 
