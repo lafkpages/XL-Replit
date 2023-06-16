@@ -72,5 +72,10 @@
       "192": "public/assets/favicon.png",
       "128": "public/assets/favicon128.png"
     }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "xl-replit"
+    }
   }
 }
