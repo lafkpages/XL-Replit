@@ -1,5 +1,3 @@
 .DS_Store
-_metadata
 node_modules
 dist
-_old_webpack
