@@ -4,7 +4,7 @@
 const distDir = 'dist';
 
 // Build types for Node, to use here
-await $`./node_modules/.bin/esbuild ./src/types --outfile=${dist}/types.js --bundle --minify --target=node12 --format=cjs`;
+await $`./node_modules/.bin/esbuild ./src/types --outfile=${distDir}/types.js --bundle --minify --target=node12 --format=cjs`;
 const { replitAccents } = require(`../${distDir}/types.js`);
 await fs.rm(`${distDir}/types.js`);
 
