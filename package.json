@@ -19,6 +19,8 @@
     "dev:firefox": "zx ./scripts/build.mjs dev firefox",
     "build:firefox": "zx ./scripts/build.mjs prod firefox",
     "start:firefox": "web-ext run --source-dir ./dist/firefox/",
+    "lint:chrome": "cd dist/chrome && web-ext lint",
+    "lint:firefox": "cd dist/firefox && web-ext lint",
     "clean": "rm -rf dist",
     "format": "npx prettier --write ."
   },
