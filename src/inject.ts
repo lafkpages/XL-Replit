@@ -214,7 +214,13 @@ const xlMonacoEditors: {
     version?: number;
   };
 } = {};
-module.exports.xlMonacoEditors = xlMonacoEditors;
+
+// Export Monaco Editors
+Object.defineProperty(module.exports, 'monacoEditors', {
+  get() {
+    return xlMonacoEditors;
+  }
+});
 
 // Function to get user's editor preferences
 function getEditorPreferences() {
