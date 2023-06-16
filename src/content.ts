@@ -2,7 +2,7 @@ import { getThemeGlobalValues } from './util/theme';
 
 if (/^xl(?:-replit)?$/.test(window.location.pathname)) {
   console.debug('[XL] Redirecting to XL page');
-  //window.location.replace(chrome.runtime.getURL('html/index.html'));
+  window.location.replace(chrome.runtime.getURL('html/index.html'));
 } else {
   document.addEventListener('DOMContentLoaded', (e) => {
     console.debug('[XL] Reading SID from CRX storage');
