@@ -32,7 +32,7 @@ let esbuildTarget = '';
 
 if (!browser) {
   echo('No browser specified');
-  exit(1);
+  process.exit(1);
 }
 
 switch (browser) {
@@ -48,7 +48,7 @@ switch (browser) {
 
   default:
     echo(`Unrecognized browser: ${browser}`);
-    exit(1);
+    process.exit(1);
     break;
 }
 
