@@ -1,6 +1,6 @@
 import { applyOTs } from './util/ot';
 import { api as replitProtocol } from '@replit/protocol';
-import type { XLGovalChannel, UUID } from './types';
+import type { XLGovalChannel, XLSettings, UUID } from './types';
 import type { ReplitCustomThemeValues } from './util/theme';
 
 module.exports = {};
@@ -21,7 +21,7 @@ delete document.currentScript.dataset.activeSid;
 
 // Get XL settings
 const rawSettings = document.currentScript.dataset.settings;
-const settings = rawSettings
+const settings: XLSettings = rawSettings
   ? (() => {
       try {
         return JSON.parse(rawSettings);
@@ -683,7 +683,7 @@ function injectAccountSwitcher() {
 }
 
 async function injectMonacoEditors() {
-  if (!settings['monaco']) {
+  if (!settings['monaco-editor']) {
     return false;
   }
 
@@ -1331,7 +1331,7 @@ async function replsPathFunction() {
   const layoutContainer = document.querySelector('main header ~ div');
 
   // Monaco Editor
-  if (settings['monaco']) {
+  if (settings['monaco-editor']) {
     console.debug('[XL] Loading Monaco Editor');
     await requirePromise(['vs/editor/editor.main']);
     console.debug('[XL] Monaco Editor loaded');
