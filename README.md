@@ -46,11 +46,11 @@ For Firefox, just replace `chrome` with `firefox`.
 ### Loading extension in Chrome
 
 Go to the [Chrome extensions page](chrome://extensions) and enable developer mode.
-Click on Load unpacked and select the `dist` folder.
+Click on Load unpacked and select the `dist/chrome` folder.
 
 ### Loading extension in Firefox
 
-Go to the [Firefox debugging page](about:debugging#/runtime/this-firefox) and click on Load Temporary Add-on, then select the `dist/manifest.json` file.
+Go to the [Firefox debugging page](about:debugging#/runtime/this-firefox) and click on Load Temporary Add-on, then select the `dist/firefox/manifest.json` file.
 
 Also, note that on Firefox you must have enabled the `layout.css.has-selector.enabled` flag in the [`about:config` page](about:config).
 
