@@ -73,6 +73,11 @@
       "128": "public/assets/favicon128.png"
     }
   },
+  "options_ui": {
+    "page": "html/index.html",
+    "browser_style": false,
+    "open_in_tab": true
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "xl-replit@lafkpages.tech"
