@@ -60,8 +60,19 @@ if (await fs.pathExists(`${distDir}/manifest.json`)) {
 await fs.ensureDir(buildDir);
 
 // Copy manifest
-const manifest = await fs.readJson(`src/manifests/${browser}.json`);
+const manifest = await fs.readJson('src/manifest.json');
 delete manifest['$schema'];
+switch (browser) {
+  case 'firefox': {
+    manifest.background.scripts = [manifest.background.service_worker];
+    delete manifest.background.service_worker;
+    break;
+  }
+
+  case 'chrome': {
+    delete manifest.developer;
+  }
+}
 await fs.writeJson(`${buildDir}/manifest.json`, manifest);
 
 // Copy localization files

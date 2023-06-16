@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json.schemastore.org/webextension.json",
+  "$schema": "https://json.schemastore.org/chrome-manifest",
   "manifest_version": 3,
   "default_locale": "es",
   "name": "__MSG_name__",
@@ -50,7 +50,7 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {
