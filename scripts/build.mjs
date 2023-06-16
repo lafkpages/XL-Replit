@@ -3,6 +3,9 @@
 // Directory that contains all builds
 const distDir = 'dist';
 
+// Node modules directory
+const nodeModulesDir = path.resolve('./node_modules');
+
 // Build types for Node, to use here
 await $`./node_modules/.bin/esbuild ./src/types --outfile=${distDir}/types.js --bundle --minify --target=node12 --format=cjs`;
 const { replitAccents } = require(`../${distDir}/types.js`);
