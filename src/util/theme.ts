@@ -1,8 +1,8 @@
 import {
   ReplitThemeGlobalValues,
-  ReplitThemeGlobalValuesProp,
   replitAccentVariations,
   replitAccentVariationsBasic,
+  replitThemeGlobalValuesProps,
   replitAccents,
   ReplitAccent,
   ReplitAccentVariation,
@@ -49,10 +49,8 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
     }
   }
 
-  const otherProps = ['background', 'foreground', 'outline'] as const;
-
   for (const variation of replitAccentVariations) {
-    for (const prop of otherProps) {
+    for (const prop of replitThemeGlobalValuesProps) {
       const value = themeContainerStyles.getPropertyValue(
         getOtherVariable(prop, variation)
       );
