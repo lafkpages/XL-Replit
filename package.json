@@ -18,6 +18,7 @@
     "build:chrome": "zx ./scripts/build.mjs prod chrome",
     "dev:firefox": "zx ./scripts/build.mjs dev firefox",
     "build:firefox": "zx ./scripts/build.mjs prod firefox",
+    "start:firefox": "web-ext run --source-dir ./dist/firefox/",
     "clean": "rm -rf dist",
     "format": "npx prettier --write ."
   },
