@@ -87,6 +87,7 @@ await spinner('Building manifest', async () => {
 
     case 'chrome': {
       delete manifest.developer;
+      delete manifest.browser_specific_settings;
     }
   }
   await fs.writeJson(`${buildDir}/manifest.json`, manifest);
