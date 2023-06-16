@@ -23,11 +23,13 @@ if (args[0] == path.basename(__filename)) {
   args.shift();
 }
 
-const browser = argv.browser || args[1];
+const browser = argv.browser || args[1] || (await question('Browser: '));
 let esbuildTarget = '';
 
 // If no browser specified
-// TODO: build for all instead of erroring
+// TODO: Build for all browsers when none specified
+//       Meanwhile, prompt user to specify browser
+
 if (!browser) {
   echo('No browser specified');
   exit(1);
