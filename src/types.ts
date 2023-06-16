@@ -134,7 +134,7 @@ export const xlSettings = [
 
 export type XLSetting = typeof xlSettings[number];
 export type XLSettings = {
-  [key in XLSetting]: boolean;
+  [key in XLSetting]?: boolean;
 
   // For now, settings are boolean. In the future,
   // maybe allow more types?
