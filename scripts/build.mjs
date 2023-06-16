@@ -47,7 +47,7 @@ switch (browser) {
     break;
 
   default:
-    echo('Unrecognized browser: $browser');
+    echo(`Unrecognized browser: ${browser}`);
     exit(1);
     break;
 }
