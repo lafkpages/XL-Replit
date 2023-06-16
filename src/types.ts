@@ -122,15 +122,24 @@ export type ReplitThemeGlobalValuesProp = {
   [key in ReplitAccentVariation]?: string;
 };
 
-export interface ReplitThemeGlobalValues {
-  accents: {
-    [key in ReplitAccent]?: {
-      [key in ReplitAccentVariationBasic]?: string;
-    };
+export type ReplitThemeGlobalValuesAccentsProp = {
+  [key in ReplitAccent]?: {
+    [key in ReplitAccentVariationBasic]?: string;
   };
-  background: ReplitThemeGlobalValuesProp;
-  foreground: ReplitThemeGlobalValuesProp;
-  outline: ReplitThemeGlobalValuesProp;
+};
+
+export const replitThemeGlobalValuesProps = [
+  'background',
+  'foreground',
+  'outline',
+] as const;
+
+export type ReplitThemeGlobalValuesProps = (typeof replitThemeGlobalValuesProps)[number];
+
+export type ReplitThemeGlobalValues = {
+  accents: ReplitThemeGlobalValuesAccentsProp;
+} & {
+  [key in ReplitThemeGlobalValuesProps]?: ReplitThemeGlobalValuesProp;
 }
 
 export interface ReplitEditorPreferences {

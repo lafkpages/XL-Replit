@@ -31,9 +31,6 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
 
   const themeValues: ReplitThemeGlobalValues = {
     accents: {},
-    background: {},
-    foreground: {},
-    outline: {},
   };
 
   for (const accent of replitAccents) {
@@ -61,7 +58,11 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
       );
 
       if (value) {
-        themeValues[prop][variation] = value;
+        if (!themeValues[prop]) {
+          themeValues[prop] = {};
+        }
+
+        themeValues[prop]![variation] = value;
       }
     }
   }
