@@ -114,5 +114,31 @@ export interface XLGovalChannel {
   openChanRes?: replitProtocol.Command;
 }
 
+export const xlSettings = [
+  'show-advanced-settings',
+  'account-switcher',
+  'custom-tips',
+  'old-cover-page',
+  'show-experiments',
+  'nix-modules-tool',
+  'extensions-beta',
+  'ssh-tool',
+  'auto-debug',
+  'force-ssr',
+  'hide-bookish',
+  'block-graphql',
+  'disable-github-import',
+  'large-cursor',
+  'monaco-editor',
+] as const;
+
+export type XLSetting = typeof xlSettings[number];
+export type XLSettings = {
+  [key in XLSetting]: boolean;
+
+  // For now, settings are boolean. In the future,
+  // maybe allow more types?
+};
+
 // TODO: import from crypto
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;

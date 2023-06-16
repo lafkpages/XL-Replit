@@ -1,4 +1,5 @@
 import applySavedTheme from './util/applySavedTheme';
+import type { XLSetting, XLSettings } from './types';
 
 applySavedTheme();
 
@@ -18,12 +19,7 @@ const experimentsCont = document.getElementById(
 ) as HTMLDivElement;
 
 let userId = null;
-let settings: {
-  [key: string]: boolean;
-
-  // For now, settings are boolean. In the future,
-  // maybe allow more types?
-} = {
+let settings: XLSettings = {
   'show-advanced-settings': false,
   'account-switcher': true,
   'custom-tips': true,
@@ -64,7 +60,7 @@ function parseSid(sid: string) {
   return sid;
 }
 
-function setSetting(key: string, val: boolean) {
+function setSetting(key: XLSetting, val: boolean) {
   return new Promise((resolve, reject) => {
     settings[key] = val;
 
