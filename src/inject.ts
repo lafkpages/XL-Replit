@@ -1,7 +1,7 @@
 import { applyOTs } from './util/ot';
 import { api as replitProtocol } from '@replit/protocol';
 import type { XLGovalChannel, XLSettings, UUID } from './types';
-import type { ReplitCustomThemeValues } from './util/theme';
+import type { ReplitCustomThemeValues } from './types';
 
 module.exports = {};
 
