@@ -33,6 +33,7 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
     accents: {},
     background: {},
     foreground: {},
+    outline: {},
   };
 
   for (const accent of replitAccents) {
@@ -51,7 +52,7 @@ export function getThemeGlobalValues(elm?: HTMLElement) {
     }
   }
 
-  const otherProps = ['background', 'foreground'] as const;
+  const otherProps = ['background', 'foreground', 'outline'] as const;
 
   for (const variation of replitAccentVariations) {
     for (const prop of otherProps) {

@@ -130,6 +130,7 @@ export interface ReplitThemeGlobalValues {
   };
   background: ReplitThemeGlobalValuesProp;
   foreground: ReplitThemeGlobalValuesProp;
+  outline: ReplitThemeGlobalValuesProp;
 }
 
 export interface ReplitEditorPreferences {
