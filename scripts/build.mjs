@@ -125,5 +125,9 @@ if (isDev) {
 }
 
 // Build TypeScript files into JavaScript
-await $`./node_modules/.bin/esbuild src/inject.ts --outdir=${buildDir} ${opts} --global-name=xlReplit`;
+await $`./node_modules/.bin/esbuild src/inject.ts ${[
+  `--outdir=${buildDir}`,
+  ...opts,
+  '--global-name=xlReplit',
+]}`;
 await $`./node_modules/.bin/esbuild src/{background,popup,content,index}.ts src/util/ot.ts --outdir=${buildDir} ${opts}`;
