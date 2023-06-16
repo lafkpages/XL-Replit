@@ -1,5 +1,8 @@
 #!/usr/bin/env zx
 
+// Disable verbose
+$.verbose = false;
+
 // Directory that contains all builds
 const distDir = 'dist';
 
