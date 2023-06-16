@@ -2,7 +2,7 @@
 // https://replit.com/@LuisAFK/OT-Catchup#ot.js
 //
 
-import type { OTv1, OT, Diff, OTv2 } from '../types';
+import type { OTv1, OT, Diff } from '../types';
 
 export function simplifyOTs(ots: OTv1[], recurse = true) {
   // Remove unnecessary/empty skips/inserts
