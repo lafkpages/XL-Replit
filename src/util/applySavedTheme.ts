@@ -1,5 +1,5 @@
 import { applyGlobalThemeValuesToElement } from './theme';
-import type { ReplitThemeGlobalValues } from './theme';
+import type { ReplitThemeGlobalValues } from '../types';
 
 export default function applySavedTheme(): Promise<boolean> {
   return new Promise((resolve, reject) => {
