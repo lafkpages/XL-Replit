@@ -1,7 +1,7 @@
 #!/usr/bin/env zx
 
 // Build types for Node, to use here
-await $`./node_modules/.bin/esbuild src/types.ts --outdir=dist --minify --target=node12 --format=cjs`;
+await $`./node_modules/.bin/esbuild ./src/types --outfile=dist/types.js --bundle --minify --target=node12 --format=cjs`;
 const { replitAccents } = require('../dist/types.js');
 await fs.rm('dist/types.js');
 
