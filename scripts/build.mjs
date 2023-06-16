@@ -134,3 +134,15 @@ await $`./node_modules/.bin/esbuild src/inject.ts ${[
   '--global-name=xlReplit',
 ]}`;
 await $`./node_modules/.bin/esbuild src/{background,popup,content,index}.ts src/util/ot.ts --outdir=${buildDir} ${opts}`;
+
+// If prod, bundle
+if (!isDev) {
+  await $`cd ${buildDir} && ${nodeModulesDir}/.bin/web-ext build -o`;
+
+  await fs.move(
+    `${buildDir}/web-ext-artifacts/xl_replit-${manifest.version}.zip`,
+    `${buildDir}/../${browser}.zip`
+  );
+
+  await fs.remove(`${buildDir}/web-ext-artifacts`);
+}
