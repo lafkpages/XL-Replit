@@ -1,5 +1,10 @@
 #!/usr/bin/env zx
 
+// Build types for Node, to use here
+await $`./node_modules/.bin/esbuild src/types.ts --outdir=dist --minify --target=node12 --format=cjs`;
+const { replitAccents } = require('../dist/types.js');
+await fs.rm('dist/types.js');
+
 const args = argv._;
 if (args[0] == path.basename(__filename)) {
   args.shift();
@@ -67,6 +72,21 @@ await fs.copy('public', `${buildDir}/public`);
 for (const folder of ['html', 'css', 'net-rules']) {
   await fs.copy(`src/${folder}`, `${buildDir}/${folder}`);
 }
+
+// Inject variant classes into XL CSS
+let xlCss = await fs.readFile(`${buildDir}/css/xl.css`, 'utf8');
+for (const accent of replitAccents) {
+  xlCss += `
+    .${accent}-fg {
+      color: var(--accent-${accent}-default);
+    }
+
+    .${accent}-bg {
+      background-color: var(--accent-${accent}-default);
+    }
+  `.replace(/\s+/g, '');
+}
+await fs.writeFile(`${buildDir}/css/xl.css`, xlCss);
 
 // Copy Monaco editor from Node modules
 const monacoMode = isDev ? 'dev' : 'min';

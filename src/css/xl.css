@@ -109,3 +109,5 @@ button {
   color: var(--foreground-default);
   cursor: pointer;
 }
+
+/* Classes for different variants will be injected at the end of this file */
