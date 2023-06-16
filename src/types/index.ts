@@ -1,5 +1,37 @@
 import { api as replitProtocol } from '@replit/protocol';
-import type { ReplitCustomThemeValues } from './util/theme';
+import {
+  replitAccents,
+  replitAccentVariations,
+  replitAccentVariationsBasic,
+  replitThemeGlobalValuesProps,
+} from './theme';
+import type {
+  ReplitCustomThemeValues,
+  ReplitThemeEditorValue,
+  ReplitThemeGlobalValuesProp,
+  ReplitThemeGlobalValuesAccentsProp,
+  ReplitThemeGlobalValuesProps,
+  ReplitThemeGlobalValues,
+  ReplitAccent,
+  ReplitAccentVariationBasic,
+  ReplitAccentVariation
+} from './theme';
+
+export {
+  ReplitCustomThemeValues,
+  ReplitThemeEditorValue,
+  ReplitThemeGlobalValuesProp,
+  ReplitThemeGlobalValuesAccentsProp,
+  replitThemeGlobalValuesProps,
+  ReplitThemeGlobalValuesProps,
+  ReplitThemeGlobalValues,
+  replitAccents,
+  ReplitAccent,
+  replitAccentVariationsBasic,
+  ReplitAccentVariationBasic,
+  replitAccentVariations,
+  ReplitAccentVariation
+};
 
 export interface OTv1 {
   insert?: string;
