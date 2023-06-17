@@ -24,7 +24,7 @@ let settings: XLSettings = DEFAULT_SETTINGS;
 
 // Some settings require optional permissions
 const settingPermissions: {
-  [key: string]: string[]; // TODO: make key keyof settings
+  [key in XLSetting]?: string[];
 } = {
   'account-switcher': ['cookies'],
 };
