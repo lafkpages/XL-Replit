@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@putout/minify': ^1.40.0
   '@replit/protocol': ^0.3.12
   '@types/chrome': ^0.0.237
   '@types/requirejs': ^2.1.34
@@ -18,7 +17,6 @@ dependencies:
   requirejs: 2.3.6
 
 devDependencies:
-  '@putout/minify': 1.40.0
   '@types/chrome': 0.0.237
   '@types/requirejs': 2.1.34
   esbuild: 0.18.4
@@ -408,11 +406,6 @@ packages:
   /@protobufjs/utf8/1.1.0:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
-
-  /@putout/minify/1.40.0:
-    resolution: {integrity: sha512-273RBEqp2CqIqebDYe4Gu3H4s43TEa1Df0Je/JRK/keuWT5S8VmOWmvKBjWnUkWkRmhP/stZDLYi7h8ibwibag==}
-    engines: {node: '>=16'}
-    dev: true
 
   /@replit/protocol/0.3.12:
     resolution: {integrity: sha512-clVyvp5qjteTOwJ3dCadFDR3bu15tlBl+OcbskoAMgVk2Ye1bqMce4O14bO/zBSpavheRlxVgt5d+sZ2HcbCSg==}

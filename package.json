@@ -30,7 +30,6 @@
     "url": "https://github.com/lafkpages/XL-Replit.git"
   },
   "devDependencies": {
-    "@putout/minify": "^1.40.0",
     "@types/chrome": "^0.0.237",
     "@types/requirejs": "^2.1.34",
     "esbuild": "^0.18.1",
