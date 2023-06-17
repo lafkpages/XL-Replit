@@ -9,14 +9,11 @@ const distDir = 'dist';
 // Node modules directory
 const nodeModulesDir = path.resolve('./node_modules');
 
-// Ensure temp dir
-await fs.ensureDir(`${distDir}/.tmp`);
-
 // Build types for Node, to use here
 await spinner(
   'Building types',
   () =>
-    $`rollup src/types/index.ts --file ${distDir}/types.js --config rollup.config.mjs --format=cjs`
+    $`./node_modules/.bin/esbuild ./src/types --outfile=${distDir}/types.js --bundle --minify --target=node12 --format=cjs`
 );
 const { replitAccents } = require(`../${distDir}/types.js`);
 await fs.rm(`${distDir}/types.js`);
@@ -25,7 +22,7 @@ await fs.rm(`${distDir}/types.js`);
 await spinner(
   'Building consts',
   () =>
-    $`rollup src/consts.ts --file ${distDir}/consts.js --config rollup.config.mjs --format=cjs`
+    $`./node_modules/.bin/esbuild ./src/consts --outfile=${distDir}/consts.js --bundle --minify --target=node12 --format=cjs`
 );
 const { BACKEND } = require(`../${distDir}/consts.js`);
 await fs.rm(`${distDir}/consts.js`);
@@ -49,10 +46,12 @@ if (!browser) {
 
 switch (browser) {
   case 'chrome':
+    echo('Building for Chrome');
     esbuildTarget = 'chrome58';
     break;
 
   case 'firefox':
+    echo('Building for Firefox');
     esbuildTarget = 'firefox57';
     break;
 
@@ -61,9 +60,6 @@ switch (browser) {
     process.exit(1);
     break;
 }
-
-// Write browser to temp file
-await fs.writeFile(`${distDir}/.tmp/browser.txt`, browser);
 
 let isDev = false;
 let NODE_ENV = 'production';
@@ -159,11 +155,24 @@ await spinner('Copying RequireJS', () =>
   fs.copy('node_modules/requirejs/require.js', `${buildDir}/public/require.js`)
 );
 
+// ESBuild options
+let opts = ['--bundle', '--minify', `--target=${esbuildTarget}`];
+if (isDev) {
+  // Enable sourcemaps and watch in development
+  opts.push('--sourcemap' /*, '--watch'*/);
+
+  // Watch temporarily disabled due to multiple esbuild commands
+} else {
+}
+
 // Build TypeScript files into JavaScript
 await spinner('Building TypeScript', async () => {
-  for (const file of ['inject', 'background', 'popup', 'content', 'index']) {
-    await $`rollup src/${file}.ts --file ${buildDir}/${file}.js --config rollup.config.mjs`;
-  }
+  await $`./node_modules/.bin/esbuild src/inject.ts ${[
+    `--outdir=${buildDir}`,
+    ...opts,
+    '--global-name=xlReplit',
+  ]}`;
+  await $`./node_modules/.bin/esbuild src/{background,popup,content,index}.ts src/util/ot.ts --outdir=${buildDir} ${opts}`;
 });
 
 // If prod, bundle
@@ -184,6 +193,3 @@ if (!isDev) {
     await fs.remove(`${buildDir}/web-ext-artifacts`);
   });
 }
-
-// Remove temp files
-await fs.remove(`${distDir}/.tmp/browser.txt`);

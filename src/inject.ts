@@ -9,6 +9,8 @@ import {
 import type { XLGovalChannel, XLSettings, UUID } from './types';
 import type { ReplitCustomThemeValues } from './types';
 
+module.exports = {};
+
 if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
 }
@@ -37,7 +39,7 @@ const settings: XLSettings = rawSettings
     })()
   : {};
 delete document.currentScript.dataset.settings;
-export { settings };
+module.exports.settings = settings;
 
 // Check for SID?
 const hasSid = rawSid[0] == '1';
@@ -56,13 +58,13 @@ const username =
     ?.textContent?.replace(/^@/, '') ||
   globalThis.__NEXT_DATA__?.props?.apolloState?.CurrentUser?.username ||
   null;
-export { username };
+module.exports.username = username;
 
 // Current user ID
 let userId =
   (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user
     ?.userInfo?.id || null;
-export { userId };
+module.exports.userId = userId;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
 
@@ -172,7 +174,18 @@ WebSocket = class WebSocket extends _WebSocket {
 };
 
 // Export Goval WebSocket
-export { govalWebSocket, govalWebSocketConns };
+Object.defineProperties(module.exports, {
+  govalWebSocket: {
+    get() {
+      return govalWebSocket;
+    },
+  },
+  govalWebSocketConns: {
+    get() {
+      return govalWebSocketConns;
+    },
+  },
+});
 
 // XL Replit errors
 class XLReplitError extends Error {
@@ -187,7 +200,7 @@ class XLReplitError extends Error {
     }
   }
 }
-export { XLReplitError };
+module.exports.XLReplitError = XLReplitError;
 
 // XL Replit Goval channels
 let xlGovalChannels: {
@@ -205,7 +218,11 @@ const xlMonacoEditors: {
 } = {};
 
 // Export Monaco Editors
-export { xlMonacoEditors };
+Object.defineProperty(module.exports, 'monacoEditors', {
+  get() {
+    return xlMonacoEditors;
+  },
+});
 
 // Function to get user's editor preferences
 function getEditorPreferences() {
@@ -214,7 +231,7 @@ function getEditorPreferences() {
       ?.user?.userInfo?.editorPreferences || null
   );
 }
-export { getEditorPreferences };
+module.exports.getEditorPreferences = getEditorPreferences;
 
 async function graphQl(
   path: string,
@@ -299,6 +316,9 @@ function capitalize(str: string) {
   return arr.join('');
 }
 
+// Replit flags exports
+module.exports.flags = {};
+
 function getFlags() {
   return (
     __REPLIT_REDUX_STORE__?.getState()?.user?.userInfo?.gating ||
@@ -306,10 +326,12 @@ function getFlags() {
     []
   );
 }
+module.exports.flags.getAll = getFlags;
 
 function getFlag(flag: string) {
   return getFlags().find((f) => f.controlName == flag);
 }
+module.exports.flags.get = getFlag;
 
 function setFlag(flag: string, value: any) {
   const flagObj = getFlag(flag);
@@ -321,13 +343,7 @@ function setFlag(flag: string, value: any) {
 
   return false;
 }
-
-// Export flags
-export const flags = {
-  getAll: getFlags,
-  get: getFlag,
-  set: setFlag,
-};
+module.exports.flags.set = setFlag;
 
 function getXlFlagsElm(): HTMLElement {
   return document.querySelector('div#__next > div') || document.body;
@@ -462,7 +478,7 @@ async function openGovalChannel(service: string, name = '', action = 0) {
     openChanRes: replitProtocol.OpenChannelRes;
   };
 }
-export { openGovalChannel };
+module.exports.openGovalChannel = openGovalChannel;
 
 async function closeGovalChannel(id: number, action = 0) {
   const res = await sendGovalMessage(
@@ -488,7 +504,7 @@ async function closeGovalChannel(id: number, action = 0) {
 
   return res;
 }
-export { closeGovalChannel };
+module.exports.closeGovalChannel = closeGovalChannel;
 
 function injectCustomTips(replId: UUID | number, isTheme = false) {
   if (!settings['custom-tips']) {
@@ -599,7 +615,7 @@ function switchAccount(sidIndex: number) {
     })
   );
 }
-export { switchAccount };
+module.exports.switchAccount = switchAccount;
 
 function injectAccountSwitcher() {
   if (getXlFlag('accountSwitcher')) {
@@ -960,7 +976,7 @@ async function injectMonacoEditors() {
     }
   });
 }
-export { injectMonacoEditors };
+module.exports.injectMonacoEditors = injectMonacoEditors;
 
 function registerMonacoReplitTheme() {
   if (typeof monaco == 'undefined') {
@@ -1085,7 +1101,7 @@ function findApolloState(query: string | ((key: string) => boolean)) {
 
   return null;
 }
-export { findApolloState };
+module.exports.findApolloState = findApolloState;
 
 async function profilesPathFunction() {
   const profileUsername = next?.router?.state?.query?.username as string;
@@ -1585,6 +1601,7 @@ async function main() {
 
   // Get current user ID
   userId = findApolloState('CurrentUser')?.id || userId;
+  module.exports.userId = userId;
 
   // Load RequireJS
   if (!hasLoadedRequireJS) {
