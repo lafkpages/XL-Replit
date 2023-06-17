@@ -150,8 +150,7 @@ await spinner('Building XL CSS', async () => {
   await fs.writeFile(`${buildDir}/css/xl.css`, xlCss);
 });
 
-// Copy Monaco editor from Node modules
-const monacoMode = isDev ? 'dev' : 'min';
+// Copy Monaco editor from Node modules\
 const filesToMinify = /^language\/.+\.js$/;
 await spinner('Copying Monaco', async () => {
   const destDir = `${buildsCacheDir}/monaco`;
@@ -161,7 +160,7 @@ await spinner('Copying Monaco', async () => {
     async function iter(dir, files) {
       dir = path.normalize(dir);
 
-      const _dir = `node_modules/monaco-editor/${monacoMode}/vs/${dir}`;
+      const _dir = `node_modules/monaco-editor/min/vs/${dir}`;
 
       const dest = `${destDir}/${dir}`;
 
@@ -198,7 +197,7 @@ await spinner('Copying Monaco', async () => {
 
     await iter(
       '.',
-      await fs.readdir(`node_modules/monaco-editor/${monacoMode}/vs`, {
+      await fs.readdir(`node_modules/monaco-editor/min/vs`, {
         withFileTypes: true,
       })
     );
