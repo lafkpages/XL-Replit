@@ -82,6 +82,9 @@ await spinner('Cleaning up', async () => {
   await fs.ensureDir(buildDir);
 });
 
+// Load minifier lib
+const { minify } = await import('uglify-js');
+
 // Copy manifest
 let manifest = null;
 await spinner('Building manifest', async () => {
@@ -143,12 +146,53 @@ await spinner('Building XL CSS', async () => {
 
 // Copy Monaco editor from Node modules
 const monacoMode = isDev ? 'dev' : 'min';
-await spinner('Copying Monaco', () =>
-  fs.copy(
-    `node_modules/monaco-editor/${monacoMode}/vs`,
-    `${buildDir}/public/vs`
-  )
-);
+const filesToMinify = /^language\/.+\.js$/;
+await spinner('Copying Monaco', async () => {
+  async function iter(dir, files) {
+    dir = path.normalize(dir);
+
+    const _dir = `node_modules/monaco-editor/${monacoMode}/vs/${dir}`;
+
+    const destDir = `${buildDir}/public/vs/${dir}`;
+
+    await fs.ensureDir(destDir);
+
+    for (const file of files) {
+      const filePath = `${dir}/${file.name}`;
+      const filePathFull = `${_dir}/${file.name}`;
+
+      if (file.isDirectory()) {
+        await iter(
+          filePath,
+          await fs.readdir(filePathFull, {
+            withFileTypes: true,
+          })
+        );
+        continue;
+      } else if (file.isFile() && filesToMinify.test(filePath)) {
+        try {
+          const data = await fs.readFile(filePathFull, 'utf-8');
+          const { code } = minify(data);
+          if (code) {
+            await fs.writeFile(`${destDir}/${file.name}`, code, 'utf-8');
+            continue;
+          }
+        } catch (e) {
+          console.error(`Error minifying ${filePath}:`, e);
+        }
+      }
+
+      await fs.copy(filePathFull, `${destDir}/${file.name}`);
+    }
+  }
+
+  await iter(
+    '.',
+    await fs.readdir(`node_modules/monaco-editor/${monacoMode}/vs`, {
+      withFileTypes: true,
+    })
+  );
+});
 
 // Copy RequireJS lib
 await spinner('Copying RequireJS', () =>
