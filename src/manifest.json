@@ -83,5 +83,15 @@
     "gecko": {
       "id": "xl-replit@lafkpages.tech"
     }
+  },
+  "chrome_settings_overrides": {
+    "search_provider": {
+      "name": "Replit",
+      "search_url": "https://replit.com/search?query={searchTerms}",
+      "favicon_url": "public/assets/favicon128.png",
+      "keyword": "replit",
+      "is_default": false,
+      "encoding": "utf-8"
+    }
   }
 }

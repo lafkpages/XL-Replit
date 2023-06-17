@@ -88,6 +88,11 @@ await spinner('Building manifest', async () => {
     case 'chrome': {
       delete manifest.developer;
       delete manifest.browser_specific_settings;
+      // TODO: move URLs to a config file
+      manifest.chrome_settings_overrides.search_provider.favicon_url = `https://18eb1dff-d978-4685-888c-f26b177e4a1a.id.repl.co/${manifest.chrome_settings_overrides.search_provider.favicon_url.replace(
+        /^public\/assets\//,
+        ''
+      )}`;
     }
   }
   await fs.writeJson(`${buildDir}/manifest.json`, manifest);
