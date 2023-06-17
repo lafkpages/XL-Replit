@@ -38,6 +38,7 @@ if (args[0] == path.basename(__filename)) {
 
 const browser = argv.browser || args[1] || (await question('Browser: '));
 let esbuildTarget = '';
+let browserSupportsSymlinks = true;
 
 // If no browser specified
 // TODO: Build for all browsers when none specified
@@ -57,6 +58,7 @@ switch (browser) {
   case 'firefox':
     echo('Building for Firefox');
     esbuildTarget = 'firefox57';
+    browserSupportsSymlinks = false;
     break;
 
   default:
@@ -202,11 +204,15 @@ await spinner('Copying Monaco', async () => {
     );
   }
 
-  await fs.symlink(
-    path.resolve(`${buildsCacheDir}/monaco`),
-    `${buildDir}/public/vs`,
-    'dir'
-  );
+  if (browserSupportsSymlinks) {
+    await fs.symlink(
+      path.resolve(`${buildsCacheDir}/monaco`),
+      `${buildDir}/public/vs`,
+      'dir'
+    );
+  } else {
+    await fs.copy(`${buildsCacheDir}/monaco`, `${buildDir}/public/vs`);
+  }
 });
 
 // Copy RequireJS lib
