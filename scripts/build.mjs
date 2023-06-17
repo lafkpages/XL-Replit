@@ -222,11 +222,16 @@ await spinner('Copying RequireJS', () =>
 // ESBuild options
 let opts = ['--bundle', '--minify', `--target=${esbuildTarget}`];
 if (isDev) {
+  // Disable prod-only features
+  opts.push('--define:PRODUCTION=false');
+
   // Enable sourcemaps and watch in development
   opts.push('--sourcemap' /*, '--watch'*/);
 
   // Watch temporarily disabled due to multiple esbuild commands
 } else {
+  // Enable prod-only features
+  opts.push('--define:PRODUCTION=true');
 }
 
 // Build TypeScript files into JavaScript

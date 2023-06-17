@@ -68,6 +68,8 @@ declare global {
   var module: {
     exports: any;
   };
+
+  var PRODUCTION: boolean;
 }
 
 export {};

@@ -15,7 +15,7 @@ if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
 }
 
-console.debug('[XL] Inject script loaded');
+console.debug('[XL] Inject script loaded', PRODUCTION ? '[PROD]' : '[DEV]');
 
 // Get the selected SID passed from content script
 const rawSid = document.currentScript.dataset.sid || '0';
