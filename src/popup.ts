@@ -19,7 +19,7 @@ const experimentsCont = document.getElementById(
   'experiments-cont'
 ) as HTMLDivElement;
 
-let userId = null;
+let userId: number | null = null;
 let settings: XLSettings = DEFAULT_SETTINGS;
 
 // Some settings require optional permissions
@@ -131,7 +131,7 @@ newSidButton?.addEventListener('click', (e) => {
 chrome.storage.local
   .get(['userId', 'sid', 'settings'])
   .then(({ userId: storedUserId, sid: sids, settings: storedSettings }) => {
-    if (storedUserId) {
+    if (typeof storedUserId == 'number') {
       // sidInput.disabled = false;
       if (saveSidButton) {
         saveSidButton.disabled = false;
