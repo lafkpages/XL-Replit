@@ -44,6 +44,10 @@ pnpm build:chrome
 
 For Firefox, just replace `chrome` with `firefox`.
 
+**Note:** when building for the first time, it might take a while since it has to copy over modules and minify them.
+It will cache this in `dist/.cache` so the next time you build it will be much faster.
+If you want to rebuild everything, run `pnpm clean:cache` and rebuild.
+
 ### Loading extension in Chrome
 
 Go to the [Chrome extensions page](chrome://extensions) and enable developer mode.
