@@ -17,6 +17,7 @@ An enhanced version of Replit.
 - Easily download a user's profile picture
 - Read-only invites for private Repls
 - Monaco :eyes:
+- Replit search provider
 
 ## Installation
 
