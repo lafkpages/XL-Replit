@@ -1,6 +1,7 @@
 import applySavedTheme from './util/applySavedTheme';
 import { xlSettings, XLSetting, XLSettings } from './types';
 import { BACKEND, REPLIT_URLS, DEFAULT_SETTINGS } from './consts';
+import { parseSid } from './util/sid';
 
 applySavedTheme();
 
@@ -28,13 +29,6 @@ const settingPermissions: {
 } = {
   'account-switcher': ['cookies'],
 };
-
-function parseSid(sid: string) {
-  if (sid[1] != ':') {
-    return decodeURIComponent(sid);
-  }
-  return sid;
-}
 
 function setSetting(key: XLSetting, val: boolean) {
   return new Promise((resolve, reject) => {
