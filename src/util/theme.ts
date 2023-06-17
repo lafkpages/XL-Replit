@@ -2,13 +2,13 @@ import {
   replitAccents,
   replitAccentVariations,
   replitAccentVariationsBasic,
-  replitThemeGlobalValuesProps
+  replitThemeGlobalValuesProps,
 } from '../types';
 import type {
   ReplitAccent,
   ReplitAccentVariation,
   ReplitThemeGlobalValues,
-} from "../types";
+} from '../types';
 
 export function getAccentVariable(
   accent: ReplitAccent,

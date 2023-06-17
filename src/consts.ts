@@ -1,4 +1,4 @@
-import type { XLSettings } from "./types";
+import type { XLSettings } from './types';
 
 export const REPLIT_ORIGINS = [
   'https://replit.com',
@@ -9,7 +9,8 @@ export const REPLIT_URLS = REPLIT_ORIGINS.map((url) => url + '/*');
 
 // XL Replit main backend
 // ID URL is faster, but same as xl-replit-backend.luisafk.repl.co
-export const BACKEND = 'https://18eb1dff-d978-4685-888c-f26b177e4a1a.id.repl.co';
+export const BACKEND =
+  'https://18eb1dff-d978-4685-888c-f26b177e4a1a.id.repl.co';
 
 // ToS;DR Replit service ID
 export const TOSDR_SERVICE_ID = 1676;

@@ -1,6 +1,11 @@
 import { applyOTs } from './util/ot';
 import { api as replitProtocol } from '@replit/protocol';
-import { BACKEND, TOSDR_SERVICE_ID, SET_FLAGS_HASH, REPLIT_GOVAL_URL_REGEX } from './consts';
+import {
+  BACKEND,
+  TOSDR_SERVICE_ID,
+  SET_FLAGS_HASH,
+  REPLIT_GOVAL_URL_REGEX,
+} from './consts';
 import type { XLGovalChannel, XLSettings, UUID } from './types';
 import type { ReplitCustomThemeValues } from './types';
 
@@ -216,7 +221,7 @@ const xlMonacoEditors: {
 Object.defineProperty(module.exports, 'monacoEditors', {
   get() {
     return xlMonacoEditors;
-  }
+  },
 });
 
 // Function to get user's editor preferences

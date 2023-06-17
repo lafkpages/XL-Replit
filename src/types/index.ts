@@ -14,7 +14,7 @@ import type {
   ReplitThemeGlobalValues,
   ReplitAccent,
   ReplitAccentVariationBasic,
-  ReplitAccentVariation
+  ReplitAccentVariation,
 } from './theme';
 
 export {
@@ -30,22 +30,12 @@ export {
   replitAccentVariationsBasic,
   ReplitAccentVariationBasic,
   replitAccentVariations,
-  ReplitAccentVariation
+  ReplitAccentVariation,
 };
 
-import type {
-  OTv1,
-  OTv2,
-  OT,
-  Diff,
-} from './ot';
+import type { OTv1, OTv2, OT, Diff } from './ot';
 
-export {
-  OTv1,
-  OTv2,
-  OT,
-  Diff,
-};
+export { OTv1, OTv2, OT, Diff };
 
 export interface GlobalNext {
   router: {
@@ -157,7 +147,7 @@ export const xlSettings = [
   'monaco-editor',
 ] as const;
 
-export type XLSetting = typeof xlSettings[number];
+export type XLSetting = (typeof xlSettings)[number];
 export type XLSettings = {
   [key in XLSetting]?: boolean;
 

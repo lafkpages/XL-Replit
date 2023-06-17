@@ -1,4 +1,4 @@
-import type { GraphQLResponse } from ".";
+import type { GraphQLResponse } from '.';
 
 export interface ReplitCustomThemeValues {
   editor: {
@@ -37,13 +37,14 @@ export const replitThemeGlobalValuesProps = [
   'outline',
 ] as const;
 
-export type ReplitThemeGlobalValuesProps = (typeof replitThemeGlobalValuesProps)[number];
+export type ReplitThemeGlobalValuesProps =
+  (typeof replitThemeGlobalValuesProps)[number];
 
 export type ReplitThemeGlobalValues = {
   accents: ReplitThemeGlobalValuesAccentsProp;
 } & {
   [key in ReplitThemeGlobalValuesProps]?: ReplitThemeGlobalValuesProp;
-}
+};
 
 export const replitAccents = [
   'primary',
