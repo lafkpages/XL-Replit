@@ -33,13 +33,13 @@ cd XL-Replit
 Install dependencies:
 
 ```sh
-npm i
+pnpm i
 ```
 
 When building, you must specify the browser you want to build for. For example, to build for Chrome:
 
 ```sh
-npm run build:chrome
+pnpm build:chrome
 ```
 
 For Firefox, just replace `chrome` with `firefox`.
