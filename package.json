@@ -22,7 +22,9 @@
     "start:firefox": "web-ext run --source-dir ./dist/firefox/",
     "lint:chrome": "cd dist/chrome && web-ext lint",
     "lint:firefox": "cd dist/firefox && web-ext lint",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist/*",
+    "clean:cache": "rm -rf dist/.cache",
+    "clean:all": "rm -rf dist",
     "format": "npx prettier --write ."
   },
   "repository": {

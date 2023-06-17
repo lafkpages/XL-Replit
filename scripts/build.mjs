@@ -6,6 +6,10 @@ $.verbose = false;
 // Directory that contains all builds
 const distDir = 'dist';
 
+// Builds cache directory
+const buildsCacheDir = `${distDir}/.cache`;
+await fs.ensureDir(buildsCacheDir);
+
 // Node modules directory
 const nodeModulesDir = path.resolve('./node_modules');
 
@@ -148,49 +152,60 @@ await spinner('Building XL CSS', async () => {
 const monacoMode = isDev ? 'dev' : 'min';
 const filesToMinify = /^language\/.+\.js$/;
 await spinner('Copying Monaco', async () => {
-  async function iter(dir, files) {
-    dir = path.normalize(dir);
+  const destDir = `${buildsCacheDir}/monaco`;
 
-    const _dir = `node_modules/monaco-editor/${monacoMode}/vs/${dir}`;
-
-    const destDir = `${buildDir}/public/vs/${dir}`;
-
+  if (!(await fs.pathExists(destDir))) {
     await fs.ensureDir(destDir);
+    async function iter(dir, files) {
+      dir = path.normalize(dir);
 
-    for (const file of files) {
-      const filePath = `${dir}/${file.name}`;
-      const filePathFull = `${_dir}/${file.name}`;
+      const _dir = `node_modules/monaco-editor/${monacoMode}/vs/${dir}`;
 
-      if (file.isDirectory()) {
-        await iter(
-          filePath,
-          await fs.readdir(filePathFull, {
-            withFileTypes: true,
-          })
-        );
-        continue;
-      } else if (file.isFile() && filesToMinify.test(filePath)) {
-        try {
-          const data = await fs.readFile(filePathFull, 'utf-8');
-          const { code } = minify(data);
-          if (code) {
-            await fs.writeFile(`${destDir}/${file.name}`, code, 'utf-8');
-            continue;
+      const dest = `${destDir}/${dir}`;
+
+      await fs.ensureDir(dest);
+
+      for (const file of files) {
+        const filePath = `${dir}/${file.name}`;
+        const filePathFull = `${_dir}/${file.name}`;
+
+        if (file.isDirectory()) {
+          await iter(
+            filePath,
+            await fs.readdir(filePathFull, {
+              withFileTypes: true,
+            })
+          );
+          continue;
+        } else if (file.isFile() && filesToMinify.test(filePath)) {
+          try {
+            const data = await fs.readFile(filePathFull, 'utf-8');
+            const { code } = minify(data);
+            if (code) {
+              await fs.writeFile(`${dest}/${file.name}`, code, 'utf-8');
+              continue;
+            }
+          } catch (e) {
+            console.error(`Error minifying ${filePath}:`, e);
           }
-        } catch (e) {
-          console.error(`Error minifying ${filePath}:`, e);
         }
-      }
 
-      await fs.copy(filePathFull, `${destDir}/${file.name}`);
+        await fs.copy(filePathFull, `${dest}/${file.name}`);
+      }
     }
+
+    await iter(
+      '.',
+      await fs.readdir(`node_modules/monaco-editor/${monacoMode}/vs`, {
+        withFileTypes: true,
+      })
+    );
   }
 
-  await iter(
-    '.',
-    await fs.readdir(`node_modules/monaco-editor/${monacoMode}/vs`, {
-      withFileTypes: true,
-    })
+  await fs.symlink(
+    path.resolve(`${buildsCacheDir}/monaco`),
+    `${buildDir}/public/vs`,
+    'dir'
   );
 });
 
