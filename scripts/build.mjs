@@ -18,6 +18,15 @@ await spinner(
 const { replitAccents } = require(`../${distDir}/types.js`);
 await fs.rm(`${distDir}/types.js`);
 
+// Build consts for Node, to use here
+await spinner(
+  'Building consts',
+  () =>
+    $`./node_modules/.bin/esbuild ./src/consts --outfile=${distDir}/consts.js --bundle --minify --target=node12 --format=cjs`
+);
+const { BACKEND } = require(`../${distDir}/consts.js`);
+await fs.rm(`${distDir}/consts.js`);
+
 const args = argv._;
 if (args[0] == path.basename(__filename)) {
   args.shift();
@@ -89,7 +98,7 @@ await spinner('Building manifest', async () => {
       delete manifest.developer;
       delete manifest.browser_specific_settings;
       // TODO: move URLs to a config file
-      manifest.chrome_settings_overrides.search_provider.favicon_url = `https://18eb1dff-d978-4685-888c-f26b177e4a1a.id.repl.co/${manifest.chrome_settings_overrides.search_provider.favicon_url.replace(
+      manifest.chrome_settings_overrides.search_provider.favicon_url = `${BACKEND}/${manifest.chrome_settings_overrides.search_provider.favicon_url.replace(
         /^public\/assets\//,
         ''
       )}`;
