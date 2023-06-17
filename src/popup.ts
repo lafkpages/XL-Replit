@@ -1,5 +1,6 @@
 import applySavedTheme from './util/applySavedTheme';
 import { xlSettings, XLSetting, XLSettings } from './types';
+import { BACKEND, REPLIT_URLS, DEFAULT_SETTINGS } from './consts';
 
 applySavedTheme();
 
@@ -19,23 +20,7 @@ const experimentsCont = document.getElementById(
 ) as HTMLDivElement;
 
 let userId = null;
-let settings: XLSettings = {
-  'show-advanced-settings': false,
-  'account-switcher': true,
-  'custom-tips': true,
-  'old-cover-page': false,
-  'show-experiments': false,
-  'nix-modules-tool': false,
-  'extensions-beta': false,
-  'ssh-tool': false,
-  'auto-debug': false,
-  'force-ssr': false,
-  'hide-bookish': false,
-  'block-graphql': false,
-  'disable-github-import': false,
-  'large-cursor': false,
-  'monaco-editor': false,
-};
+let settings: XLSettings = DEFAULT_SETTINGS;
 
 // Some settings require optional permissions
 const settingPermissions: {
@@ -43,15 +28,6 @@ const settingPermissions: {
 } = {
   'account-switcher': ['cookies'],
 };
-
-// URL consts
-const REPLIT_ORIGINS = [
-  'https://replit.com',
-  'https://firewalledreplit.com',
-  'https://staging.replit.com',
-];
-const REPLIT_URLS = REPLIT_ORIGINS.map((url) => url + '/*');
-const BACKEND = 'https://xl-replit-backend.luisafk.repl.co';
 
 function parseSid(sid: string) {
   if (sid[1] != ':') {
