@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@replit/protocol': ^0.3.12
+  '@sentry/browser': ^7.55.2
   '@types/chrome': ^0.0.237
   '@types/requirejs': ^2.1.34
   '@types/uglify-js': ^3.17.1
@@ -20,6 +21,7 @@ dependencies:
   uglify-js: 3.17.4
 
 devDependencies:
+  '@sentry/browser': 7.55.2
   '@types/chrome': 0.0.237
   '@types/requirejs': 2.1.34
   '@types/uglify-js': 3.17.1
@@ -416,6 +418,59 @@ packages:
     dependencies:
       protobufjs: 6.11.3
     dev: false
+
+  /@sentry-internal/tracing/7.55.2:
+    resolution: {integrity: sha512-yBW+R7NfwLrOjpwOJHoOSvGDDoM3ZKod5OKXi7Gd5tYqVm1mCaL0n2/wlNMcGTbPbulLBtgzjoTU1bPJAGhmYw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
+      tslib: 1.14.1
+    dev: true
+
+  /@sentry/browser/7.55.2:
+    resolution: {integrity: sha512-RgA4KOD6t8XHVLm6D2oTh9KW19g3DoQ0QsrUmAq4+giSj2AyDW67VP2V4E72mCZ9Ln9AkNhY0Eh3XuD3opiFQA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry-internal/tracing': 7.55.2
+      '@sentry/core': 7.55.2
+      '@sentry/replay': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
+      tslib: 1.14.1
+    dev: true
+
+  /@sentry/core/7.55.2:
+    resolution: {integrity: sha512-clzQirownxqADv9+fopyMJTHzaoWedkN2+mi4ro1LxjLgROdXBFurMCC1nT+7cH/xvQ5gMIRkM/y/4gRtKy2Ew==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
+      tslib: 1.14.1
+    dev: true
+
+  /@sentry/replay/7.55.2:
+    resolution: {integrity: sha512-G9iAcI9bvy5X8fvdz0QxF3LJ8oGB0Vxt0iOPdRZYhjIcPbNpE3NaeT6xZlNX1pCcHLroE6BMRF/6TTalcl5Erw==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@sentry/core': 7.55.2
+      '@sentry/types': 7.55.2
+      '@sentry/utils': 7.55.2
+    dev: true
+
+  /@sentry/types/7.55.2:
+    resolution: {integrity: sha512-mAtkA8wvUDrLjAAmy9tjn+NiXcxVz/ltbslTKaIW6JNgVRz5kMt1Ny8RJsgqaZqa4LFP8q+IvWw4Vd91kb57rA==}
+    engines: {node: '>=8'}
+    dev: true
+
+  /@sentry/utils/7.55.2:
+    resolution: {integrity: sha512-Yv9XtbOESdN7bkK2AMrKsmKMF5OOVv5v5hVcOqXtSTw1t2oMAtRjXXqGpUo+TkdTOjeoX6dr19ozVFHaGvqHkw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.55.2
+      tslib: 1.14.1
+    dev: true
 
   /@sindresorhus/is/5.4.1:
     resolution: {integrity: sha512-axlrvsHlHlFmKKMEg4VyvMzFr93JWJj4eIfXY1STVuO2fsImCa7ncaiG5gC8HKOX590AW5RtRsC41/B+OfrSqw==}
@@ -3089,6 +3144,10 @@ packages:
     dependencies:
       psl: 1.9.0
       punycode: 2.3.0
+    dev: true
+
+  /tslib/1.14.1:
+    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
   /tunnel-agent/0.6.0:
