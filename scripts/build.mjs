@@ -51,12 +51,10 @@ if (!browser) {
 
 switch (browser) {
   case 'chrome':
-    echo('Building for Chrome');
     esbuildTarget = 'chrome58';
     break;
 
   case 'firefox':
-    echo('Building for Firefox');
     esbuildTarget = 'firefox57';
     browserSupportsSymlinks = false;
     break;
