@@ -9,7 +9,9 @@ import {
 import type { XLGovalChannel, XLSettings, UUID } from './types';
 import type { ReplitCustomThemeValues } from './types';
 
-module.exports = {};
+module.exports = {
+  production: PRODUCTION,
+};
 
 if (!(document.currentScript && 'src' in document.currentScript)) {
   throw new Error('Assertion failed');
