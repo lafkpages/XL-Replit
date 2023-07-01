@@ -8,6 +8,10 @@
 
 An enhanced version of Replit.
 
+## WARNING
+
+Recently, rules regarding automation and Replit's API usage have been changing a lot. Now it appears that using **read-only invites can get your Replit account banned**, so use at your own risk.
+
 ## Features
 
 - Account switcher
