@@ -24,7 +24,7 @@ if (/^xl(?:-replit)?$/.test(window.location.pathname)) {
         console.debug('[XL] Injected script');
 
         // Body classes
-        if (settings['hide-bookish']) {
+        if (!!settings && settings['hide-bookish']) {
           document.body.dataset.xlReplitHideBookish = '1';
         }
       });
