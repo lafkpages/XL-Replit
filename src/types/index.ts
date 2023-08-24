@@ -72,6 +72,7 @@ export interface UserInfo {
   customThemeValues?: ReplitCustomThemeValues | null;
   customerId?: number | null;
   editorPreferences?: ReplitEditorPreferences | null;
+  editor_preferences?: ReplitEditorPreferences | null;
   email?: string;
   emailHash?: string;
   emailNotifications?: boolean;
