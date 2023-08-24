@@ -100,6 +100,7 @@ export interface UserInfo {
   username?: string;
 }
 
+/** @deprecated */
 export interface ReplitReduxState {
   user?: {
     authModal?: {
