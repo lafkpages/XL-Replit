@@ -39,16 +39,6 @@ declare global {
         scriptLoader: [];
       };
 
-  var __REPLIT_REDUX_STORE__:
-    | undefined
-    | {
-        dispatch: Function;
-        getState: () => ReplitReduxState;
-        replaceReducer: Function;
-        subscribe: Function;
-        // [Symbol('observable')]: Function;
-      };
-
   // TODO: use type defs from monaco-editor
   var monaco:
     | undefined
