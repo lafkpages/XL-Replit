@@ -38,10 +38,12 @@ declare global {
         scriptLoader: [];
       };
 
-  var __REPLIT__USER_FLAGS__: {
-    flags?: ReplitFlag[];
-    userId?: UserInfo['id'];
-  };
+  var __REPLIT__USER_FLAGS__:
+    | {
+        flags?: ReplitFlag[];
+        userId?: UserInfo['id'];
+      }
+    | undefined;
 
   // TODO: use type defs from monaco-editor
   var monaco:
