@@ -226,10 +226,7 @@ Object.defineProperty(module.exports, 'monacoEditors', {
 
 // Function to get user's editor preferences
 function getEditorPreferences() {
-  return (
-    (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)
-      ?.user?.userInfo?.editorPreferences || null
-  );
+  return __NEXT_DATA__?.props.user?.editor_preferences;
 }
 module.exports.getEditorPreferences = getEditorPreferences;
 
