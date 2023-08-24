@@ -63,9 +63,7 @@ const username =
 module.exports.username = username;
 
 // Current user ID
-let userId =
-  (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user
-    ?.userInfo?.id || null;
+let userId = __NEXT_DATA__?.props.user.id || null;
 module.exports.userId = userId;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
