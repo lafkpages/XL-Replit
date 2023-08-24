@@ -2,12 +2,7 @@
 // | TODO: Make these type defs only apply to inject.ts |
 // \----------------------------------------------------/
 
-import type {
-  GlobalNext,
-  ReplitFlag,
-  ReplitReduxState,
-  GraphQLResponse,
-} from './types';
+import type { GlobalNext, ReplitFlag, GraphQLResponse } from './types';
 
 declare global {
   var next: undefined | GlobalNext;
@@ -29,8 +24,6 @@ declare global {
           };
           flags?: ReplitFlag[];
           pageProps?: {};
-          reduxState?: ReplitReduxState;
-          reduxStore?: any;
           userAgent?: string;
         };
         query: {
