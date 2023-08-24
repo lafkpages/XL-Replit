@@ -66,6 +66,41 @@ export interface ReplitFlag {
 // TODO
 export type UserRole = string;
 
+export interface UserInfo {
+  bio?: string;
+  captchaScore?: number;
+  customThemeValues?: ReplitCustomThemeValues | null;
+  customerId?: number | null;
+  editorPreferences?: ReplitEditorPreferences | null;
+  editor_preferences?: ReplitEditorPreferences | null;
+  email?: string;
+  emailHash?: string;
+  emailNotifications?: boolean;
+  error?: string;
+  fetchState?: string;
+  firstName?: string | null;
+  gating: ReplitFlag[];
+  icon?: {
+    id?: number;
+    url?: string;
+  };
+  id?: number;
+  installedCustomThemeVersionId?: number | null;
+  isLoggedIn?: boolean;
+  isOverLimit?: boolean;
+  isTeam?: boolean;
+  isVerified?: boolean;
+  lastName?: string | null;
+  locale?: string;
+  location?: string | null;
+  replContinent?: string;
+  roles?: UserRole[];
+  signupMethod?: string;
+  timeCreated?: string;
+  username?: string;
+}
+
+/** @deprecated */
 export interface ReplitReduxState {
   user?: {
     authModal?: {
@@ -73,39 +108,13 @@ export interface ReplitReduxState {
       promptCount?: number;
       show?: boolean;
     };
-    userInfo?: {
-      bio?: string;
-      captchaScore?: number;
-      customThemeValues?: ReplitCustomThemeValues | null;
-      customerId?: number | null;
-      editorPreferences?: ReplitEditorPreferences | null;
-      email?: string;
-      emailHash?: string;
-      emailNotifications?: boolean;
-      error?: string;
-      fetchState?: string;
-      firstName?: string | null;
-      gating: ReplitFlag[];
-      icon?: {
-        id?: number;
-        url?: string;
-      };
-      id?: number;
-      installedCustomThemeVersionId?: number | null;
-      isLoggedIn?: boolean;
-      isOverLimit?: boolean;
-      isTeam?: boolean;
-      isVerified?: boolean;
-      lastName?: string | null;
-      locale?: string;
-      location?: string | null;
-      replContinent?: string;
-      roles?: UserRole[];
-      signupMethod?: string;
-      timeCreated?: string;
-      username?: string;
-    };
+    userInfo?: UserInfo;
   };
+}
+
+export interface ReplitFlagsContext {
+  flags?: ReplitFlag[];
+  userId?: UserInfo['id'];
 }
 
 export interface GraphQLResponse {

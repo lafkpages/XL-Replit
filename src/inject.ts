@@ -64,8 +64,7 @@ module.exports.username = username;
 
 // Current user ID
 let userId =
-  (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)?.user
-    ?.userInfo?.id || null;
+  __NEXT_DATA__?.props.user?.id || __REPLIT__USER_FLAGS__?.userId || null;
 module.exports.userId = userId;
 
 console.debug('[XL] Got SID:', hasSid, '\n     Got usernames:', usernames);
@@ -228,10 +227,7 @@ Object.defineProperty(module.exports, 'monacoEditors', {
 
 // Function to get user's editor preferences
 function getEditorPreferences() {
-  return (
-    (__REPLIT_REDUX_STORE__?.getState() || __NEXT_DATA__?.props.reduxState)
-      ?.user?.userInfo?.editorPreferences || null
-  );
+  return __NEXT_DATA__?.props.user?.editor_preferences;
 }
 module.exports.getEditorPreferences = getEditorPreferences;
 
@@ -323,8 +319,9 @@ module.exports.flags = {};
 
 function getFlags() {
   return (
-    __REPLIT_REDUX_STORE__?.getState()?.user?.userInfo?.gating ||
-    __NEXT_DATA__?.props.flags ||
+    __REPLIT__USER_FLAGS__?.flags ||
+    __NEXT_DATA__?.props.flagContext?.flags ||
+    __NEXT_DATA__?.props.user?.gating ||
     []
   );
 }

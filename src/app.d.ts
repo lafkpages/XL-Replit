@@ -5,8 +5,9 @@
 import type {
   GlobalNext,
   ReplitFlag,
-  ReplitReduxState,
+  ReplitFlagsContext,
   GraphQLResponse,
+  UserInfo,
 } from './types';
 
 declare global {
@@ -27,10 +28,9 @@ declare global {
           apolloState?: {
             [key: string]: GraphQLResponse;
           };
-          flags?: ReplitFlag[];
+          flagContext?: ReplitFlagsContext;
           pageProps?: {};
-          reduxState?: ReplitReduxState;
-          reduxStore?: any;
+          user?: UserInfo;
           userAgent?: string;
         };
         query: {
@@ -39,15 +39,7 @@ declare global {
         scriptLoader: [];
       };
 
-  var __REPLIT_REDUX_STORE__:
-    | undefined
-    | {
-        dispatch: Function;
-        getState: () => ReplitReduxState;
-        replaceReducer: Function;
-        subscribe: Function;
-        // [Symbol('observable')]: Function;
-      };
+  var __REPLIT__USER_FLAGS__: ReplitFlagsContext | undefined;
 
   // TODO: use type defs from monaco-editor
   var monaco:
