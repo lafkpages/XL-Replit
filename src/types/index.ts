@@ -111,6 +111,11 @@ export interface ReplitReduxState {
   };
 }
 
+export interface ReplitFlagsContext {
+  flags?: ReplitFlag[];
+  userId?: UserInfo['id'];
+}
+
 export interface GraphQLResponse {
   __typename?: string;
   [key: string]: any;

@@ -5,6 +5,7 @@
 import type {
   GlobalNext,
   ReplitFlag,
+  ReplitFlagsContext,
   GraphQLResponse,
   UserInfo,
 } from './types';
@@ -27,7 +28,7 @@ declare global {
           apolloState?: {
             [key: string]: GraphQLResponse;
           };
-          flags?: ReplitFlag[];
+          flagContext?: ReplitFlagsContext;
           pageProps?: {};
           user?: UserInfo;
           userAgent?: string;
@@ -38,12 +39,7 @@ declare global {
         scriptLoader: [];
       };
 
-  var __REPLIT__USER_FLAGS__:
-    | {
-        flags?: ReplitFlag[];
-        userId?: UserInfo['id'];
-      }
-    | undefined;
+  var __REPLIT__USER_FLAGS__: ReplitFlagsContext | undefined;
 
   // TODO: use type defs from monaco-editor
   var monaco:

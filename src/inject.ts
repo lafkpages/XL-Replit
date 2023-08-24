@@ -319,8 +319,9 @@ module.exports.flags = {};
 
 function getFlags() {
   return (
-    __REPLIT_REDUX_STORE__?.getState()?.user?.userInfo?.gating ||
-    __NEXT_DATA__?.props.flags ||
+    __REPLIT__USER_FLAGS__?.flags ||
+    __NEXT_DATA__?.props.flagContext?.flags ||
+    __NEXT_DATA__?.props.user?.gating ||
     []
   );
 }
