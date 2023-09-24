@@ -1141,7 +1141,7 @@ async function profilesPathFunction() {
     : null;
 
   // Make sure user didn't navigate elsewhere while loading data
-  if (next?.router?.state?.route != '/profile') {
+  if (next?.router?.route != '/profile') {
     return;
   }
 
@@ -1318,8 +1318,8 @@ async function replsPathFunction() {
   console.log('[XL] Loading XL Replit data for Repl', replSlug);
 
   // Enable debug
-  if (settings['auto-debug'] && next?.router?.state?.query) {
-    next.router.state.query.debug = true;
+  if (settings['auto-debug'] && next?.router?.query) {
+    next.router.query.debug = true;
   }
 
   // Large cursor
@@ -1545,7 +1545,7 @@ async function replSpotlightPathFunction() {
 }
 
 async function themePathFunction() {
-  const themeId = next?.router?.state?.query?.themeId as number;
+  const themeId = next?.router?.query?.themeId as number;
 
   // Prevent this from running twice
   const xlReplitPage = `theme/${themeId}`;
@@ -1611,7 +1611,7 @@ async function main() {
   // Inject account switcher
   injectAccountSwitcher();
 
-  switch (next?.router?.state?.route) {
+  switch (next?.router?.route) {
     case '/profile':
       return profilesPathFunction();
 
