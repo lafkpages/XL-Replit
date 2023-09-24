@@ -1103,7 +1103,7 @@ function findApolloState(query: string | ((key: string) => boolean)) {
 module.exports.findApolloState = findApolloState;
 
 async function profilesPathFunction() {
-  const profileUsername = next?.router?.state?.query?.username as string;
+  const profileUsername = next?.router?.query?.username as string;
 
   // Prevent this from running twice
   const xlReplitPage = `profiles/${profileUsername}`;
