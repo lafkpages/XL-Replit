@@ -1,7 +1,9 @@
 # XL Replit
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 An enhanced version of Replit.
@@ -18,7 +20,7 @@ Recently, rules regarding automation and Replit's API usage have been changing a
 - Shows a user's known alt accounts
 - Easily download a user's profile picture
 - Read-only invites for private Repls
-- Monaco :eyes:
+- Monaco 👀
 - Replit search provider
 
 ## Installation
