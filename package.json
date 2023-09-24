@@ -44,6 +44,7 @@
   "dependencies": {
     "@replit/protocol": "^0.3.12",
     "monaco-editor": "^0.39.0",
+    "next": "^13.5.2",
     "requirejs": "^2.3.6",
     "uglify-js": "^3.17.4"
   },
