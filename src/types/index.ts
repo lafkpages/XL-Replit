@@ -1,3 +1,5 @@
+import type { NextRouter } from 'next/router';
+
 import { api as replitProtocol } from '@replit/protocol';
 import {
   replitAccents,
@@ -38,17 +40,7 @@ import type { OTv1, OTv2, OT, Diff } from './ot';
 export { OTv1, OTv2, OT, Diff };
 
 export interface GlobalNext {
-  router: {
-    back: () => {};
-    push: (...args: any[]) => {};
-    reload: () => {};
-    state?: {
-      route?: string;
-      query?: {
-        [key: string]: any;
-      };
-    };
-  };
+  router: NextRouter;
   emitter: {
     emit: Function;
     off: Function;
