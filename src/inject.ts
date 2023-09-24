@@ -1696,32 +1696,23 @@ document.addEventListener(
   }
   next!.router.back();
 
+  next!.router.events.on('routeChangeStart', (url) => {
+    if (settings['force-ssr']) {
+      window.location.reload();
+      return false;
+    }
+  });
+
   // Listen for location changes
-  // TODO: handle client-side router onLoad
-  const nextRouterPush = next!.router.push;
-  next!.router.push = function () {
-    const realUrlToNavigate =
-      arguments[arguments.length - 1]?.pathname || arguments[1] || null;
-
-    // TODO: don't use last argument, find argument index
-
-    console.debug(
-      '[XL] Intercepted Next Router push:',
-      this.state,
-      realUrlToNavigate
-    );
+  next!.router.events.on('routeChangeComplete', (url) => {
+    console.debug('[XL] Intercepted Next Router navigation to', url);
 
     if (settings['force-ssr']) {
-      window.location.assign(realUrlToNavigate);
-      return {};
-    } else {
-      const val = nextRouterPush.bind(this)(...arguments);
-
-      main();
-
-      return val;
+      return false;
     }
-  };
+
+    main();
+  });
 })().then(() => {
   console.debug('[XL] Set flags');
 });
