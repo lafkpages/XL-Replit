@@ -1,3 +1,4 @@
+import 'replit-ext-helper';
 import { applyOTs } from './util/ot';
 import { api as replitProtocol } from '@replit/protocol';
 import {
